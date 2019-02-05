@@ -1,0 +1,22 @@
+#!/bin/sh
+
+cat > /tmp/localepurge.preseed << EOF
+localepurge localepurge/nopurge multiselect en, en_US, en_us.UTF-8, C.UTF-8
+localepurge localepurge/use-dpkg-feature boolean false
+localepurge localepurge/none_selected boolean false
+localepurge localepurge/verbose boolean false
+localepurge localepurge/dontbothernew boolean false
+localepurge localepurge/quickndirtycalc boolean true
+localepurge localepurge/mandelete boolean true
+localepurge localepurge/showfreedspace boolean false
+localepurge localepurge/remove_no note
+EOF
+debconf-set-selections < /tmp/localepurge.preseed
+rm -f /tmp/localepurge.preseed
+apt-get -y install localepurge
+dpkg-reconfigure localepurge
+localepurge
+
+apt-get -y --purge remove smplayer lxmusic evince valgrind-dbg autoconf automake bison flex libpcap-dev python-dev swig zlib1g-dev libcap-ng-dev libgeoip-dev libbluetooth-dev linux-headers-$(uname -r)
+apt-get -y autoremove
+apt-get clean

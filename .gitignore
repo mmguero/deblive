@@ -1,0 +1,9 @@
+# output
+*.log
+*.iso
+
+# binaries
+pcloud*
+
+# large packages
+*.deb

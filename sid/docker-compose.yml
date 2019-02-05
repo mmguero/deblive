@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  live-build:
+    build:
+      context: ../docker
+    image: live-build
+    privileged: true
+    environment:
+      - IMAGE_NAME=deblive
+      - IMAGE_VERSION=1.0.6
+      - IMAGE_DISTRIBUTION=unstable
+    volumes:
+      - ./config:/live-build/config:ro
+      - ./output:/live-build/output:rw
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro

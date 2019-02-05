@@ -1,0 +1,272 @@
+#!/bin/sh
+
+PF_RING_VER="7.2.0"
+PF_RING_URL="https://github.com/ntop/PF_RING/archive/$PF_RING_VER.tar.gz"
+
+BRO_VER="2.6.1"
+BRO_URL="https://www.bro.org/downloads/bro-$BRO_VER.tar.gz"
+
+BEATS_VER="6.6.0"
+FILEBEAT_URL="https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-$BEATS_VER-amd64.deb"
+METRICBEAT_URL="https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-$BEATS_VER-amd64.deb"
+AUDITBEAT_URL="https://artifacts.elastic.co/downloads/beats/auditbeat/auditbeat-$BEATS_VER-amd64.deb"
+
+NETSNIFF_VER="0.6.5"
+NETSNIFF_URL="https://github.com/netsniff-ng/netsniff-ng/archive/v$NETSNIFF_VER.tar.gz"
+
+RESPONDER_VER="2.3.0"
+RESPONDER_URL="https://github.com/SpiderLabs/Responder/archive/v${RESPONDER_VER}.tar.gz"
+
+BURPSUITE_VER="1.7.36"
+BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=jar"
+
+
+# build and install pfring
+
+cd /tmp
+curl -L -o $PF_RING_VER.tar.gz "$PF_RING_URL"
+tar -xzvf $PF_RING_VER.tar.gz
+
+# patch for CVE-2018-19519 until tcpdump 4.9.3+
+# In tcpdump 4.9.2, a stack-based buffer over-read exists in the print_prefix function of
+#   print-hncp.c via crafted packet data because of missing initialization.
+# see https://nvd.nist.gov/vuln/detail/CVE-2018-19519
+#     https://bugzilla.redhat.com/show_bug.cgi?id=1655374
+#     https://github.com/zyingp/temp/blob/master/tcpdump.md
+cd PF_RING-$PF_RING_VER/
+if [ -f "/usr/src/patches/PF_RING-7.2.0-tcpdump-CVE-2018-19519.patch" ] ; then
+  patch -p1 --ignore-whitespace < "/usr/src/patches/PF_RING-7.2.0-tcpdump-CVE-2018-19519.patch"
+fi
+
+cd ./userland/lib
+./configure --prefix=/opt/pfring
+make
+make install
+
+cd ../libpcap
+./configure --prefix=/opt/pfring
+make
+make install
+
+echo '/opt/pfring/lib' > /etc/ld.so.conf.d/sensor.conf
+
+cd ../tcpdump
+./configure --prefix=/opt/pfring
+make
+make install
+
+cd ../../kernel
+make
+make install
+
+# clean up
+cd /tmp
+rm -Rf PF_RING-$PF_RING_VER*
+rm -Rf $PF_RING_VER.tar.gz
+
+# set up ld paths and load module
+
+echo "pf_ring" >> /etc/modules-load.d/pfring.conf
+echo "options pf_ring enable_tx_capture=0 transparent_mode=0 min_num_slots=65534" > /etc/modprobe.d/pf_ring.conf
+
+modprobe pf_ring enable_tx_capture=0 min_num_slots=65534
+
+export LDFLAGS="-Wl,--no-as-needed -lrt"
+
+export LIBS="-lrt -lnuma"
+
+ldconfig
+
+###
+
+# Install netsniff-ng
+cd /tmp
+curl -L -o $NETSNIFF_VER.tar.gz "$NETSNIFF_URL"
+tar -xzvf $NETSNIFF_VER.tar.gz
+cd netsniff-ng-$NETSNIFF_VER
+# hacky way to get netsniff-ng's inflexible build script to use our libpcap.so
+ln -s /opt/pfring/include/pcap.h .
+ln -s /opt/pfring/include/pcap .
+ln -s /opt/pfring/lib/libpcap.so .
+patch -p0 --ignore-whitespace << 'CONFIG_PATCH'
+--- configure 2018-09-20 11:30:18.000000000 +0000
++++ /tmp/configure 2018-12-04 19:44:01.595934488 +0000
+@@ -582,7 +582,7 @@
+ }
+ EOF
+
+- $CC -o $TMPDIR/pcaptest $TMPDIR/pcaptest.c -lpcap >> config.log 2>&1
++ $CC -o $TMPDIR/pcaptest $TMPDIR/pcaptest.c -I. -L. -lpcap >> config.log 2>&1
+  if [ ! -x $TMPDIR/pcaptest ] ; then
+    echo "[NO]"
+    echo "CONFIG_LIBPCAP=0" >> Config
+CONFIG_PATCH
+patch -p0 --ignore-whitespace << 'MAKE_PATCH'
+--- Makefile  2018-09-20 05:30:18.000000000 -0600
++++ /tmp/Makefile 2018-12-05 07:18:39.860219988 -0700
+@@ -118,6 +118,7 @@
+ ifeq ("$(origin CROSS_LD_LIBRARY_PATH)", "command line")
+   LDFLAGS += -L$(CROSS_LD_LIBRARY_PATH)
+ endif
++LDFLAGS += -L.
+
+ CHECKFLAGS = -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix \
+       -Wbitwise -Wnoreturn-void
+MAKE_PATCH
+./configure --prefix=/usr --disable-geoip
+make netsniff-ng
+make netsniff-ng_install
+
+# clean up
+cd /tmp
+rm -Rf $NETSNIFF_VER.tar.gz netsniff-ng-$NETSNIFF_VER
+
+###
+
+
+# Install bro
+cd /tmp
+curl -L -o bro-$BRO_VER.tar.gz "$BRO_URL"
+tar -xvzf bro-$BRO_VER.tar.gz
+cd bro-$BRO_VER
+LDFLAGS="-L/opt/pfring/lib -lpfring -lpcap" ./configure --prefix=/opt/bro --with-pcap=/opt/pfring
+make
+make install
+
+cd /tmp
+rm -Rf bro-$BRO_VER*
+
+# set up default bro local policy
+cat << 'EOF' > /opt/bro/share/bro/site/local.bro
+##! Bro local site policy
+##!
+##! See https://www.bro.org/sphinx/components/broctl/README.html
+##!     https://www.bro.org/sphinx/script-reference/scripts.html
+##!     https://github.com/bro/bro/blob/master/scripts/site/local.bro
+
+@load tuning/defaults
+@load misc/scan
+@load frameworks/software/vulnerable
+@load frameworks/software/version-changes
+@load-sigs frameworks/signatures/detect-windows-shells
+@load protocols/ftp/software
+@load protocols/smtp/software
+@load protocols/ssh/software
+@load protocols/http/software
+@load protocols/dns/detect-external-names
+@load protocols/ftp/detect
+@load protocols/conn/known-hosts
+@load protocols/conn/known-services
+@load protocols/ssl/known-certs
+@load tuning/track-all-assets.bro
+@load protocols/ssl/validate-certs
+@load protocols/ssl/log-hostcerts-only
+@load protocols/ssh/geo-data
+@load protocols/ssh/detect-bruteforcing
+@load protocols/ssh/interesting-hostnames
+@load protocols/http/detect-sqli
+@load frameworks/files/hash-all-files
+@load frameworks/files/detect-MHR
+@load policy/protocols/conn/vlan-logging
+@load policy/protocols/conn/mac-logging
+
+EOF
+###
+
+# Install filebeat/metricbeat/auditbeat
+cd /tmp
+curl -L -o filebeat-$BEATS_VER-amd64.deb "$FILEBEAT_URL"
+curl -L -o metricbeat-$BEATS_VER-amd64.deb "$METRICBEAT_URL"
+curl -L -o auditbeat-$BEATS_VER-amd64.deb "$AUDITBEAT_URL"
+dpkg -i filebeat-$BEATS_VER-amd64.deb
+dpkg -i metricbeat-$BEATS_VER-amd64.deb
+dpkg -i auditbeat-$BEATS_VER-amd64.deb
+rm -f filebeat-$BEATS_VER-amd64.deb metricbeat-$BEATS_VER-amd64.deb auditbeat-$BEATS_VER-amd64.deb
+###
+
+# Install responder.py and fierce.pl
+wget --quiet -O Responder-${RESPONDER_VER}.tar.gz $RESPONDER_URL
+tar -xvzf Responder-${RESPONDER_VER}.tar.gz
+mv ./Responder-${RESPONDER_VER} /opt/responder
+rm -Rf Responder-${RESPONDER_VER}.tar.gz
+ln -s /opt/responder/Responder.py /usr/local/bin/Responder.py
+###
+
+# update freshclam
+
+systemctl status clamav-freshclam && systemctl stop clamav-freshclam
+freshclam --stdout --verbose --foreground=true
+
+# burpsuite
+mkdir -p /opt/burpsuite
+curl -o "/opt/burpsuite/burpsuite_community_v${BURPSUITE_VER}.jar" "$BURPSUITE_URL"
+
+# set up capabilities for network-related tools
+
+chown root:netdev /usr/bin/dumpcap && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/bin/dumpcap
+chown root:netdev /usr/sbin/tcpdump && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/tcpdump
+chown root:netdev /usr/bin/tcpreplay && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/bin/tcpreplay
+chown root:netdev /usr/bin/tcpflow && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/bin/tcpflow
+chown root:netdev /usr/sbin/astraceroute && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_IPC_LOCK+eip CAP_SYS_ADMIN+eip' /usr/sbin/astraceroute
+chown root:netdev /usr/sbin/bpfc && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_IPC_LOCK+eip CAP_SYS_ADMIN+eip' /usr/sbin/bpfc
+chown root:netdev /usr/sbin/curvetun && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_IPC_LOCK+eip CAP_SYS_ADMIN+eip' /usr/sbin/curvetun
+chown root:netdev /usr/sbin/flowtop && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_IPC_LOCK+eip CAP_SYS_ADMIN+eip' /usr/sbin/flowtop
+chown root:netdev /usr/sbin/ifpps && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_IPC_LOCK+eip CAP_SYS_ADMIN+eip' /usr/sbin/ifpps
+chown root:netdev /usr/sbin/mausezahn && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_IPC_LOCK+eip CAP_SYS_ADMIN+eip' /usr/sbin/mausezahn
+chown root:netdev /usr/sbin/netsniff-ng && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_IPC_LOCK+eip CAP_SYS_ADMIN+eip' /usr/sbin/netsniff-ng
+chown root:netdev /usr/sbin/trafgen && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_IPC_LOCK+eip CAP_SYS_ADMIN+eip' /usr/sbin/trafgen
+chown root:netdev /usr/sbin/nethogs && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/nethogs
+chown root:netdev /usr/sbin/arpspoof && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/arpspoof
+chown root:netdev /usr/sbin/dnsspoof && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/dnsspoof
+chown root:netdev /usr/sbin/dsniff && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/dsniff
+chown root:netdev /usr/sbin/filesnarf && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/filesnarf
+chown root:netdev /usr/sbin/macof && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/macof
+chown root:netdev /usr/sbin/mailsnarf && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/mailsnarf
+chown root:netdev /usr/sbin/msgsnarf && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/msgsnarf
+chown root:netdev /usr/sbin/sshmitm && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/sshmitm
+chown root:netdev /usr/sbin/sshow && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/sshow
+chown root:netdev /usr/sbin/tcpkill && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/tcpkill
+chown root:netdev /usr/sbin/tcpnice && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/tcpnice
+chown root:netdev /usr/sbin/urlsnarf && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/urlsnarf
+chown root:netdev /usr/sbin/webmitm && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/webmitm
+chown root:netdev /usr/sbin/webspy && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/webspy
+chown root:netdev /opt/bro/bin/bro && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /opt/bro/bin/bro
+chown root:netdev /opt/bro/bin/capstats && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /opt/bro/bin/capstats
+chown root:netdev /opt/pfring/sbin/tcpdump && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /opt/pfring/sbin/tcpdump
+mkdir -p /var/lib/stenographer && \
+  chown root:stenographer /var/lib/stenographer /usr/sbin/stenotype /etc/stenographer/certs/*.pem && \
+  chmod 440 /etc/stenographer/certs/*.pem && \
+  chmod 775 /var/lib/stenographer /usr/sbin/stenotype && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_IPC_LOCK+eip' /usr/sbin/stenotype
+
+###

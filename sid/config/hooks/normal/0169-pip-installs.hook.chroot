@@ -1,0 +1,42 @@
+#!/bin/sh
+
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
+
+# python 2
+pip2 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
+  safety \
+  requests \
+  rpyc \
+  trackerjacker
+
+# python 3
+pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
+  dhcpwn \
+  safety \
+  bat \
+  colored \
+  cryptography \
+  git+https://github.com/badele/gitcheck.git \
+  git-up \
+  habu \
+  fierce \
+  numpy \
+  rpyc \
+  scapy \
+  pillow \
+  patool \
+  mitmproxy \
+  requests \
+  pyunpack \
+  pywinrm \
+  entrypoint2 \
+  beautifulsoup4 \
+  unix-elf \
+  rupy \
+  wapiti3 \
+  scanless \
+  youtube-dl
+
+git clone --depth 1 https://github.com/MarkBaggett/MarkBaggett /opt/MarkBaggett && \
+  rm -rf /opt/MarkBaggett/.git
