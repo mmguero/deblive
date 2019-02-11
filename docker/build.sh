@@ -55,7 +55,7 @@ if [ -d "$WORKDIR" ]; then
     --mirror-bootstrap http://ftp.us.debian.org/debian/ \
     --mirror-binary http://httpredir.debian.org/debian/ \
     --archive-areas "main contrib non-free" \
-    --debootstrap-options "--include=apt-transport-https,gnupg,ca-certificates,openssl" \
+    --debootstrap-options "--include=gnupg,ca-certificates,openssl" \
     --apt-options "--force-yes --yes" \
     --bootappend-live "boot=live components persistence persistence-encryption=none,luks elevator=deadline cgroup_enable=memory swapaccount=1 ipv6.disble=1"
 
