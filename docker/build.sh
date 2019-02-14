@@ -48,7 +48,6 @@ if [ -d "$WORKDIR" ]; then
     --security false \
     --updates false \
     --source false \
-    --backports true \
     --archive-areas 'main contrib non-free' \
     --parent-mirror-bootstrap http://ftp.us.debian.org/debian/ \
     --parent-mirror-binary http://httpredir.debian.org/debian/ \

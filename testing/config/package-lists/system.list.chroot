@@ -7,7 +7,6 @@ arj
 autoconf
 automake
 autopoint
-b43-fwcutter
 bash-completion
 bison
 bluetooth
@@ -19,7 +18,6 @@ build-essential
 busybox
 bzip2
 cgdb
-checkinstall
 cifs-utils
 cmake
 coreutils
@@ -42,14 +40,12 @@ exfat-utils
 exfat-fuse
 fatresize
 fakeroot
-firmware-b43-installer
 firmware-iwlwifi
 flex
 fonts-dejavu
 fonts-hack
 fuseext2
 fuse
-fusedav
 fusefat
 fuseiso
 fusesmb
@@ -112,7 +108,6 @@ p7zip-full
 p7zip-rar
 parprouted
 parted
-partimage
 pciutils
 pcregrep
 perl
