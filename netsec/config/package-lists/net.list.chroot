@@ -1,9 +1,11 @@
 autossh
 cryptcat
+bwm-ng
 curl
 driftnet
 dsniff
 epiphany-browser
+ethtool
 filezilla
 freerdp2-x11
 iproute2
@@ -24,6 +26,7 @@ netwag
 netwox
 ngrep
 nmap
+ntp
 openssh-client
 openssh-server
 openvpn
