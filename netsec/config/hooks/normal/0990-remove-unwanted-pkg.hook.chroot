@@ -17,6 +17,22 @@ apt-get -y install localepurge
 dpkg-reconfigure localepurge
 localepurge
 
-apt-get -y --purge remove smplayer lxmusic evince valgrind-dbg autoconf automake bison flex libpcap-dev python-dev swig zlib1g-dev libcap-ng-dev libgeoip-dev libbluetooth-dev linux-headers-$(uname -r)
+# remove development packages
+apt-get -y --purge remove autoconf automake bison cmake flex libc6-dbg linux-headers-$(uname -r) swig \
+                    $(dpkg --get-selections | grep -v deinstall$ | cut -f1 | grep -P -- '-dev(:\w+)?$') || true
+
+# remove unwanted packages
+apt-get -y --purge remove deluge \
+                          evince \
+                          dictionaries-common \
+                          gnome-accessibility-themes \
+                          gnome-user-guide \
+                          gucharmap \
+                          lxmusic \
+                          smplayer \
+                          valgrind-dbg \
+                          yelp \
+                          youtube-dl || true
+
 apt-get -y autoremove
 apt-get clean
