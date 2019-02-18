@@ -41,6 +41,7 @@ tcpreplay
 tightvncserver
 traceroute
 tshark
+ufw
 wget
 wireshark
 x11vnc
