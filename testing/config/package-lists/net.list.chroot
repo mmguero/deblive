@@ -1,11 +1,13 @@
 autossh
 bro
 bro-aux
+bwm-ng
 cryptcat
 curl
 driftnet
 dsniff
 epiphany-browser
+ethtool
 filezilla
 freerdp2-x11
 iproute2
@@ -52,6 +54,7 @@ tightvncserver
 torbrowser-launcher
 traceroute
 tshark
+ufw
 wget
 wireshark
 x11vnc

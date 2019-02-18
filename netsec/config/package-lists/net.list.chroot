@@ -1,6 +1,6 @@
 autossh
-cryptcat
 bwm-ng
+cryptcat
 curl
 driftnet
 dsniff
@@ -22,6 +22,7 @@ netcat-openbsd
 netdiscover
 nethogs
 netsed
+netsniff-ng
 netwag
 netwox
 ngrep
@@ -39,6 +40,7 @@ ssh-askpass
 sshfs
 sshuttle
 tcpd
+tcpdump
 tcpflow
 tcpreplay
 tightvncserver

@@ -1,8 +1,5 @@
 #!/bin/sh
 
-PF_RING_VER="7.2.0"
-PF_RING_URL="https://github.com/ntop/PF_RING/archive/$PF_RING_VER.tar.gz"
-
 BRO_VER="2.6.1"
 BRO_URL="https://www.bro.org/downloads/bro-$BRO_VER.tar.gz"
 
@@ -12,125 +9,18 @@ METRICBEAT_URL="https://artifacts.elastic.co/downloads/beats/metricbeat/metricbe
 AUDITBEAT_URL="https://artifacts.elastic.co/downloads/beats/auditbeat/auditbeat-$BEATS_VER-amd64.deb"
 PACKETBEAT_URL="https://artifacts.elastic.co/downloads/beats/packetbeat/packetbeat-$BEATS_VER-amd64.deb"
 
-NETSNIFF_VER="0.6.5"
-NETSNIFF_URL="https://github.com/netsniff-ng/netsniff-ng/archive/v$NETSNIFF_VER.tar.gz"
-
 RESPONDER_VER="2.3.0"
 RESPONDER_URL="https://github.com/SpiderLabs/Responder/archive/v${RESPONDER_VER}.tar.gz"
 
 BURPSUITE_VER="1.7.36"
 BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=jar"
 
-
-# build and install pfring
-
-cd /tmp
-curl -L -o $PF_RING_VER.tar.gz "$PF_RING_URL"
-tar -xzvf $PF_RING_VER.tar.gz
-
-# patch for CVE-2018-19519 until tcpdump 4.9.3+
-# In tcpdump 4.9.2, a stack-based buffer over-read exists in the print_prefix function of
-#   print-hncp.c via crafted packet data because of missing initialization.
-# see https://nvd.nist.gov/vuln/detail/CVE-2018-19519
-#     https://bugzilla.redhat.com/show_bug.cgi?id=1655374
-#     https://github.com/zyingp/temp/blob/master/tcpdump.md
-cd PF_RING-$PF_RING_VER/
-if [ -f "/usr/src/patches/PF_RING-7.2.0-tcpdump-CVE-2018-19519.patch" ] ; then
-  patch -p1 --ignore-whitespace < "/usr/src/patches/PF_RING-7.2.0-tcpdump-CVE-2018-19519.patch"
-fi
-
-cd ./userland/lib
-./configure --prefix=/opt/pfring
-make
-make install
-
-cd ../libpcap
-./configure --prefix=/opt/pfring
-make
-make install
-
-echo '/opt/pfring/lib' > /etc/ld.so.conf.d/sensor.conf
-
-cd ../tcpdump
-./configure --prefix=/opt/pfring
-make
-make install
-
-cd ../../kernel
-make
-make install
-
-# clean up
-cd /tmp
-rm -Rf PF_RING-$PF_RING_VER*
-rm -Rf $PF_RING_VER.tar.gz
-
-# set up ld paths and load module
-
-echo "pf_ring" >> /etc/modules-load.d/pfring.conf
-echo "options pf_ring enable_tx_capture=0 transparent_mode=0 min_num_slots=65534" > /etc/modprobe.d/pf_ring.conf
-
-modprobe pf_ring enable_tx_capture=0 min_num_slots=65534
-
-export LDFLAGS="-Wl,--no-as-needed -lrt"
-
-export LIBS="-lrt -lnuma"
-
-ldconfig
-
-###
-
-# Install netsniff-ng
-cd /tmp
-curl -L -o $NETSNIFF_VER.tar.gz "$NETSNIFF_URL"
-tar -xzvf $NETSNIFF_VER.tar.gz
-cd netsniff-ng-$NETSNIFF_VER
-# hacky way to get netsniff-ng's inflexible build script to use our libpcap.so
-ln -s /opt/pfring/include/pcap.h .
-ln -s /opt/pfring/include/pcap .
-ln -s /opt/pfring/lib/libpcap.so .
-patch -p0 --ignore-whitespace << 'CONFIG_PATCH'
---- configure 2018-09-20 11:30:18.000000000 +0000
-+++ /tmp/configure 2018-12-04 19:44:01.595934488 +0000
-@@ -582,7 +582,7 @@
- }
- EOF
-
-- $CC -o $TMPDIR/pcaptest $TMPDIR/pcaptest.c -lpcap >> config.log 2>&1
-+ $CC -o $TMPDIR/pcaptest $TMPDIR/pcaptest.c -I. -L. -lpcap >> config.log 2>&1
-  if [ ! -x $TMPDIR/pcaptest ] ; then
-    echo "[NO]"
-    echo "CONFIG_LIBPCAP=0" >> Config
-CONFIG_PATCH
-patch -p0 --ignore-whitespace << 'MAKE_PATCH'
---- Makefile  2018-09-20 05:30:18.000000000 -0600
-+++ /tmp/Makefile 2018-12-05 07:18:39.860219988 -0700
-@@ -118,6 +118,7 @@
- ifeq ("$(origin CROSS_LD_LIBRARY_PATH)", "command line")
-   LDFLAGS += -L$(CROSS_LD_LIBRARY_PATH)
- endif
-+LDFLAGS += -L.
-
- CHECKFLAGS = -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix \
-       -Wbitwise -Wnoreturn-void
-MAKE_PATCH
-./configure --prefix=/usr --disable-geoip
-make netsniff-ng
-make netsniff-ng_install
-
-# clean up
-cd /tmp
-rm -Rf $NETSNIFF_VER.tar.gz netsniff-ng-$NETSNIFF_VER
-
-###
-
-
 # Install bro
 cd /tmp
 curl -L -o bro-$BRO_VER.tar.gz "$BRO_URL"
 tar -xvzf bro-$BRO_VER.tar.gz
 cd bro-$BRO_VER
-LDFLAGS="-L/opt/pfring/lib -lpfring -lpcap" ./configure --prefix=/opt/bro --with-pcap=/opt/pfring
+LDFLAGS="-lpcap" ./configure --prefix=/opt/bro --with-pcap=/opt/pfring
 make
 make install
 
@@ -264,8 +154,8 @@ chown root:netdev /opt/bro/bin/bro && \
   setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /opt/bro/bin/bro
 chown root:netdev /opt/bro/bin/capstats && \
   setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /opt/bro/bin/capstats
-chown root:netdev /opt/pfring/sbin/tcpdump && \
-  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /opt/pfring/sbin/tcpdump
+chown root:netdev /usr/sbin/tcpdump && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/tcpdump
 mkdir -p /var/lib/stenographer && \
   chown root:stenographer /var/lib/stenographer /usr/sbin/stenotype /etc/stenographer/certs/*.pem && \
   chmod 440 /etc/stenographer/certs/*.pem && \
