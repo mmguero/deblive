@@ -12,30 +12,30 @@ pip2 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
 
 # python 3
 pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
-  dhcpwn \
-  safety \
   bat \
+  beautifulsoup4 \
   colored \
   cryptography \
+  dhcpwn \
+  entrypoint2 \
+  fierce \
   git+https://github.com/badele/gitcheck.git \
   git-up \
   habu \
-  fierce \
-  numpy \
-  rpyc \
-  scapy \
-  pillow \
-  patool \
   mitmproxy \
-  requests \
+  numpy \
+  patool \
+  pillow \
   pyunpack \
   pywinrm \
-  entrypoint2 \
-  beautifulsoup4 \
-  unix-elf \
+  requests \
+  rpyc \
   rupy \
-  wapiti3 \
+  safety \
   scanless \
+  scapy \
+  unix-elf \
+  wapiti3 \
   youtube-dl
 
 git clone --depth 1 https://github.com/MarkBaggett/MarkBaggett /opt/MarkBaggett && \

@@ -35,7 +35,7 @@ pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
   rpyc \
   rupy \
   safety \
-  scanless
+  scanless \
   scapy \
   unix-elf \
   wapiti3
