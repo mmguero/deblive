@@ -10,6 +10,7 @@ BEATS_VER="6.6.0"
 FILEBEAT_URL="https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-$BEATS_VER-amd64.deb"
 METRICBEAT_URL="https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-$BEATS_VER-amd64.deb"
 AUDITBEAT_URL="https://artifacts.elastic.co/downloads/beats/auditbeat/auditbeat-$BEATS_VER-amd64.deb"
+PACKETBEAT_URL="https://artifacts.elastic.co/downloads/beats/packetbeat/packetbeat-$BEATS_VER-amd64.deb"
 
 NETSNIFF_VER="0.6.5"
 NETSNIFF_URL="https://github.com/netsniff-ng/netsniff-ng/archive/v$NETSNIFF_VER.tar.gz"
@@ -173,15 +174,17 @@ cat << 'EOF' > /opt/bro/share/bro/site/local.bro
 EOF
 ###
 
-# Install filebeat/metricbeat/auditbeat
+# Install filebeat/metricbeat/auditbeat/packetbeat
 cd /tmp
 curl -L -o filebeat-$BEATS_VER-amd64.deb "$FILEBEAT_URL"
 curl -L -o metricbeat-$BEATS_VER-amd64.deb "$METRICBEAT_URL"
 curl -L -o auditbeat-$BEATS_VER-amd64.deb "$AUDITBEAT_URL"
+curl -L -o packetbeat-$BEATS_VER-amd64.deb "$PACKETBEAT_URL"
 dpkg -i filebeat-$BEATS_VER-amd64.deb
 dpkg -i metricbeat-$BEATS_VER-amd64.deb
 dpkg -i auditbeat-$BEATS_VER-amd64.deb
-rm -f filebeat-$BEATS_VER-amd64.deb metricbeat-$BEATS_VER-amd64.deb auditbeat-$BEATS_VER-amd64.deb
+dpkg -i packetbeat-$BEATS_VER-amd64.deb
+rm -f filebeat-$BEATS_VER-amd64.deb metricbeat-$BEATS_VER-amd64.deb auditbeat-$BEATS_VER-amd64.deb packetbeat-$BEATS_VER-amd64.deb
 ###
 
 # Install responder.py and fierce.pl
