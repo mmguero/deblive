@@ -24,7 +24,6 @@ apt-get -y --purge remove autoconf automake bison cmake flex libc6-dbg linux-hea
 # remove unwanted packages
 apt-get -y --purge remove deluge \
                           evince \
-                          dictionaries-common \
                           gnome-accessibility-themes \
                           gnome-user-guide \
                           gucharmap \

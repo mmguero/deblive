@@ -17,6 +17,19 @@ apt-get -y install localepurge
 dpkg-reconfigure localepurge
 localepurge
 
-apt-get -y --purge remove lxmusic evince valgrind-dbg autoconf automake bison flex linux-headers-$(uname -r)
+# remove development packages
+apt-get -y --purge remove autoconf automake bison cmake flex libc6-dbg linux-headers-$(uname -r) swig \
+                    $(dpkg --get-selections | grep -v deinstall$ | cut -f1 | grep -P -- '-dev(:\w+)?$') || true
+
+# remove unwanted packages
+apt-get -y --purge remove deluge \
+                          evince \
+                          gnome-accessibility-themes \
+                          gnome-user-guide \
+                          gucharmap \
+                          lxmusic \
+                          valgrind-dbg \
+                          yelp || true
+
 apt-get -y autoremove
 apt-get clean
