@@ -20,7 +20,7 @@ cd /tmp
 curl -L -o bro-$BRO_VER.tar.gz "$BRO_URL"
 tar -xvzf bro-$BRO_VER.tar.gz
 cd bro-$BRO_VER
-LDFLAGS="-lpcap" ./configure --prefix=/opt/bro --with-pcap=/opt/pfring
+./configure --prefix=/usr
 make
 make install
 
@@ -28,7 +28,7 @@ cd /tmp
 rm -Rf bro-$BRO_VER*
 
 # set up default bro local policy
-cat << 'EOF' > /opt/bro/share/bro/site/local.bro
+cat << 'EOF' > /usr/share/bro/site/local.bro
 ##! Bro local site policy
 ##!
 ##! See https://www.bro.org/sphinx/components/broctl/README.html
@@ -150,10 +150,10 @@ chown root:netdev /usr/sbin/webmitm && \
   setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/webmitm
 chown root:netdev /usr/sbin/webspy && \
   setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/webspy
-chown root:netdev /opt/bro/bin/bro && \
-  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /opt/bro/bin/bro
-chown root:netdev /opt/bro/bin/capstats && \
-  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /opt/bro/bin/capstats
+chown root:netdev /usr/bin/bro && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/bin/bro
+chown root:netdev /usr/bin/capstats && \
+  setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/bin/capstats
 chown root:netdev /usr/sbin/tcpdump && \
   setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/sbin/tcpdump
 mkdir -p /var/lib/stenographer && \
