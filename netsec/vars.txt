@@ -4,3 +4,4 @@ export IMAGE_DISTRIBUTION=sid
 export APT_BACKPORTS=false
 export APT_SECURITY=false
 export APT_UPDATES=false
+export BUILD_DIR=/tmp
