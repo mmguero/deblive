@@ -45,13 +45,13 @@ if [ -d "$WORKDIR" ]; then
   pushd "$WORKDIR" >/dev/null 2>&1
 
   git clone --depth 1 --recursive https://github.com/mmguero/config.git ./config
-  if [ -d ./config/bash ];
+  if [ -d ./config/bash ]; then
     cp -f ./config/bash/rc ./config/includes.chroot/etc/skel/.bashrc
     cp -f ./config/bash/aliases ./config/includes.chroot/etc/skel/.bash_aliases
     cp -f ./config/bash/functions ./config/includes.chroot/etc/skel/.bash_functions
     cp -f -r ./config/bash/rc.d ./config/includes.chroot/etc/skel/.bashrc.d
   fi
-  if [ -d ./config/git ];
+  if [ -d ./config/git ]; then
     cp -f ./config/git/gitconfig ./config/includes.chroot/etc/skel/.gitconfig
     cp -f ./config/git/gitignore_global ./config/includes.chroot/etc/skel/.gitignore_global
   fi
