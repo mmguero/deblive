@@ -52,7 +52,7 @@ if [ -d "$WORKDIR" ]; then
 
   mkdir -p ./output "./work/$IMAGE_NAME-Live-Build"
   pushd "./work/$IMAGE_NAME-Live-Build" >/dev/null 2>&1
-  rsync -a "$RUN_PATH/config" .
+  rsync -a "$CONFIG_PATH/config" .
 
   if [ -d ./config/bash ]; then
     cp -f ./config/bash/rc ./config/includes.chroot/etc/skel/.bashrc
