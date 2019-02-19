@@ -84,11 +84,6 @@ if [ -d "$WORKDIR" ]; then
 
   chown -R root:root *
 
-  # put the date in the grub.cfg entries and configure an encryption option
-  if [ -f ./config/includes.binary/boot/grub/grub.cfg ]; then
-    sed -i "s/\(Install image\)/\1 $(date +'%Y-%m-%d %H:%M:%S')/g" ./config/includes.binary/boot/grub/grub.cfg
-  fi
-
   lb config \
     --image-name "$IMAGE_NAME" \
     --debian-installer live \
