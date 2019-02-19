@@ -20,6 +20,12 @@ else
   fi
 fi
 
+
+if [ ! -d "/usr/share/live/build/hooks" ]; then
+  echo "/usr/share/live/build/hooks does not exist, install live-build before proceeding" 1>&2
+  exit $BUILD_ERROR_CODE
+fi
+
 RUN_PATH="$(pwd)"
 pushd "$CONFIG_PATH" >/dev/null 2>&1
 
@@ -55,15 +61,26 @@ if [ -d "$WORKDIR" ]; then
   rsync -a "$CONFIG_PATH/config" .
 
   if [ -d "$WORKDIR"/custom_config/bash ]; then
-    cp -f "$WORKDIR"/custom_config/bash/rc ./config/includes.chroot/etc/skel/.bashrc
-    cp -f "$WORKDIR"/custom_config/bash/aliases ./config/includes.chroot/etc/skel/.bash_aliases
-    cp -f "$WORKDIR"/custom_config/bash/functions ./config/includes.chroot/etc/skel/.bash_functions
-    cp -f -r "$WORKDIR"/custom_config/bash/rc.d ./config/includes.chroot/etc/skel/.bashrc.d
+    cp -v -f "$WORKDIR"/custom_config/bash/rc ./config/includes.chroot/etc/skel/.bashrc
+    cp -v -f "$WORKDIR"/custom_config/bash/aliases ./config/includes.chroot/etc/skel/.bash_aliases
+    cp -v -f "$WORKDIR"/custom_config/bash/functions ./config/includes.chroot/etc/skel/.bash_functions
+    cp -v -f -r "$WORKDIR"/custom_config/bash/rc.d ./config/includes.chroot/etc/skel/.bashrc.d
   fi
   if [ -d "$WORKDIR"/custom_config/git ]; then
-    cp -f "$WORKDIR"/custom_config/git/gitconfig ./config/includes.chroot/etc/skel/.gitconfig
-    cp -f "$WORKDIR"/custom_config/git/gitignore_global ./config/includes.chroot/etc/skel/.gitignore_global
+    cp -v -f "$WORKDIR"/custom_config/git/gitconfig ./config/includes.chroot/etc/skel/.gitconfig
+    cp -v -f "$WORKDIR"/custom_config/git/gitignore_global ./config/includes.chroot/etc/skel/.gitignore_global
   fi
+
+  mkdir -p ./config/hooks/live
+  pushd ./config/hooks/live
+  ln -v -s -f /usr/share/live/build/hooks/live/* ./
+  popd >/dev/null 2>&1
+
+  mkdir -p ./config/hooks/normal
+  pushd ./config/hooks/normal
+  ln -v -s -f /usr/share/live/build/hooks/normal/* ./
+  rm -f ./0910-remove-apt-sources-lists
+  popd >/dev/null 2>&1
 
   chown -R root:root *
 
