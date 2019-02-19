@@ -45,6 +45,11 @@ if [ -d "$WORKDIR" ]; then
   pushd "$WORKDIR" >/dev/null 2>&1
 
   git clone --depth 1 --recursive https://github.com/mmguero/config.git ./config
+
+  mkdir -p ./output "./work/$IMAGE_NAME-Live-Build"
+  pushd "./work/$IMAGE_NAME-Live-Build" >/dev/null 2>&1
+  rsync -a "$RUN_PATH/config" .
+
   if [ -d ./config/bash ]; then
     cp -f ./config/bash/rc ./config/includes.chroot/etc/skel/.bashrc
     cp -f ./config/bash/aliases ./config/includes.chroot/etc/skel/.bash_aliases
@@ -56,9 +61,6 @@ if [ -d "$WORKDIR" ]; then
     cp -f ./config/git/gitignore_global ./config/includes.chroot/etc/skel/.gitignore_global
   fi
 
-  mkdir -p ./output "./work/$IMAGE_NAME-Live-Build"
-  pushd "./work/$IMAGE_NAME-Live-Build" >/dev/null 2>&1
-  rsync -a "$RUN_PATH/config" .
   chown -R root:root *
 
   # put the date in the grub.cfg entries and configure an encryption option
