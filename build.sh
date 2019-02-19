@@ -48,21 +48,21 @@ if [ -d "$WORKDIR" ]; then
 
   pushd "$WORKDIR" >/dev/null 2>&1
 
-  git clone --depth 1 --recursive https://github.com/mmguero/config.git ./config
+  git clone --depth 1 --recursive https://github.com/mmguero/config.git ./custom_config
 
   mkdir -p ./output "./work/$IMAGE_NAME-Live-Build"
   pushd "./work/$IMAGE_NAME-Live-Build" >/dev/null 2>&1
   rsync -a "$CONFIG_PATH/config" .
 
-  if [ -d ./config/bash ]; then
-    cp -f ./config/bash/rc ./config/includes.chroot/etc/skel/.bashrc
-    cp -f ./config/bash/aliases ./config/includes.chroot/etc/skel/.bash_aliases
-    cp -f ./config/bash/functions ./config/includes.chroot/etc/skel/.bash_functions
-    cp -f -r ./config/bash/rc.d ./config/includes.chroot/etc/skel/.bashrc.d
+  if [ -d "$WORKDIR"/custom_config/bash ]; then
+    cp -f "$WORKDIR"/custom_config/bash/rc ./config/includes.chroot/etc/skel/.bashrc
+    cp -f "$WORKDIR"/custom_config/bash/aliases ./config/includes.chroot/etc/skel/.bash_aliases
+    cp -f "$WORKDIR"/custom_config/bash/functions ./config/includes.chroot/etc/skel/.bash_functions
+    cp -f -r "$WORKDIR"/custom_config/bash/rc.d ./config/includes.chroot/etc/skel/.bashrc.d
   fi
-  if [ -d ./config/git ]; then
-    cp -f ./config/git/gitconfig ./config/includes.chroot/etc/skel/.gitconfig
-    cp -f ./config/git/gitignore_global ./config/includes.chroot/etc/skel/.gitignore_global
+  if [ -d "$WORKDIR"/custom_config/git ]; then
+    cp -f "$WORKDIR"/custom_config/git/gitconfig ./config/includes.chroot/etc/skel/.gitconfig
+    cp -f "$WORKDIR"/custom_config/git/gitignore_global ./config/includes.chroot/etc/skel/.gitignore_global
   fi
 
   chown -R root:root *
