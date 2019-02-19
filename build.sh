@@ -25,7 +25,11 @@ pushd "$CONFIG_PATH" >/dev/null 2>&1
 
 source ./vars.txt
 
-WORKDIR="$(mktemp -d -t sensor-XXXXXX)"
+if [ -z "$BUILD_DIR" ]; then
+  WORKDIR="$(mktemp -d -t sensor-XXXXXX)"
+else
+  WORKDIR="$(mktemp -d -p "$BUILD_DIR" -t sensor-XXXXXX)"
+fi
 
 function cleanup {
   # unmount any chroot stuff left behind after an error

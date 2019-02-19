@@ -4,4 +4,4 @@ export IMAGE_DISTRIBUTION=buster
 export APT_BACKPORTS=false
 export APT_SECURITY=true
 export APT_UPDATES=true
-export BUILD_DIR=/tmp
+export BUILD_DIR=
