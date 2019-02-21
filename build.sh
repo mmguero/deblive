@@ -86,7 +86,7 @@ if [ -d "$WORKDIR" ]; then
 
   lb config \
     --image-name "$IMAGE_NAME" \
-    --bootappend-install "auto=true priority=medium locales=en_US.UTF-8 keyboard-layouts=us" \
+    --bootappend-install "auto=true priority=high locales=en_US.UTF-8 keyboard-layouts=us" \
     --bootappend-live "boot=live components username=user nosplash persistence persistence-encryption=none,luks elevator=deadline cgroup_enable=memory swapaccount=1" \
     --debian-installer live \
     --debian-installer-gui false \
