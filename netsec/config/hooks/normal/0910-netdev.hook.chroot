@@ -21,6 +21,7 @@ curl -L -o bro-$BRO_VER.tar.gz "$BRO_URL"
 tar -xvzf bro-$BRO_VER.tar.gz
 cd bro-$BRO_VER
 ./configure --prefix=/usr --generator=Ninja
+cd build
 ninja
 ninja install
 strip --strip-unneeded \

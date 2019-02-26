@@ -103,11 +103,6 @@ if [ -d "$WORKDIR" ]; then
     --apt-indices none \
     --apt-source-archives false \
     --archive-areas 'main contrib non-free' \
-    --parent-mirror-bootstrap http://ftp.us.debian.org/debian/ \
-    --parent-mirror-binary http://httpredir.debian.org/debian/ \
-    --mirror-bootstrap http://ftp.us.debian.org/debian/ \
-    --mirror-binary http://httpredir.debian.org/debian/ \
-    --archive-areas "main contrib non-free" \
     --debootstrap-options "--include=apt-transport-https,gnupg,ca-certificates,openssl --no-merged-usr" \
     --apt-options "--force-yes --yes -o Acquire::Check-Valid-Until=false"
 
