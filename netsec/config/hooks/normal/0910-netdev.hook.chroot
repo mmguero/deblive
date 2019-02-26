@@ -20,16 +20,24 @@ cd /tmp
 curl -L -o bro-$BRO_VER.tar.gz "$BRO_URL"
 tar -xvzf bro-$BRO_VER.tar.gz
 cd bro-$BRO_VER
-./configure --prefix=/usr
-make
-make install
+./configure --prefix=/usr --generator=Ninja
+ninja
+ninja install
+strip --strip-unneeded \
+  /usr/bin/bro \
+  /usr/bin/bro-cut \
+  /usr/bin/binpac \
+  /usr/lib/libbroker.so.. \
+  /usr/lib/libcaf_core.so.0.16.2 \
+  /usr/lib/libcaf_io.so.0.16.2 \
+  /usr/lib/libcaf_openssl.so.0.16.2
 
 cd /tmp
 rm -Rf bro-$BRO_VER*
 
 # set up default bro local policy
 cat << 'EOF' > /usr/share/bro/site/local.bro
-##! Bro local site policy
+##! Bro local site policy. Customize as appropriate.
 ##!
 ##! See https://www.bro.org/sphinx/components/broctl/README.html
 ##!     https://www.bro.org/sphinx/script-reference/scripts.html
@@ -44,6 +52,7 @@ cat << 'EOF' > /usr/share/bro/site/local.bro
 @load protocols/smtp/software
 @load protocols/ssh/software
 @load protocols/http/software
+@load protocols/http/detect-webapps
 @load protocols/dns/detect-external-names
 @load protocols/ftp/detect
 @load protocols/conn/known-hosts

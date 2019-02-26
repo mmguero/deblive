@@ -25,6 +25,7 @@ liburcu-dev
 linux-headers-amd64
 linux-image-amd64
 make
+ninja-build
 pkg-config
 python-dev
 swig
