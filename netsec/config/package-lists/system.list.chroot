@@ -89,7 +89,7 @@ libnl-3-200
 libnl-genl-3-200
 libnl-route-3-200
 librhash0
-libssl1.0.2
+libssl1.1
 libtcmalloc-minimal4
 libtsan0
 libubsan1

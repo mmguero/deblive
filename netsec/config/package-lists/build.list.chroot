@@ -20,7 +20,7 @@ libnl-genl-3-dev
 libnl-route-3-dev
 libnuma-dev
 libpcap0.8-dev
-libssl1.0-dev
+libssl-dev
 liburcu-dev
 linux-headers-amd64
 linux-image-amd64
