@@ -26,8 +26,8 @@ cups
 cups-client
 debtags
 default-jre
+dialog
 dosfstools
-dtrx
 dwarfdump
 ebtables
 efibootmgr
@@ -111,6 +111,8 @@ ncdu
 neofetch
 nodejs
 ntfs-3g
+openjdk-11-jdk
+openjdk-11-jre
 openssl
 p7zip
 p7zip-full

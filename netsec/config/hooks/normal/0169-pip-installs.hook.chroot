@@ -5,9 +5,12 @@ export LANG=C.UTF-8
 
 # python 2
 pip2 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
-  safety \
+  entrypoint2 \
+  patool \
+  pyunpack \
   requests \
   rpyc \
+  safety \
   trackerjacker
 
 # python 3
@@ -16,7 +19,6 @@ pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
   beautifulsoup4 \
   colored \
   cryptography \
-  debinterface \
   dhcpwn \
   entrypoint2 \
   fierce \
@@ -24,7 +26,6 @@ pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
   git-up \
   habu \
   mitmproxy \
-  netifaces \
   numpy \
   patool \
   pillow \

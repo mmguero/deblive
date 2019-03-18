@@ -15,6 +15,8 @@ RESPONDER_URL="https://github.com/SpiderLabs/Responder/archive/v${RESPONDER_VER}
 BURPSUITE_VER="1.7.36"
 BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=jar"
 
+GHIDRA_URL="https://www.ghidra-sre.org/ghidra_9.0_PUBLIC_20190228.zip"
+
 # Install bro
 cd /tmp
 curl -L -o bro-$BRO_VER.tar.gz "$BRO_URL"
@@ -96,13 +98,17 @@ ln -s /opt/responder/Responder.py /usr/local/bin/Responder.py
 ###
 
 # update freshclam
-
 systemctl status clamav-freshclam && systemctl stop clamav-freshclam
 freshclam --stdout --verbose --foreground=true
 
 # burpsuite
 mkdir -p /opt/burpsuite
 curl -o "/opt/burpsuite/burpsuite_community_v${BURPSUITE_VER}.jar" "$BURPSUITE_URL"
+
+# ghidra
+curl -o "/tmp/ghidra.zip" "$GHIDRA_URL"
+unzip "/tmp/ghidra.zip" -d "/opt"
+rm -f "/tmp/ghidra.zip"
 
 # set up capabilities for network-related tools
 

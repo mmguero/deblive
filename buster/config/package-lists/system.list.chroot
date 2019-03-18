@@ -26,8 +26,8 @@ cups
 cups-client
 debtags
 default-jre
+dialog
 dosfstools
-dtrx
 dwarfdump
 ebtables
 efibootmgr
