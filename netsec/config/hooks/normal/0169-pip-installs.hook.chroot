@@ -6,6 +6,7 @@ export LANG=C.UTF-8
 # python 2
 pip2 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
   entrypoint2 \
+  namedlist \
   patool \
   pyunpack \
   requests \
@@ -20,12 +21,14 @@ pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
   colored \
   cryptography \
   dhcpwn \
+  docker-compose \
   entrypoint2 \
   fierce \
   git+https://github.com/badele/gitcheck.git \
   git-up \
   habu \
   mitmproxy \
+  namedlist \
   numpy \
   patool \
   pillow \
@@ -40,7 +43,6 @@ pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
   scapy \
   unix-elf \
   wapiti3
-
 
 git clone --depth 1 https://github.com/MarkBaggett/MarkBaggett /opt/MarkBaggett && \
   rm -rf /opt/MarkBaggett/.git
