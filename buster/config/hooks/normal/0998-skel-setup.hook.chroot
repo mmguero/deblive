@@ -73,3 +73,10 @@ cat <<EOT >> "$SKEL_PATH"/.Xresources
 xscreensaver.mode: blank
 xscreensaver.lock: false
 EOT
+
+# make thunar default file manager
+mkdir -p "$SKEL_PATH"/.local/share/applications
+cat <<EOT >> "$SKEL_PATH"/.local/share/applications/mimeapps.list
+inode/directory=thunar.desktop
+application/x-gnome-saved-search=thunar.desktop
+EOT

@@ -19,6 +19,3 @@ if ! grep -q mapper /etc/pmount.allow; then
 /dev/mapper/tc9
 EOT
 fi
-
-# make thunar default file manager
-dpkg -s thunar >/dev/null 2>&1 && xdg-mime default Thunar-folder-handler.desktop inode/directory application/x-gnome-saved-search
