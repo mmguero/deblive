@@ -57,6 +57,7 @@ perlmagick
 phonon
 phonon-backend-vlc
 pithos
+recordmydesktop
 sox
 twolame
 ufraw
@@ -64,6 +65,7 @@ uvcdynctrl
 vlc
 vlc-data
 vorbis-tools
+wodim
 x264
 x265
 zbar-tools

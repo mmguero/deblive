@@ -54,22 +54,9 @@ if [ -d "$WORKDIR" ]; then
 
   pushd "$WORKDIR" >/dev/null 2>&1
 
-  git clone --depth 1 --recursive https://github.com/mmguero/config.git ./custom_config
-
   mkdir -p ./output "./work/$IMAGE_NAME-Live-Build"
   pushd "./work/$IMAGE_NAME-Live-Build" >/dev/null 2>&1
   rsync -a "$CONFIG_PATH/config" .
-
-  if [ -d "$WORKDIR"/custom_config/bash ]; then
-    cp -v -f "$WORKDIR"/custom_config/bash/rc ./config/includes.chroot/etc/skel/.bashrc
-    cp -v -f "$WORKDIR"/custom_config/bash/aliases ./config/includes.chroot/etc/skel/.bash_aliases
-    cp -v -f "$WORKDIR"/custom_config/bash/functions ./config/includes.chroot/etc/skel/.bash_functions
-    cp -v -f -r "$WORKDIR"/custom_config/bash/rc.d ./config/includes.chroot/etc/skel/.bashrc.d
-  fi
-  if [ -d "$WORKDIR"/custom_config/git ]; then
-    cp -v -f "$WORKDIR"/custom_config/git/gitconfig ./config/includes.chroot/etc/skel/.gitconfig
-    cp -v -f "$WORKDIR"/custom_config/git/gitignore_global ./config/includes.chroot/etc/skel/.gitignore_global
-  fi
 
   mkdir -p ./config/hooks/live
   pushd ./config/hooks/live
@@ -81,6 +68,18 @@ if [ -d "$WORKDIR" ]; then
   ln -v -s -f /usr/share/live/build/hooks/normal/* ./
   rm -f ./0910-remove-apt-sources-lists
   popd >/dev/null 2>&1
+
+  # make sure we install the newer kernel, firmwares, and kernel headers
+  echo "linux-image-$(uname -r)" > ./config/package-lists/kernel.list.chroot
+  echo "linux-headers-$(uname -r)" >> ./config/package-lists/kernel.list.chroot
+  echo "linux-compiler-gcc-8-x86=$(dpkg -s linux-compiler-gcc-8-x86 | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
+  echo "linux-kbuild-4.19=$(dpkg -s linux-kbuild-4.19 | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
+  echo "firmware-linux=$(dpkg -s firmware-linux | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
+  echo "firmware-linux-free=$(dpkg -s firmware-linux-free | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
+  echo "firmware-linux-nonfree=$(dpkg -s firmware-linux-nonfree | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
+  echo "firmware-misc-nonfree=$(dpkg -s firmware-misc-nonfree | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
+  echo "firmware-amd-graphics=$(dpkg -s firmware-amd-graphics | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
+  echo "firmware-iwlwifi=$(dpkg -s firmware-iwlwifi | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
 
   chown -R root:root *
 

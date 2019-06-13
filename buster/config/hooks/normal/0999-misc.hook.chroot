@@ -1,0 +1,24 @@
+#!/bin/sh
+
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
+
+# allow pmount to some mapper areas
+if ! grep -q mapper /etc/pmount.allow; then
+  tee -a /etc/pmount.allow > /dev/null <<'EOT'
+
+# mountpoints for luks volumes
+/dev/mapper/tc1
+/dev/mapper/tc2
+/dev/mapper/tc3
+/dev/mapper/tc4
+/dev/mapper/tc5
+/dev/mapper/tc6
+/dev/mapper/tc7
+/dev/mapper/tc8
+/dev/mapper/tc9
+EOT
+fi
+
+# make thunar default file manager
+dpkg -s thunar >/dev/null 2>&1 && xdg-mime default Thunar-folder-handler.desktop inode/directory application/x-gnome-saved-search

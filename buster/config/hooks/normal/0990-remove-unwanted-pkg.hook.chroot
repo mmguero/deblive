@@ -2,7 +2,7 @@
 
 cat > /tmp/localepurge.preseed << EOF
 localepurge localepurge/nopurge multiselect en, en_US, en_us.UTF-8, C.UTF-8
-localepurge localepurge/use-dpkg-feature boolean false
+localepurge localepurge/use-dpkg-feature boolean true
 localepurge localepurge/none_selected boolean false
 localepurge localepurge/verbose boolean false
 localepurge localepurge/dontbothernew boolean false
@@ -18,7 +18,7 @@ dpkg-reconfigure localepurge
 localepurge
 
 # remove development packages
-apt-get -y --purge remove autoconf automake bison cmake flex libc6-dbg linux-headers-$(uname -r) swig \
+apt-get -y --purge remove autoconf automake bison cmake flex libc6-dbg linux-headers-$(uname -r) ninja-build swig \
                     $(dpkg --get-selections | grep -v deinstall$ | cut -f1 | grep -P -- '-dev(:\w+)?$') || true
 
 # remove unwanted packages
@@ -33,3 +33,15 @@ apt-get -y --purge remove deluge \
 
 apt-get -y autoremove
 apt-get clean
+
+# disable automatic running of some services (but don't abort if we fail)
+systemctl disable systemd-timesyncd || true
+systemctl disable kdump || true
+systemctl disable ctrl-alt-del || true
+systemctl disable hddtemp || true
+systemctl disable apt-daily.service || true
+systemctl disable apt-daily.timer || true
+systemctl disable apt-daily-upgrade.timer || true
+systemctl disable apt-daily-upgrade.service || true
+systemctl disable clamav-daemon.service || true
+systemctl disable clamav-freshclam.service || true

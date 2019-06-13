@@ -1,0 +1,75 @@
+#!/bin/sh
+
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
+
+GUERO_GITHUB_PATH="/etc/mmguero"
+SKEL_PATH="/etc/skel"
+
+git clone --depth 1 https://github.com/mmguero/config.git "/etc/mmguero"
+
+[[ -r "$GUERO_GITHUB_PATH"/bash/rc ]] && rm -vf "$SKEL_PATH"/.bashrc && \
+  ln -vs "$GUERO_GITHUB_PATH"/bash/rc "$SKEL_PATH"/.bashrc
+
+[[ -r "$GUERO_GITHUB_PATH"/bash/aliases ]] && rm -vf "$SKEL_PATH"/.bash_aliases && \
+  ln -vs "$GUERO_GITHUB_PATH"/bash/aliases "$SKEL_PATH"/.bash_aliases
+
+[[ -r "$GUERO_GITHUB_PATH"/bash/functions ]] && rm -vf "$SKEL_PATH"/.bash_functions && \
+  ln -vs "$GUERO_GITHUB_PATH"/bash/functions "$SKEL_PATH"/.bash_functions
+
+[[ -d "$GUERO_GITHUB_PATH"/bash/rc.d ]] && rm -vf "$SKEL_PATH"/.bashrc.d && \
+  ln -vs "$GUERO_GITHUB_PATH"/bash/rc.d "$SKEL_PATH"/.bashrc.d
+
+[[ -d "$GUERO_GITHUB_PATH"/git/gitconfig ]] && rm -vf "$SKEL_PATH"/.gitconfig && \
+  ln -vs "$GUERO_GITHUB_PATH"/git/gitconfig "$SKEL_PATH"/.gitconfig
+
+[[ -d "$GUERO_GITHUB_PATH"/git/gitignore_global ]] && rm -vf "$SKEL_PATH"/.gitignore_global && \
+  ln -vs "$GUERO_GITHUB_PATH"/git/gitignore_global "$SKEL_PATH"/.gitignore_global
+
+[[ -d "$GUERO_GITHUB_PATH"/linux/tmux/tmux.conf ]] && rm -vf "$SKEL_PATH"/.tmux.conf && \
+  ln -vs "$GUERO_GITHUB_PATH"/linux/tmux/tmux.conf "$SKEL_PATH"/.tmux.conf
+
+[[ -d "$GUERO_GITHUB_PATH"/linux/xxdiff/xxdiffrc ]] && rm -vf "$SKEL_PATH"/.xxdiffrc && \
+  ln -vs "$GUERO_GITHUB_PATH"/linux/xxdiff/xxdiffrc "$SKEL_PATH"/.xxdiffrc
+
+[[ -r "$GUERO_GITHUB_PATH"/gdb/gdbinit ]] && rm -vf "$SKEL_PATH"/.gdbinit && \
+  ln -vs "$GUERO_GITHUB_PATH"/gdb/gdbinit "$SKEL_PATH"/.gdbinit
+
+[[ -r "$GUERO_GITHUB_PATH"/gdb/cgdbrc ]] && mkdir -p "$SKEL_PATH"/.cgdb && rm -vf "$SKEL_PATH"/.cgdb/cgdbrc && \
+  ln -vs "$GUERO_GITHUB_PATH"/gdb/cgdbrc "$SKEL_PATH"/.cgdb/cgdbrc
+
+[[ -r "$GUERO_GITHUB_PATH"/gdb/hexdump.py ]] && mkdir -p "$SKEL_PATH"/.config/gdb && rm -vf "$SKEL_PATH"/.config/gdb/hexdump.py && \
+  ln -vs "$GUERO_GITHUB_PATH"/gdb/hexdump.py "$SKEL_PATH"/.config/gdb/hexdump.py
+
+if [[ -d "$GUERO_GITHUB_PATH"/linux/lxde-desktop.config ]]; then
+  while IFS= read -d $'\0' -r CONFDIR; do
+    DIRNAME="$(basename "$CONFDIR")"
+    rm -vf "$SKEL_PATH"/.config/"$DIRNAME" && ln -vs "$CONFDIR" "$SKEL_PATH"/.config/"$DIRNAME"
+  done < <(find "$GUERO_GITHUB_PATH"/linux/lxde-desktop.config -mindepth 1 -maxdepth 1 -type d -print0)
+fi
+
+dpkg -s albert >/dev/null 2>&1 && mkdir -p "$SKEL_PATH"/.config/autostart && \
+  rm -vf "$SKEL_PATH"/.config/autostart/albert.desktop && \
+  ln -vs /usr/share/applications/albert.desktop "$SKEL_PATH"/.config/autostart/albert.desktop
+
+mkdir -p "$SKEL_PATH"/.local/bin
+LINKED_SCRIPTS=(
+  keepassxc_delay.sh
+  sound_cap.sh
+  tilix.sh
+  upto.sh
+  vid_rename.sh
+  vid_to_dvd_mpeg.sh
+  windems.sh
+)
+for i in ${LINKED_SCRIPTS[@]}; do
+  rm -vf "$SKEL_PATH"/.local/bin/"$i" && ln -vs "$GUERO_GITHUB_PATH"/scripts/"$i" "$SKEL_PATH"/.local/bin/
+done
+
+touch "$SKEL_PATH"/.hushlogin
+echo 'SELECTED_EDITOR="/usr/bin/vim.tiny"' > "$SKEL_PATH"/.selected_editor
+echo 'set nocompatible' > "$SKEL_PATH"/.vimrc
+cat <<EOT >> "$SKEL_PATH"/.Xresources
+xscreensaver.mode: blank
+xscreensaver.lock: false
+EOT

@@ -3,23 +3,14 @@
 export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
 
-# python 2
-pip2 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
-  entrypoint2 \
-  namedlist \
-  patool \
-  pyunpack \
-  requests \
-  rpyc \
-  safety \
-  trackerjacker
-
-# python 3
 pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
   bat \
   beautifulsoup4 \
+  cachetools \
+  clamd \
   colored \
   cryptography \
+  debinterface \
   dhcpwn \
   docker-compose \
   entrypoint2 \
@@ -27,20 +18,24 @@ pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
   git+https://github.com/badele/gitcheck.git \
   git-up \
   habu \
+  ipaddress \
   mitmproxy \
   namedlist \
+  netifaces \
   numpy \
   patool \
   pillow \
+  pyinotify \
   pythondialog \
   pyunpack \
   pywinrm \
-  requests \
+  requests[security] \
   rpyc \
   rupy \
   safety \
   scanless \
   scapy \
+  trackerjacker \
   unix-elf \
   wapiti3 \
   youtube-dl

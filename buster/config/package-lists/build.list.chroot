@@ -6,7 +6,6 @@ cmake
 flex
 g++
 gcc
-gdb
 libbluetooth-dev
 libcap-ng-dev
 libcli-dev
@@ -22,8 +21,6 @@ libnuma-dev
 libpcap0.8-dev
 libssl-dev
 liburcu-dev
-linux-headers-amd64
-linux-image-amd64
 make
 ninja-build
 pkg-config
