@@ -32,9 +32,9 @@ pushd "$CONFIG_PATH" >/dev/null 2>&1
 source ./vars.txt
 
 if [ -z "$BUILD_DIR" ]; then
-  WORKDIR="$(mktemp -d -t sensor-XXXXXX)"
+  WORKDIR="$(mktemp -d -t deblive-XXXXXX)"
 else
-  WORKDIR="$(mktemp -d -p "$BUILD_DIR" -t sensor-XXXXXX)"
+  WORKDIR="$(mktemp -d -p "$BUILD_DIR" -t deblive-XXXXXX)"
 fi
 
 function cleanup {
