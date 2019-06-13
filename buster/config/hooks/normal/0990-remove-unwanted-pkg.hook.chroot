@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 cat > /tmp/localepurge.preseed << EOF
 localepurge localepurge/nopurge multiselect en, en_US, en_us.UTF-8, C.UTF-8

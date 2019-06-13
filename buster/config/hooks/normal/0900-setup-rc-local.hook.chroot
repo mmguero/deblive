@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 sed -i 's/^exit 0//' /etc/rc.local 2>/dev/null
 
