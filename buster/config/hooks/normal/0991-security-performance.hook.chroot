@@ -73,8 +73,8 @@ net.ipv4.ip_forward=1
 EOF
 
 # custom power groups
-groupadd fuse
-groupadd cryptkeeper
+groupadd -r fuse
+groupadd -r cryptkeeper
 
 if [[ ! -f /etc/sudoers.d/power_groups ]]; then
   tee /etc/sudoers.d/power_groups > /dev/null <<'EOT'
