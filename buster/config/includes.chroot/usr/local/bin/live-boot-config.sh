@@ -1,7 +1,7 @@
 #!/bin/bash
 
-usermod -p '6/5nDf.XACQHs' root
-usermod -p 'ZQZa4GDRa9IY2' user
+usermod -p '$1$6Olunr9.$HFDWaI1bGuSmE6ZTuLugS/' root
+usermod -p '$1$hWwRfLgE$sc5mZnyFGgp5z9rrgIhlL.' user
 
 # Disable automatic freshclam updates
 systemctl status clamav-freshclam && systemctl stop clamav-freshclam
