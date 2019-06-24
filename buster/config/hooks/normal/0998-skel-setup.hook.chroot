@@ -56,8 +56,10 @@ dpkg -s albert >/dev/null 2>&1 && mkdir -p "$SKEL_PATH"/.config/autostart && \
 
 mkdir -p "$SKEL_PATH"/.local/bin
 LINKED_SCRIPTS=(
+  clarence-0.4.4
   keepassxc_delay.sh
   sound_cap.sh
+  screenshot.sh
   tilix.sh
   upto.sh
   vid_rename.sh
