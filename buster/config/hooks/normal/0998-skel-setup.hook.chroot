@@ -61,7 +61,6 @@ LINKED_SCRIPTS=(
   sound_cap.sh
   screenshot.sh
   tilix.sh
-  upto.sh
   vid_rename.sh
   vid_to_dvd_mpeg.sh
   windems.sh
