@@ -12,6 +12,7 @@ epiphany-browser
 ethtool
 filezilla
 freerdp2-x11
+iperf
 iproute2
 iputils-arping
 iputils-ping
