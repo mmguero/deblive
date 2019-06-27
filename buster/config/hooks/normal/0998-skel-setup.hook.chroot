@@ -31,6 +31,9 @@ rm -rf "$GUERO_GITHUB_PATH"/.git
 [[ -d "$GUERO_GITHUB_PATH"/linux/tmux/tmux.conf ]] && rm -vf "$SKEL_PATH"/.tmux.conf && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/tmux/tmux.conf "$SKEL_PATH"/.tmux.conf
 
+[[ -d "$GUERO_GITHUB_PATH"/linux/albert/albert.conf ]] && mkdir -p "$SKEL_PATH"/.config/albert && rm -vf "$SKEL_PATH"/.config/albert/alert.conf && \
+  ln -vrs "$GUERO_GITHUB_PATH"/linux/albert/albert.conf "$SKEL_PATH"/.config/albert/alert.conf
+
 [[ -d "$GUERO_GITHUB_PATH"/linux/xxdiff/xxdiffrc ]] && rm -vf "$SKEL_PATH"/.xxdiffrc && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/xxdiff/xxdiffrc "$SKEL_PATH"/.xxdiffrc
 

@@ -83,10 +83,11 @@ if [ -d "$WORKDIR" ]; then
 
   chown -R root:root *
 
+  # put the date in the grub.cfg entries and configure an encryption option
+  sed -i "s/\(Install Debian\)/\1 $(date +'%Y-%m-%d %H:%M:%S')/g" ./config/includes.binary/boot/grub/grub.cfg
+
   lb config \
     --image-name "$IMAGE_NAME" \
-    --bootappend-install "auto=true priority=high locales=en_US.UTF-8 keyboard-layouts=us" \
-    --bootappend-live "boot=live components username=user nosplash persistence persistence-encryption=none,luks elevator=deadline cgroup_enable=memory swapaccount=1" \
     --debian-installer live \
     --debian-installer-gui false \
     --debian-installer-distribution $IMAGE_DISTRIBUTION \
@@ -94,6 +95,7 @@ if [ -d "$WORKDIR" ]; then
     --architectures amd64 \
     --binary-images iso-hybrid \
     --bootloaders "syslinux,grub-efi" \
+    --memtest memtest86+ \
     --chroot-filesystem squashfs \
     --backports $APT_BACKPORTS \
     --security $APT_SECURITY \
