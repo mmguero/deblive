@@ -95,7 +95,7 @@ if [ -d "$WORKDIR" ]; then
     --architectures amd64 \
     --binary-images iso-hybrid \
     --bootloaders "syslinux,grub-efi" \
-    --memtest memtest86+ \
+    --memtest none \
     --chroot-filesystem squashfs \
     --backports $APT_BACKPORTS \
     --security $APT_SECURITY \

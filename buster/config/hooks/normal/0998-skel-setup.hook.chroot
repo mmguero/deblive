@@ -22,19 +22,19 @@ rm -rf "$GUERO_GITHUB_PATH"/.git
 [[ -d "$GUERO_GITHUB_PATH"/bash/rc.d ]] && rm -vf "$SKEL_PATH"/.bashrc.d && \
   ln -vrs "$GUERO_GITHUB_PATH"/bash/rc.d "$SKEL_PATH"/.bashrc.d
 
-[[ -d "$GUERO_GITHUB_PATH"/git/gitconfig ]] && rm -vf "$SKEL_PATH"/.gitconfig && \
+[[ -r "$GUERO_GITHUB_PATH"/git/gitconfig ]] && rm -vf "$SKEL_PATH"/.gitconfig && \
   ln -vrs "$GUERO_GITHUB_PATH"/git/gitconfig "$SKEL_PATH"/.gitconfig
 
-[[ -d "$GUERO_GITHUB_PATH"/git/gitignore_global ]] && rm -vf "$SKEL_PATH"/.gitignore_global && \
+[[ -r "$GUERO_GITHUB_PATH"/git/gitignore_global ]] && rm -vf "$SKEL_PATH"/.gitignore_global && \
   ln -vrs "$GUERO_GITHUB_PATH"/git/gitignore_global "$SKEL_PATH"/.gitignore_global
 
-[[ -d "$GUERO_GITHUB_PATH"/linux/tmux/tmux.conf ]] && rm -vf "$SKEL_PATH"/.tmux.conf && \
+[[ -r "$GUERO_GITHUB_PATH"/linux/tmux/tmux.conf ]] && rm -vf "$SKEL_PATH"/.tmux.conf && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/tmux/tmux.conf "$SKEL_PATH"/.tmux.conf
 
-[[ -d "$GUERO_GITHUB_PATH"/linux/albert/albert.conf ]] && mkdir -p "$SKEL_PATH"/.config/albert && rm -vf "$SKEL_PATH"/.config/albert/alert.conf && \
-  ln -vrs "$GUERO_GITHUB_PATH"/linux/albert/albert.conf "$SKEL_PATH"/.config/albert/alert.conf
+[[ -r "$GUERO_GITHUB_PATH"/linux/albert/albert.conf ]] && mkdir -p "$SKEL_PATH"/.config/albert && rm -vf "$SKEL_PATH"/.config/albert/albert.conf && \
+  ln -vrs "$GUERO_GITHUB_PATH"/linux/albert/albert.conf "$SKEL_PATH"/.config/albert/albert.conf
 
-[[ -d "$GUERO_GITHUB_PATH"/linux/xxdiff/xxdiffrc ]] && rm -vf "$SKEL_PATH"/.xxdiffrc && \
+[[ -r "$GUERO_GITHUB_PATH"/linux/xxdiff/xxdiffrc ]] && rm -vf "$SKEL_PATH"/.xxdiffrc && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/xxdiff/xxdiffrc "$SKEL_PATH"/.xxdiffrc
 
 [[ -r "$GUERO_GITHUB_PATH"/gdb/gdbinit ]] && rm -vf "$SKEL_PATH"/.gdbinit && \
