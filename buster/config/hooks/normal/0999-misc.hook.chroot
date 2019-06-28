@@ -19,3 +19,6 @@ if ! grep -q mapper /etc/pmount.allow; then
 /dev/mapper/tc9
 EOT
 fi
+
+[[ -f /etc/xdg/autostart/gnome-keyring-pkcs11.desktop ]] && \
+  sed -i 's/^\(OnlyShowIn=.*\);/\1;LXDE;/' /etc/xdg/autostart/gnome-keyring-pkcs11.desktop
