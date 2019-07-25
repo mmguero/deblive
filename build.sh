@@ -83,8 +83,8 @@ if [ -d "$WORKDIR" ]; then
 
   chown -R root:root *
 
-  # put the date in the grub.cfg entries and configure an encryption option
-  sed -i "s/\(Install Debian\)/\1 $(date +'%Y-%m-%d %H:%M:%S')/g" ./config/includes.binary/boot/grub/grub.cfg
+  # put the date in the grub.cfg entries
+  sed -i "s/\(Install Debian\)/\1 $(date +'%Y-%m-%d %H:%M:%S')/g" ./config/includes.binary/boot/grub/grub.cfg ./config/includes.binary/isolinux/install.cfg
 
   lb config \
     --image-name "$IMAGE_NAME" \
