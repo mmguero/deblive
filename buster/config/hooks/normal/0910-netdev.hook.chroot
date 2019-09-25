@@ -3,57 +3,58 @@
 NETSNIFF_VER="0.6.6"
 NETSNIFF_URL="https://github.com/netsniff-ng/netsniff-ng/archive/v$NETSNIFF_VER.tar.gz"
 
-ZEEK_VER="2.6.2"
+ZEEK_VER="2.6.4"
 ZEEK_URL="https://www.bro.org/downloads/bro-$ZEEK_VER.tar.gz"
 
 ZEEK_AFPACKET_PLUGIN_VER="1.4.0"
 ZEEK_AFPACKET_PLUGIN_URL="https://github.com/J-Gras/bro-af_packet-plugin/archive/$ZEEK_AFPACKET_PLUGIN_VER.tar.gz"
 
-BEATS_VER="6.8.0"
+ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_VER="1.2"
+ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_URL="https://github.com/corelight/bro-community-id/archive/$ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_VER.tar.gz"
+
+BEATS_VER="6.8.3"
 BEATS_OSS="-oss"
-FILEBEAT_URL="https://artifacts.elastic.co/downloads/beats/filebeat/filebeat$BEATS_OSS-$BEATS_VER-amd64.deb"
-METRICBEAT_URL="https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat$BEATS_OSS-$BEATS_VER-amd64.deb"
-AUDITBEAT_URL="https://artifacts.elastic.co/downloads/beats/auditbeat/auditbeat$BEATS_OSS-$BEATS_VER-amd64.deb"
-PACKETBEAT_URL="https://artifacts.elastic.co/downloads/beats/packetbeat/packetbeat$BEATS_OSS-$BEATS_VER-amd64.deb"
+BEATS_DEB_URL_TEMPLATE_REPLACER="XXXXX"
+BEATS_DEB_URL_TEMPLATE="https://artifacts.elastic.co/downloads/beats/$BEATS_DEB_URL_TEMPLATE_REPLACER/$BEATS_DEB_URL_TEMPLATE_REPLACER$BEATS_OSS-$BEATS_VER-amd64.deb"
 
-RESPONDER_VER="2.3.0"
-RESPONDER_URL="https://github.com/SpiderLabs/Responder/archive/v${RESPONDER_VER}.tar.gz"
+RESPONDER_VER="2.3.4.0"
+RESPONDER_URL="https://github.com/lgandx/Responder/archive/v${RESPONDER_VER}.tar.gz"
 
-BURPSUITE_VER="1.7.36"
+BURPSUITE_VER="2.1.02"
 BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=jar"
 
-GHIDRA_URL="https://www.ghidra-sre.org/ghidra_9.0.4_PUBLIC_20190516.zip"
+GHIDRA_URL="https://ghidra-sre.org/ghidra_9.1-BETA_DEV_20190923.zip"
 
 # Install netsniff-ng
 cd /tmp
-curl -L -o $NETSNIFF_VER.tar.gz "$NETSNIFF_URL"
-tar -xzvf $NETSNIFF_VER.tar.gz
+curl -L -o netsniff-$NETSNIFF_VER.tar.gz "$NETSNIFF_URL"
+tar -xzvf netsniff-$NETSNIFF_VER.tar.gz
 cd netsniff-ng-$NETSNIFF_VER
 ./configure --prefix=/usr --disable-geoip
 make netsniff-ng
-make netsniff-ng_install
+# make netsniff-ng_install
+checkinstall -y -D --install=yes --fstrans=no --pkgname="netsniff-ng" --pkgversion="$NETSNIFF_VER" --pkgarch="amd64" --pkgsource="$NETSNIFF_URL" make netsniff-ng_install
 
 cd ..
-rm -Rf $NETSNIFF_VER.tar.gz netsniff-ng-$NETSNIFF_VER
+rm -Rf netsniff-$NETSNIFF_VER.tar.gz netsniff-ng-$NETSNIFF_VER
 ##
 
-# Build and install zeek
+# Build and install zeek, with JA3 SSL fingerprinting and HASSH SSH fingerprinting for Zeek
 cd /tmp
 curl -L -o bro-$ZEEK_VER.tar.gz "$ZEEK_URL"
+git clone --depth 1 https://github.com/salesforce/ja3 ja3
+git clone --depth 1 https://github.com/salesforce/hassh hassh
 tar -xvzf bro-$ZEEK_VER.tar.gz
 cd bro-$ZEEK_VER
+mkdir -p ./scripts/site/ja3 ./scripts/site/hassh
+cp -vr /tmp/ja3/bro/* ./scripts/site/ja3
+cp -vr /tmp/hassh/bro/* ./scripts/site/hassh
 ./configure --prefix=/opt/bro --generator=Ninja
 cd build
 ninja
-ninja install
-strip --strip-unneeded \
-  /opt/bro/bin/bro \
-  /opt/bro/bin/bro-cut \
-  /opt/bro/bin/binpac \
-  /opt/bro/lib/libbroker.so.. \
-  /opt/bro/lib/libcaf_core.so.0.16.2 \
-  /opt/bro/lib/libcaf_io.so.0.16.2 \
-  /opt/bro/lib/libcaf_openssl.so.0.16.2
+# ninja install
+checkinstall -y -D --install=yes --fstrans=no --pkgname="bro" --pkgversion="$BRO_VER" --pkgarch="amd64" --pkgsource="$BRO_URL" ninja install
+
 
 # install AF_PACKET plugin
 cd /tmp
@@ -62,19 +63,25 @@ tar -xvzf bro-af_packet-$ZEEK_AFPACKET_PLUGIN_VER.tar.gz
 cd bro-af_packet-plugin-$ZEEK_AFPACKET_PLUGIN_VER
 ./configure --with-kernel=/usr --bro-dist=/tmp/bro-$ZEEK_VER --install-root=/opt/bro/lib/bro/plugins
 make
-make install
+# make install
+checkinstall -y -D --install=yes --fstrans=no --pkgname="bro-afpacket" --pkgversion="$ZEEK_AFPACKET_PLUGIN_VER" --pkgarch="amd64" --pkgsource="$ZEEK_AFPACKET_PLUGIN_URL"
+
+# install corelight flow community ID plugin
+cd /tmp
+curl -L -o bro-community-id-$ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_VER.tar.gz "$ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_URL"
+tar -xvzf bro-community-id-$ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_VER.tar.gz
+cd bro-community-id-$ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_VER
+./configure --bro-dist=/tmp/bro-$ZEEK_VER --install-root=/opt/bro/lib/bro/plugins
+make
+# make install
+checkinstall -y -D --install=yes --fstrans=no --pkgname="bro-community-id" --pkgversion="$ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_VER" --pkgarch="amd64" --pkgsource="$ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_URL"
+
 
 cat << 'EOF' >> /opt/bro/etc/broctl.cfg
 # all interfaces using lb_method=custom should use AF_PACKET
 lb_custom.InterfacePrefix=af_packet::
 
 EOF
-
-# set up JA3 SSL fingerprinting for Zeek
-cd /tmp
-git clone --depth 1 https://github.com/salesforce/ja3 /tmp/ja3
-mkdir -p /opt/bro/share/bro/site/ja3
-cp /tmp/ja3/bro/* /opt/bro/share/bro/site/ja3
 
 # set up default zeek local policy
 cat << 'EOF' > /opt/bro/share/bro/site/local.bro
@@ -86,6 +93,9 @@ cat << 'EOF' > /opt/bro/share/bro/site/local.bro
 
 redef Broker::default_listen_address = "127.0.0.1";
 redef ignore_checksums = T;
+redef HTTP::default_capture_password = T;
+redef FTP::default_capture_password = T;
+redef SOCKS::default_capture_password = T;
 
 @load tuning/defaults
 @load misc/scan
@@ -96,6 +106,7 @@ redef ignore_checksums = T;
 @load protocols/smtp/software
 @load protocols/ssh/software
 @load protocols/http/software
+# @load protocols/http/detect-webapps
 @load protocols/dns/detect-external-names
 @load protocols/ftp/detect
 @load protocols/conn/known-hosts
@@ -109,34 +120,41 @@ redef ignore_checksums = T;
 @load protocols/ssh/interesting-hostnames
 @load protocols/http/detect-sqli
 @load frameworks/files/hash-all-files
-@load frameworks/files/detect-MHR
+# @load frameworks/files/detect-MHR
 @load policy/protocols/conn/vlan-logging
 @load policy/protocols/conn/mac-logging
+@load Corelight/CommunityID
 @load ./ja3
+@load ./hassh
 
 EOF
 
 # cleanup
 cd /tmp
-rm -Rf bro-$ZEEK_VER* bro-af_packet-plugin-$ZEEK_AFPACKET_PLUGIN_VER* ja3*
+rm -Rf bro-$ZEEK_VER* bro-af_packet-plugin-* ja3* bro-community-id-*
 ###
 
-# Install filebeat/metricbeat/auditbeat/packetbeat
-cd /tmp
-curl -L -o filebeat-$BEATS_VER-amd64.deb "$FILEBEAT_URL"
-curl -L -o metricbeat-$BEATS_VER-amd64.deb "$METRICBEAT_URL"
-curl -L -o auditbeat-$BEATS_VER-amd64.deb "$AUDITBEAT_URL"
-curl -L -o packetbeat-$BEATS_VER-amd64.deb "$PACKETBEAT_URL"
-dpkg -i filebeat-$BEATS_VER-amd64.deb
-dpkg -i metricbeat-$BEATS_VER-amd64.deb
-dpkg -i auditbeat-$BEATS_VER-amd64.deb
-dpkg -i packetbeat-$BEATS_VER-amd64.deb
-rm -f filebeat-$BEATS_VER-amd64.deb metricbeat-$BEATS_VER-amd64.deb auditbeat-$BEATS_VER-amd64.deb packetbeat-$BEATS_VER-amd64.deb
+# tweak some dashboards for, then install filebeat/metricbeat/auditbeat/packetbeat
+for BEAT in filebeat metricbeat auditbeat packetbeat; do
+  BEATS_URL="$(echo "$BEATS_DEB_URL_TEMPLATE" | sed "s/$BEATS_DEB_URL_TEMPLATE_REPLACER/$BEAT/g")"
+  BEATS_DEB="$BEAT-$BEATS_VER-amd64.deb"
+  BEATS_NEW_DEB="$BEAT-dark-$BEATS_VER-amd64.deb"
+  BEATS_TMP_DIR="$BEAT-deb"
+  pushd /tmp && \
+    curl -f -L -o "$BEATS_DEB" "$BEATS_URL" && \
+    dpkg-deb -x "$BEATS_DEB" "$BEATS_TMP_DIR" && \
+    dpkg-deb -e "$BEATS_DEB" "$BEATS_TMP_DIR/DEBIAN" && \
+    sed -i 's@\(\\"darkTheme\\" *: *\)false@\1true@g' "$BEATS_TMP_DIR"/usr/share/$BEAT/kibana/?/dashboard/*.json && \
+    ( [[ "$BEAT" == "metricbeat" ]] && sed -i -e "s@ |\\\\\\\n\[Containers overview\](#/dashboard/CPU-slash-Memory-per-container)@@g" "$BEATS_TMP_DIR"/usr/share/$BEAT/kibana/?/dashboard/* || true ) && \
+    pushd "$BEATS_TMP_DIR" && ( rm -f DEBIAN/md5sums && find . -type f ! -regex '.*.hg.*' ! -regex '.*?debian-binary.*' ! -regex '.*?DEBIAN.*' -print0 | xargs -l -0 md5sum >> DEBIAN/md5sums ) && popd && \
+    dpkg-deb -b "$BEATS_TMP_DIR" "$BEATS_NEW_DEB" && \
+    rm -rf "$BEATS_TMP_DIR" && \
+    dpkg -i "$BEATS_NEW_DEB" && \
+    rm -rf "$BEATS_TMP_DIR" "$BEATS_DEB" "$BEATS_NEW_DEB" && \
+    popd
+done
 
-# dark themes 4 lyfe
-sed -i 's@darkTheme\\": false@darkTheme\\": true@g' /usr/share/{auditbeat,filebeat,metricbeat,packetbeat}/kibana/{5,6}/dashboard/*.json
-
-# Install responder.py and fierce.pl
+# Install responder.py
 wget --quiet -O Responder-${RESPONDER_VER}.tar.gz $RESPONDER_URL
 tar -xvzf Responder-${RESPONDER_VER}.tar.gz
 mv ./Responder-${RESPONDER_VER} /opt/responder

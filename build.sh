@@ -80,6 +80,7 @@ if [ -d "$WORKDIR" ]; then
   echo "firmware-misc-nonfree=$(dpkg -s firmware-misc-nonfree | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
   echo "firmware-amd-graphics=$(dpkg -s firmware-amd-graphics | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
   echo "firmware-iwlwifi=$(dpkg -s firmware-iwlwifi | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
+  echo "firmware-atheros=$(dpkg -s firmware-atheros | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
 
   chown -R root:root *
 

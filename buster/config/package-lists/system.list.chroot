@@ -21,6 +21,7 @@ busybox
 bzip2
 ca-certificates
 cgdb
+checkinstall
 cloc
 coreutils
 cpio
