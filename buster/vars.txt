@@ -1,5 +1,5 @@
 export IMAGE_NAME=deblive
-export IMAGE_VERSION=1.1.0
+export IMAGE_VERSION=1.2.0
 export IMAGE_DISTRIBUTION=buster
 export APT_BACKPORTS=true
 export APT_SECURITY=true

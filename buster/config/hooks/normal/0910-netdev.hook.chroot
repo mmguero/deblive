@@ -39,22 +39,23 @@ cd ..
 rm -Rf netsniff-$NETSNIFF_VER.tar.gz netsniff-ng-$NETSNIFF_VER
 ##
 
-# Build and install zeek, with JA3 SSL fingerprinting and HASSH SSH fingerprinting for Zeek
+# Build and install zeek, with JA3 SSL fingerprinting and HASSH SSH fingerprinting for Zeek, and MITRE ATT&CK BZAR
 cd /tmp
 curl -L -o bro-$ZEEK_VER.tar.gz "$ZEEK_URL"
 git clone --depth 1 https://github.com/salesforce/ja3 ja3
 git clone --depth 1 https://github.com/salesforce/hassh hassh
+git clone --depth 1 https://github.com/mitre-attack/car.git mitre
 tar -xvzf bro-$ZEEK_VER.tar.gz
 cd bro-$ZEEK_VER
-mkdir -p ./scripts/site/ja3 ./scripts/site/hassh
+mkdir -p ./scripts/site/ja3 ./scripts/site/hassh ./scripts/site/bzar
 cp -vr /tmp/ja3/bro/* ./scripts/site/ja3
 cp -vr /tmp/hassh/bro/* ./scripts/site/hassh
+cp -v /tmp/mitre/implementations/bzar/scripts/* ./scripts/site/bzar
 ./configure --prefix=/opt/bro --generator=Ninja
 cd build
 ninja
 # ninja install
 checkinstall -y -D --install=yes --fstrans=no --pkgname="bro" --pkgversion="$BRO_VER" --pkgarch="amd64" --pkgsource="$BRO_URL" ninja install
-
 
 # install AF_PACKET plugin
 cd /tmp
@@ -76,6 +77,17 @@ make
 # make install
 checkinstall -y -D --install=yes --fstrans=no --pkgname="bro-community-id" --pkgversion="$ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_VER" --pkgarch="amd64" --pkgsource="$ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_URL"
 
+# install GQUIC plugin
+git clone --depth 1 https://github.com/salesforce/GQUIC_Protocol_Analyzer /tmp/gquic
+cd /tmp/bro-$ZEEK_VER/aux/bro-aux/plugin-support/
+./init-plugin ./bro-quic Salesforce GQUIC
+cd ./bro-quic
+rm -rf CMakeLists.txt ./scripts ./src
+cp -vr /tmp/gquic/CMakeLists.txt /tmp/gquic/scripts /tmp/gquic/src ./
+./configure --bro-dist=/tmp/bro-$ZEEK_VER --install-root=/opt/bro/lib/bro/plugins
+make
+# make install
+checkinstall -y -D --install=yes --fstrans=no --pkgname="bro-quic" --pkgversion="$(date +%Y%m%d)" --pkgarch="amd64" --pkgsource="https://github.com/salesforce/GQUIC_Protocol_Analyzer"
 
 cat << 'EOF' >> /opt/bro/etc/broctl.cfg
 # all interfaces using lb_method=custom should use AF_PACKET
@@ -124,8 +136,10 @@ redef SOCKS::default_capture_password = T;
 @load policy/protocols/conn/vlan-logging
 @load policy/protocols/conn/mac-logging
 @load Corelight/CommunityID
+@load Salesforce/GQUIC
 @load ./ja3
 @load ./hassh
+@load ./bzar
 
 EOF
 
