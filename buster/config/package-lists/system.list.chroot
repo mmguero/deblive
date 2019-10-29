@@ -92,6 +92,7 @@ javascript-common
 less
 libykpers-1-1
 libyubikey0
+libzmq5
 lm-sensors
 lsof
 lvm2

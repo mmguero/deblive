@@ -27,12 +27,13 @@ pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
   ordered-set \
   pandas \
   patool \
-  pillow \
+  Pillow \
   psutil \
   pyinotify \
   pyshark \
   python-magic \
   pythondialog \
+  pyzmq \
   pyunpack \
   pywinrm \
   pyyaml \
@@ -48,6 +49,7 @@ pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
   urllib3 \
   wapiti3 \
   youtube-dl \
+  zkg
 
 git clone --depth 1 https://github.com/MarkBaggett/MarkBaggett /opt/MarkBaggett && \
   rm -rf /opt/MarkBaggett/.git

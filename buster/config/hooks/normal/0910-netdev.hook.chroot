@@ -3,24 +3,17 @@
 NETSNIFF_VER="0.6.6"
 NETSNIFF_URL="https://github.com/netsniff-ng/netsniff-ng/archive/v$NETSNIFF_VER.tar.gz"
 
-ZEEK_VER="2.6.4"
-ZEEK_URL="https://www.bro.org/downloads/bro-$ZEEK_VER.tar.gz"
-
-ZEEK_AFPACKET_PLUGIN_VER="1.4.0"
-ZEEK_AFPACKET_PLUGIN_URL="https://github.com/J-Gras/bro-af_packet-plugin/archive/$ZEEK_AFPACKET_PLUGIN_VER.tar.gz"
-
-ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_VER="1.2"
-ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_URL="https://github.com/corelight/bro-community-id/archive/$ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_VER.tar.gz"
-
-BEATS_VER="6.8.3"
-BEATS_OSS="-oss"
-BEATS_DEB_URL_TEMPLATE_REPLACER="XXXXX"
-BEATS_DEB_URL_TEMPLATE="https://artifacts.elastic.co/downloads/beats/$BEATS_DEB_URL_TEMPLATE_REPLACER/$BEATS_DEB_URL_TEMPLATE_REPLACER$BEATS_OSS-$BEATS_VER-amd64.deb"
+ZEEK_VER="3.0.0"
+ZEEK_URL="https://www.zeek.org/downloads/zeek-$ZEEK_VER.tar.gz"
+ZEEK_PATCH_URLS=(
+  # Fix redef'ing a table with a new &default attribute - https://github.com/zeek/zeek/pull/632
+  https://github.com/zeek/zeek/pull/632/commits/42b6040952030c44ce337704916cf89a065994b0.patch
+)
 
 RESPONDER_VER="2.3.4.0"
 RESPONDER_URL="https://github.com/lgandx/Responder/archive/v${RESPONDER_VER}.tar.gz"
 
-BURPSUITE_VER="2.1.02"
+BURPSUITE_VER="2.1.04"
 BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=jar"
 
 GHIDRA_URL="https://ghidra-sre.org/ghidra_9.1-BETA_DEV_20190923.zip"
@@ -33,70 +26,45 @@ cd netsniff-ng-$NETSNIFF_VER
 ./configure --prefix=/usr --disable-geoip
 make netsniff-ng
 # make netsniff-ng_install
-checkinstall -y -D --install=yes --fstrans=no --pkgname="netsniff-ng" --pkgversion="$NETSNIFF_VER" --pkgarch="amd64" --pkgsource="$NETSNIFF_URL" make netsniff-ng_install
+checkinstall -y -D --strip=yes --stripso=yes --install=yes --fstrans=no --pkgname="netsniff-ng" --pkgversion="$NETSNIFF_VER" --pkgarch="amd64" --pkgsource="$NETSNIFF_URL" make netsniff-ng_install
 
 cd ..
 rm -Rf netsniff-$NETSNIFF_VER.tar.gz netsniff-ng-$NETSNIFF_VER
 ##
 
-# Build and install zeek, with JA3 SSL fingerprinting and HASSH SSH fingerprinting for Zeek, and MITRE ATT&CK BZAR
+# Build and install zeek
+mkdir -p /usr/local/src/zeek-patches
+cd /usr/local/src/zeek-patches
+for i in ${ZEEK_PATCH_URLS[@]}; do
+  curl -L -J -O "$i"
+done
 cd /tmp
-curl -L -o bro-$ZEEK_VER.tar.gz "$ZEEK_URL"
-git clone --depth 1 https://github.com/salesforce/ja3 ja3
-git clone --depth 1 https://github.com/salesforce/hassh hassh
-git clone --depth 1 https://github.com/mitre-attack/car.git mitre
-tar -xvzf bro-$ZEEK_VER.tar.gz
-cd bro-$ZEEK_VER
-mkdir -p ./scripts/site/ja3 ./scripts/site/hassh ./scripts/site/bzar
-cp -vr /tmp/ja3/bro/* ./scripts/site/ja3
-cp -vr /tmp/hassh/bro/* ./scripts/site/hassh
-cp -v /tmp/mitre/implementations/bzar/scripts/* ./scripts/site/bzar
-./configure --prefix=/opt/bro --generator=Ninja
+curl -L -o zeek-$ZEEK_VER.tar.gz "$ZEEK_URL"
+tar -xvzf zeek-$ZEEK_VER.tar.gz
+cd zeek-$ZEEK_VER
+for i in /usr/local/src/zeek-patches/*; do
+  patch -p 1 -r - --no-backup-if-mismatch < "$i" || true
+done
+./configure --prefix=/opt/zeek --generator=Ninja
 cd build
 ninja
 # ninja install
-checkinstall -y -D --install=yes --fstrans=no --pkgname="bro" --pkgversion="$BRO_VER" --pkgarch="amd64" --pkgsource="$BRO_URL" ninja install
+checkinstall -y -D --strip=yes --stripso=yes --install=yes --fstrans=no --pkgname="zeek" --pkgversion="$ZEEK_VER" --pkgarch="amd64" --pkgsource="$ZEEK_URL" ninja install
 
-# install AF_PACKET plugin
-cd /tmp
-curl -L -o bro-af_packet-$ZEEK_AFPACKET_PLUGIN_VER.tar.gz "$ZEEK_AFPACKET_PLUGIN_URL"
-tar -xvzf bro-af_packet-$ZEEK_AFPACKET_PLUGIN_VER.tar.gz
-cd bro-af_packet-plugin-$ZEEK_AFPACKET_PLUGIN_VER
-./configure --with-kernel=/usr --bro-dist=/tmp/bro-$ZEEK_VER --install-root=/opt/bro/lib/bro/plugins
-make
-# make install
-checkinstall -y -D --install=yes --fstrans=no --pkgname="bro-afpacket" --pkgversion="$ZEEK_AFPACKET_PLUGIN_VER" --pkgarch="amd64" --pkgsource="$ZEEK_AFPACKET_PLUGIN_URL"
+# install 3rd party Zeek plugins and scripts
+export PATH=/opt/zeek/bin:$PATH
+zkg autoconfig
+bash /usr/local/bin/zeek_install_plugins.sh
+rm -Rf /root/.zkg /usr/local/src/*/.git
 
-# install corelight flow community ID plugin
-cd /tmp
-curl -L -o bro-community-id-$ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_VER.tar.gz "$ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_URL"
-tar -xvzf bro-community-id-$ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_VER.tar.gz
-cd bro-community-id-$ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_VER
-./configure --bro-dist=/tmp/bro-$ZEEK_VER --install-root=/opt/bro/lib/bro/plugins
-make
-# make install
-checkinstall -y -D --install=yes --fstrans=no --pkgname="bro-community-id" --pkgversion="$ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_VER" --pkgarch="amd64" --pkgsource="$ZEEK_CORELIGHT_COMMUNITY_ID_PLUGIN_URL"
-
-# install GQUIC plugin
-git clone --depth 1 https://github.com/salesforce/GQUIC_Protocol_Analyzer /tmp/gquic
-cd /tmp/bro-$ZEEK_VER/aux/bro-aux/plugin-support/
-./init-plugin ./bro-quic Salesforce GQUIC
-cd ./bro-quic
-rm -rf CMakeLists.txt ./scripts ./src
-cp -vr /tmp/gquic/CMakeLists.txt /tmp/gquic/scripts /tmp/gquic/src ./
-./configure --bro-dist=/tmp/bro-$ZEEK_VER --install-root=/opt/bro/lib/bro/plugins
-make
-# make install
-checkinstall -y -D --install=yes --fstrans=no --pkgname="bro-quic" --pkgversion="$(date +%Y%m%d)" --pkgarch="amd64" --pkgsource="https://github.com/salesforce/GQUIC_Protocol_Analyzer"
-
-cat << 'EOF' >> /opt/bro/etc/broctl.cfg
+cat << 'EOF' >> /opt/zeek/etc/zeekctl.cfg
 # all interfaces using lb_method=custom should use AF_PACKET
 lb_custom.InterfacePrefix=af_packet::
 
 EOF
 
 # set up default zeek local policy
-cat << 'EOF' > /opt/bro/share/bro/site/local.bro
+cat << 'EOF' > /opt/zeek/share/zeek/site/local.zeek
 ##! Zeek local site policy. Customize as appropriate.
 ##!
 ##! See https://github.com/zeek/zeekctl
@@ -113,60 +81,50 @@ redef SOCKS::default_capture_password = T;
 @load misc/scan
 @load frameworks/software/vulnerable
 @load frameworks/software/version-changes
+@load frameworks/software/windows-version-detection
 @load-sigs frameworks/signatures/detect-windows-shells
-@load protocols/ftp/software
-@load protocols/smtp/software
-@load protocols/ssh/software
-@load protocols/http/software
-# @load protocols/http/detect-webapps
-@load protocols/dns/detect-external-names
-@load protocols/ftp/detect
 @load protocols/conn/known-hosts
 @load protocols/conn/known-services
-@load protocols/ssl/known-certs
-@load tuning/track-all-assets.bro
-@load protocols/ssl/validate-certs
-@load protocols/ssl/log-hostcerts-only
-@load protocols/ssh/geo-data
-@load protocols/ssh/detect-bruteforcing
-@load protocols/ssh/interesting-hostnames
+@load protocols/dhcp/software
+@load protocols/dns/detect-external-names
+@load protocols/ftp/detect
+@load protocols/ftp/software
 @load protocols/http/detect-sqli
+@load protocols/http/detect-webapps
+@load protocols/http/software
+@load protocols/http/software-browser-plugins
+@load protocols/mysql/software
+@load protocols/smtp/software
+@load protocols/ssh/detect-bruteforcing
+@load protocols/ssh/geo-data
+@load protocols/ssh/interesting-hostnames
+@load protocols/ssh/software
+@load protocols/ssl/known-certs
+@load protocols/ssl/log-hostcerts-only
+@load protocols/ssl/validate-certs
+@load tuning/track-all-assets.zeek
 @load frameworks/files/hash-all-files
-# @load frameworks/files/detect-MHR
 @load policy/protocols/conn/vlan-logging
 @load policy/protocols/conn/mac-logging
-@load Corelight/CommunityID
+@load policy/protocols/modbus/track-memmap
+@load policy/protocols/modbus/known-masters-slaves
+@load policy/protocols/mqtt
+# @load frameworks/files/detect-MHR
+
+# custom packages installed manually
 @load Salesforce/GQUIC
-@load ./ja3
-@load ./hassh
 @load ./bzar
+# custom packages managed by zkg via packages/packages.zeek
+@load ./packages/packages.zeek
+# and apparently some installed packages (BRO::LDAP) are loaded automatically
+
 
 EOF
 
 # cleanup
 cd /tmp
-rm -Rf bro-$ZEEK_VER* bro-af_packet-plugin-* ja3* bro-community-id-*
+rm -Rf zeek-$ZEEK_VER*
 ###
-
-# tweak some dashboards for, then install filebeat/metricbeat/auditbeat/packetbeat
-for BEAT in filebeat metricbeat auditbeat packetbeat; do
-  BEATS_URL="$(echo "$BEATS_DEB_URL_TEMPLATE" | sed "s/$BEATS_DEB_URL_TEMPLATE_REPLACER/$BEAT/g")"
-  BEATS_DEB="$BEAT-$BEATS_VER-amd64.deb"
-  BEATS_NEW_DEB="$BEAT-dark-$BEATS_VER-amd64.deb"
-  BEATS_TMP_DIR="$BEAT-deb"
-  pushd /tmp && \
-    curl -f -L -o "$BEATS_DEB" "$BEATS_URL" && \
-    dpkg-deb -x "$BEATS_DEB" "$BEATS_TMP_DIR" && \
-    dpkg-deb -e "$BEATS_DEB" "$BEATS_TMP_DIR/DEBIAN" && \
-    sed -i 's@\(\\"darkTheme\\" *: *\)false@\1true@g' "$BEATS_TMP_DIR"/usr/share/$BEAT/kibana/?/dashboard/*.json && \
-    ( [[ "$BEAT" == "metricbeat" ]] && sed -i -e "s@ |\\\\\\\n\[Containers overview\](#/dashboard/CPU-slash-Memory-per-container)@@g" "$BEATS_TMP_DIR"/usr/share/$BEAT/kibana/?/dashboard/* || true ) && \
-    pushd "$BEATS_TMP_DIR" && ( rm -f DEBIAN/md5sums && find . -type f ! -regex '.*.hg.*' ! -regex '.*?debian-binary.*' ! -regex '.*?DEBIAN.*' -print0 | xargs -l -0 md5sum >> DEBIAN/md5sums ) && popd && \
-    dpkg-deb -b "$BEATS_TMP_DIR" "$BEATS_NEW_DEB" && \
-    rm -rf "$BEATS_TMP_DIR" && \
-    dpkg -i "$BEATS_NEW_DEB" && \
-    rm -rf "$BEATS_TMP_DIR" "$BEATS_DEB" "$BEATS_NEW_DEB" && \
-    popd
-done
 
 # Install responder.py
 wget --quiet -O Responder-${RESPONDER_VER}.tar.gz $RESPONDER_URL
@@ -178,7 +136,7 @@ ln -s /opt/responder/Responder.py /usr/local/bin/Responder.py
 
 # update freshclam
 systemctl status clamav-freshclam && systemctl stop clamav-freshclam
-freshclam --stdout --verbose --foreground=true
+freshclam --stdout --quiet --no-warnings --foreground=true
 
 # burpsuite
 mkdir -p /opt/burpsuite
@@ -192,8 +150,8 @@ rm -f "/tmp/ghidra.zip"
 # set up capabilities for network-related tools
 EXE_LESS_CAP=(
   /sbin/ethtool
-  /opt/bro/bin/bro
-  /opt/bro/bin/capstats
+  /opt/zeek/bin/zeek
+  /opt/zeek/bin/capstats
   /usr/bin/dumpcap
   /usr/bin/tcpflow
   /usr/bin/tcpreplay

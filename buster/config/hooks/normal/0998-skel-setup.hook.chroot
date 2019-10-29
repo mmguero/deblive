@@ -7,7 +7,7 @@ SKEL_PATH="/etc/skel"
 GUERO_GITHUB_PATH="$SKEL_PATH/.config/mmguero"
 mkdir -p "$(dirname "$GUERO_GITHUB_PATH")"
 
-git clone --depth 1 https://github.com/mmguero/config.git "$GUERO_GITHUB_PATH"
+git clone --recursive --depth 1 https://github.com/mmguero/config.git "$GUERO_GITHUB_PATH"
 rm -rf "$GUERO_GITHUB_PATH"/.git
 
 [[ -r "$GUERO_GITHUB_PATH"/bash/rc ]] && rm -vf "$SKEL_PATH"/.bashrc && \
@@ -71,6 +71,9 @@ LINKED_SCRIPTS=(
 for i in ${LINKED_SCRIPTS[@]}; do
   rm -vf "$SKEL_PATH"/.local/bin/"$i" && ln -vrs "$GUERO_GITHUB_PATH"/scripts/"$i" "$SKEL_PATH"/.local/bin/
 done
+
+[[ -r "$GUERO_GITHUB_PATH"/bash/context-color/context-color ]] && rm -vf "$SKEL_PATH"/.local/bin/context-color && \
+  ln -vrs "$GUERO_GITHUB_PATH"/bash/context-color/context-color "$SKEL_PATH"/.local/bin/context-color
 
 touch "$SKEL_PATH"/.hushlogin
 echo 'SELECTED_EDITOR="/usr/bin/vim.tiny"' > "$SKEL_PATH"/.selected_editor

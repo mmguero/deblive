@@ -22,10 +22,7 @@ UFW_ALLOW_RULES=(
   ssh
   24800/tcp
   28400/tcp
-  5044/tcp
-  5601/tcp
   8443/tcp
-  9200/tcp
   9443/tcp
 )
 for i in ${UFW_ALLOW_RULES[@]}; do
