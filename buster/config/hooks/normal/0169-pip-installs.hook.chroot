@@ -21,7 +21,6 @@ pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
   habu \
   ipaddress \
   mitmproxy \
-  namedlist \
   netifaces \
   numpy \
   ordered-set \
@@ -33,10 +32,10 @@ pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
   pyshark \
   python-magic \
   pythondialog \
-  pyzmq \
   pyunpack \
   pywinrm \
   pyyaml \
+  pyzmq \
   requests\[security\] \
   rpyc \
   rupy \

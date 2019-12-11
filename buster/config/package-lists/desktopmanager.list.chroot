@@ -1,6 +1,7 @@
 albert
 arandr
 dconf-cli
+fonts-noto-color-emoji
 lightdm
 lxde
 lxpanel
@@ -20,6 +21,7 @@ xfdesktop4
 xinit
 xorg
 xscreensaver
+xsel
 xserver-xorg
 xserver-xorg-video-qxl
 xserver-xorg-video-vmware
