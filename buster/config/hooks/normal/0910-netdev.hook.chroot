@@ -135,7 +135,7 @@ OPENRESOLV_URL="https://roy.marples.name/downloads/openresolv/openresolv-$OPENRE
 curl -L -o "openresolv-$OPENRESOLV_VER.tar.xz" "$OPENRESOLV_URL"
 tar xvf "openresolv-$OPENRESOLV_VER.tar.xz"
 cd "openresolv-$OPENRESOLV_VER"/
-./configure --prefix=/usr
+./configure --prefix=/
 make
 # make install
 checkinstall -y -D --strip=yes --stripso=yes --install=yes --fstrans=no --pkgname="openresolv" --pkgversion="$OPENRESOLV_VER" --pkgarch="amd64" --pkgsource="$OPENRESOLV_URL"
