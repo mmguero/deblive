@@ -9,13 +9,18 @@ ZEEK_PATCH_URLS=(
   # nothing here for now
 )
 
-RESPONDER_VER="2.3.4.0"
+OPENRESOLV_VER="3.9.2"
+OPENRESOLV_URL="https://roy.marples.name/downloads/openresolv/openresolv-$OPENRESOLV_VER.tar.xz"
+
+RESPONDER_VER="3.0.0.0"
 RESPONDER_URL="https://github.com/lgandx/Responder/archive/v${RESPONDER_VER}.tar.gz"
 
-BURPSUITE_VER="2.1.04"
+BURPSUITE_VER="2.1.07"
 BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=jar"
 
-GHIDRA_URL="https://ghidra-sre.org/ghidra_9.1-BETA_DEV_20190923.zip"
+GHIDRA_URL="https://ghidra-sre.org/ghidra_9.1.1_PUBLIC_20191218.zip"
+
+SYNERGY_URL="https://binaries.symless.com/synergy/v1-core-standard/v1.11.0-stable-b2173efb/synergy_1.11.0.stable_b147%2Bb2173efb_debian_amd64.deb"
 
 # Install netsniff-ng
 cd /tmp
@@ -124,8 +129,22 @@ cd /tmp
 rm -Rf zeek-$ZEEK_VER*
 ###
 
+# Install openresolv (version in buster repos is out of date)
+OPENRESOLV_VER="3.9.2"
+OPENRESOLV_URL="https://roy.marples.name/downloads/openresolv/openresolv-$OPENRESOLV_VER.tar.xz"
+curl -o "openresolv-$OPENRESOLV_VER.tar.xz" "$OPENRESOLV_URL"
+tar xvf "openresolv-$OPENRESOLV_VER.tar.xz"
+cd "openresolv-$OPENRESOLV_VER"/
+./configure --prefix=/usr
+make
+# make install
+checkinstall -y -D --strip=yes --stripso=yes --install=yes --fstrans=no --pkgname="openresolv" --pkgversion="$OPENRESOLV_VER" --pkgarch="amd64" --pkgsource="$OPENRESOLV_URL"
+cd ../
+rm -rf "openresolv-$OPENRESOLV_VER.tar.xz" "openresolv-$OPENRESOLV_VER"
+###
+
 # Install responder.py
-wget --quiet -O Responder-${RESPONDER_VER}.tar.gz $RESPONDER_URL
+curl -o "Responder-${RESPONDER_VER}.tar.gz" "$RESPONDER_URL"
 tar -xvzf Responder-${RESPONDER_VER}.tar.gz
 mv ./Responder-${RESPONDER_VER} /opt/responder
 rm -Rf Responder-${RESPONDER_VER}.tar.gz
@@ -144,6 +163,11 @@ curl -o "/opt/burpsuite/burpsuite_community_v${BURPSUITE_VER}.jar" "$BURPSUITE_U
 curl -o "/tmp/ghidra.zip" "$GHIDRA_URL"
 unzip "/tmp/ghidra.zip" -d "/opt"
 rm -f "/tmp/ghidra.zip"
+
+# synergy
+curl -o "/tmp/synergy_1.11.0.stable_b147+b2173efb_debian_amd64.deb" "$SYNERGY_URL"
+dpkg -i "/tmp/synergy_1.11.0.stable_b147+b2173efb_debian_amd64.deb"
+rm -f "/tmp/synergy_1.11.0.stable_b147+b2173efb_debian_amd64.deb"
 
 # set up capabilities for network-related tools
 EXE_LESS_CAP=(
