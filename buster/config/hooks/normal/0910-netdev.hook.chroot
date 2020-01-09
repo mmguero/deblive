@@ -132,7 +132,7 @@ rm -Rf zeek-$ZEEK_VER*
 # Install openresolv (version in buster repos is out of date)
 OPENRESOLV_VER="3.9.2"
 OPENRESOLV_URL="https://roy.marples.name/downloads/openresolv/openresolv-$OPENRESOLV_VER.tar.xz"
-curl -o "openresolv-$OPENRESOLV_VER.tar.xz" "$OPENRESOLV_URL"
+curl -L -o "openresolv-$OPENRESOLV_VER.tar.xz" "$OPENRESOLV_URL"
 tar xvf "openresolv-$OPENRESOLV_VER.tar.xz"
 cd "openresolv-$OPENRESOLV_VER"/
 ./configure --prefix=/usr
@@ -144,7 +144,7 @@ rm -rf "openresolv-$OPENRESOLV_VER.tar.xz" "openresolv-$OPENRESOLV_VER"
 ###
 
 # Install responder.py
-curl -o "Responder-${RESPONDER_VER}.tar.gz" "$RESPONDER_URL"
+curl -L -o "Responder-${RESPONDER_VER}.tar.gz" "$RESPONDER_URL"
 tar -xvzf Responder-${RESPONDER_VER}.tar.gz
 mv ./Responder-${RESPONDER_VER} /opt/responder
 rm -Rf Responder-${RESPONDER_VER}.tar.gz
@@ -157,15 +157,15 @@ freshclam --stdout --quiet --no-warnings --foreground=true
 
 # burpsuite
 mkdir -p /opt/burpsuite
-curl -o "/opt/burpsuite/burpsuite_community_v${BURPSUITE_VER}.jar" "$BURPSUITE_URL"
+curl -L -o "/opt/burpsuite/burpsuite_community_v${BURPSUITE_VER}.jar" "$BURPSUITE_URL"
 
 # ghidra
-curl -o "/tmp/ghidra.zip" "$GHIDRA_URL"
+curl -L -o "/tmp/ghidra.zip" "$GHIDRA_URL"
 unzip "/tmp/ghidra.zip" -d "/opt"
 rm -f "/tmp/ghidra.zip"
 
 # synergy
-curl -o "/tmp/synergy_1.11.0.stable_b147+b2173efb_debian_amd64.deb" "$SYNERGY_URL"
+curl -L -o "/tmp/synergy_1.11.0.stable_b147+b2173efb_debian_amd64.deb" "$SYNERGY_URL"
 dpkg -i "/tmp/synergy_1.11.0.stable_b147+b2173efb_debian_amd64.deb"
 rm -f "/tmp/synergy_1.11.0.stable_b147+b2173efb_debian_amd64.deb"
 
