@@ -19,8 +19,8 @@ BURPSUITE_VER="2.1.07"
 BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=jar"
 
 GHIDRA_URL="https://ghidra-sre.org/ghidra_9.1.1_PUBLIC_20191218.zip"
-
 SYNERGY_URL="https://binaries.symless.com/synergy/v1-core-standard/v1.11.0-stable-b2173efb/synergy_1.11.0.stable_b147%2Bb2173efb_debian_amd64.deb"
+PCLOUD_URL="https://p-def4.pcloud.com/cBZetST9hZtTO10SZZZHNp7a7Z2ZZRP5ZkZVcA5VZAkZJFZL5ZqZlJZ5XZX0Z2JZpFZ6JZ9XZG5Z5kZg5Z1EnhkZV1JO38Gs4hBEDarKfEMXzXqXGWVX/pcloud"
 
 # Install netsniff-ng
 cd /tmp
@@ -165,9 +165,12 @@ unzip "/tmp/ghidra.zip" -d "/opt"
 rm -f "/tmp/ghidra.zip"
 
 # synergy
-curl -L -o "/tmp/synergy_1.11.0.stable_b147+b2173efb_debian_amd64.deb" "$SYNERGY_URL"
-dpkg -i "/tmp/synergy_1.11.0.stable_b147+b2173efb_debian_amd64.deb"
-rm -f "/tmp/synergy_1.11.0.stable_b147+b2173efb_debian_amd64.deb"
+curl -L -o "/tmp/synergy_debian_amd64.deb" "$SYNERGY_URL"
+dpkg -i "/tmp/synergy_debian_amd64.deb"
+rm -f "/tmp/synergy_debian_amd64.deb"
+
+# pcloud
+curl -L -o "/usr/bin/pcloud" "$PCLOUD_URL"
 
 # set up capabilities for network-related tools
 EXE_LESS_CAP=(
