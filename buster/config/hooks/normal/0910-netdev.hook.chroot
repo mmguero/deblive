@@ -171,6 +171,7 @@ rm -f "/tmp/synergy_debian_amd64.deb"
 
 # pcloud
 curl -L -o "/usr/bin/pcloud" "$PCLOUD_URL"
+chmod 755 "/usr/bin/pcloud"
 
 # set up capabilities for network-related tools
 EXE_LESS_CAP=(
