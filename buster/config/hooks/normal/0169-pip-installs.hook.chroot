@@ -8,6 +8,7 @@ pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
   beautifulsoup4 \
   cachetools \
   clamd \
+  colorama \
   colored \
   cryptography \
   Cython \
