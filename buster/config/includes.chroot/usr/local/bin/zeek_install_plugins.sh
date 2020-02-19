@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Copyright (c) 2019 Battelle Energy Alliance, LLC.  All rights reserved.
-
 if [ -z "$BASH_VERSION" ]; then
   echo "Wrong interpreter, please run \"$0\" with bash"
   exit 1
