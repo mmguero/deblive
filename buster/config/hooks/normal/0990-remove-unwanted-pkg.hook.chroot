@@ -18,20 +18,17 @@ dpkg-reconfigure localepurge
 localepurge
 
 # remove development packages
-apt-get -y --purge remove autoconf automake bison build-essential cmake debian-keyring devscripts equivs flex libc6-dbg linux-headers-$(uname -r) ninja-build swig \
-                    $(dpkg --get-selections | grep -v deinstall$ | cut -f1 | grep -P -- '-dev(:\w+)?$') || true
+apt-get -y --purge remove autoconf automake bison build-essential cmake flex libc6-dbg linux-headers-$(uname -r) ninja-build swig \
+                    $(dpkg --get-selections | grep -v deinstall$ | cut -f1 | grep -P -- '-dev(:\w+)?$' | grep -Pv -- '^(dpkg|libgcc)') || true
 
 # remove unwanted packages
 apt-get -y --purge remove deluge \
                           evince \
                           gnome-accessibility-themes \
-                          gnome-user-guide \
                           gucharmap \
                           libcupsfilters1 \
                           libcupsimage2 \
-                          lxmusic \
                           prelink \
-                          valgrind-dbg \
                           yelp || true
 
 apt-get -y autoremove

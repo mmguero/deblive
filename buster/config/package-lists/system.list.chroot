@@ -37,6 +37,7 @@ debtags
 default-jre
 dialog
 diffutils
+dmidecode
 dosfstools
 dwarfdump
 ebtables
