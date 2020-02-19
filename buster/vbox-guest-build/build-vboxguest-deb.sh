@@ -33,7 +33,7 @@ VBOX_PKG_VERSION=$(export $(grep -P '^VBOX_VERSION_(MAJOR|MINOR|BUILD)' Version.
 
 DEBFULLNAME='Seth Grover' DEBEMAIL='malcolm.netsec@gmail.com' dch -bv $VBOX_PKG_VERSION-dfsg-2~~bpo10+1 --distribution buster-backports --force-distribution 'Unofficial backport'
 
-dpkg-buildpackage -b
+DEB_BUILD_OPTIONS=nocheck dpkg-buildpackage -b
 
 cd /tmp/vbox-guest-deb
 
