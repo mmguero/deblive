@@ -34,6 +34,9 @@ rm -rf "$GUERO_GITHUB_PATH"/.git
 [[ -r "$GUERO_GITHUB_PATH"/linux/albert/albert.conf ]] && mkdir -p "$SKEL_PATH"/.config/albert && rm -vf "$SKEL_PATH"/.config/albert/albert.conf && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/albert/albert.conf "$SKEL_PATH"/.config/albert/albert.conf
 
+[[ -r "$GUERO_GITHUB_PATH"/linux/xbindkeys/xbindkeysrc ]] && rm -vf "$SKEL_PATH"/.xbindkeysrc && \
+  ln -vrs "$GUERO_GITHUB_PATH"/linux/xbindkeys/xbindkeysrc "$SKEL_PATH"/.xbindkeysrc
+
 [[ -r "$GUERO_GITHUB_PATH"/linux/xxdiff/xxdiffrc ]] && rm -vf "$SKEL_PATH"/.xxdiffrc && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/xxdiff/xxdiffrc "$SKEL_PATH"/.xxdiffrc
 

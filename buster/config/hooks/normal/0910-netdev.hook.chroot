@@ -130,8 +130,6 @@ rm -Rf zeek-$ZEEK_VER*
 ###
 
 # Install openresolv (version in buster repos is out of date)
-OPENRESOLV_VER="3.9.2"
-OPENRESOLV_URL="https://roy.marples.name/downloads/openresolv/openresolv-$OPENRESOLV_VER.tar.xz"
 curl -L -o "openresolv-$OPENRESOLV_VER.tar.xz" "$OPENRESOLV_URL"
 tar xvf "openresolv-$OPENRESOLV_VER.tar.xz"
 cd "openresolv-$OPENRESOLV_VER"/

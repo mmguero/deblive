@@ -1,6 +1,8 @@
 albert
 arandr
 dconf-cli
+fonts-dejavu
+fonts-hack
 fonts-noto-color-emoji
 lightdm
 lxde
@@ -8,6 +10,7 @@ lxpanel
 lxsession
 numix-gtk-theme
 obsidian-icon-theme
+open-vm-tools-desktop
 thunar
 thunar-archive-plugin
 thunar-volman
@@ -17,11 +20,14 @@ x11-apps
 x11-session-utils
 x11-xfs-utils
 x11-xserver-utils
+xbindkeys
+xautomation
 xfdesktop4
 xinit
 xorg
 xscreensaver
 xsel
 xserver-xorg
+xserver-xorg-core
 xserver-xorg-video-qxl
 xserver-xorg-video-vmware

@@ -18,7 +18,7 @@ dpkg-reconfigure localepurge
 localepurge
 
 # remove development packages
-apt-get -y --purge remove autoconf automake bison cmake flex libc6-dbg linux-headers-$(uname -r) ninja-build swig \
+apt-get -y --purge remove autoconf automake bison build-essential cmake debian-keyring devscripts equivs flex libc6-dbg linux-headers-$(uname -r) ninja-build swig \
                     $(dpkg --get-selections | grep -v deinstall$ | cut -f1 | grep -P -- '-dev(:\w+)?$') || true
 
 # remove unwanted packages

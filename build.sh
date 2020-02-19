@@ -82,6 +82,19 @@ if [ -d "$WORKDIR" ]; then
   echo "firmware-iwlwifi=$(dpkg -s firmware-iwlwifi | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
   echo "firmware-atheros=$(dpkg -s firmware-atheros | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
 
+  # virtualbox-guest .deb package(s) in its own clean environment (rather than in hooks/)
+  if [[ -d "$CONFIG_PATH/vbox-guest-build" ]]; then
+    rsync -a "$CONFIG_PATH/vbox-guest-build" .
+    mkdir -p ./config/packages.chroot/
+    bash ./vbox-guest-build/build-docker-image.sh
+    docker run --rm -v ./vbox-guest-build:/build vboxguest-build:latest -o /build
+    rm -f ./vbox-guest-build/*-source*.deb \
+          ./vbox-guest-build/*-dbgsym*.deb \
+          ./vbox-guest-build/virtualbox_*.deb \
+          ./vbox-guest-build/virtualbox-qt_*.deb
+    mv ./vbox-guest-build/*.deb ./config/packages.chroot/
+  fi
+
   chown -R root:root *
 
   # put the date in the grub.cfg entries
@@ -93,6 +106,7 @@ if [ -d "$WORKDIR" ]; then
     --debian-installer-gui false \
     --debian-installer-distribution $IMAGE_DISTRIBUTION \
     --distribution $IMAGE_DISTRIBUTION \
+    --linux-packages "linux-image-$(uname -r | sed 's/-amd64$//')" \
     --architectures amd64 \
     --binary-images iso-hybrid \
     --bootloaders "syslinux,grub-efi" \
@@ -106,7 +120,7 @@ if [ -d "$WORKDIR" ]; then
     --apt-source-archives false \
     --archive-areas 'main contrib non-free' \
     --debootstrap-options "--include=apt-transport-https,gnupg,ca-certificates,openssl --no-merged-usr" \
-    --apt-options "--force-yes --yes -o Acquire::Check-Valid-Until=false"
+    --apt-options "--allow-downgrades --allow-remove-essential --allow-change-held-packages -o Acquire::Check-Valid-Until=false --yes"
 
   lb build 2>&1 | tee "$WORKDIR/output/$IMAGE_NAME-$IMAGE_VERSION-build.log"
   if [ -f "$IMAGE_NAME-amd64.hybrid.iso" ]; then
