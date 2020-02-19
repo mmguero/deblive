@@ -87,7 +87,7 @@ if [ -d "$WORKDIR" ]; then
     rsync -a "$CONFIG_PATH/vbox-guest-build" .
     mkdir -p ./config/packages.chroot/
     bash ./vbox-guest-build/build-docker-image.sh
-    docker run --rm -v ./vbox-guest-build:/build vboxguest-build:latest -o /build
+    docker run --rm -v "$(pwd)"/vbox-guest-build:/build vboxguest-build:latest -o /build
     rm -f ./vbox-guest-build/*-source*.deb \
           ./vbox-guest-build/*-dbgsym*.deb \
           ./vbox-guest-build/virtualbox_*.deb \
