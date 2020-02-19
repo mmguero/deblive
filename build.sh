@@ -91,6 +91,7 @@ if [ -d "$WORKDIR" ]; then
     rm -f ./vbox-guest-build/*-source*.deb \
           ./vbox-guest-build/*-dbgsym*.deb \
           ./vbox-guest-build/virtualbox_*.deb \
+          ./vbox-guest-build/virtualbox-dkms_*.deb \
           ./vbox-guest-build/virtualbox-qt_*.deb
     mv ./vbox-guest-build/*.deb ./config/packages.chroot/
   fi
