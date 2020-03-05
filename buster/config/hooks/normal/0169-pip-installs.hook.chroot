@@ -29,6 +29,7 @@ pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
   patool \
   Pillow \
   psutil \
+  py-cui \
   pyinotify \
   pyshark \
   python-magic \
