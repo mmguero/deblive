@@ -21,6 +21,7 @@ pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
   git-up \
   habu \
   ipaddress \
+  magic-wormhole \
   mitmproxy \
   netifaces \
   numpy \
