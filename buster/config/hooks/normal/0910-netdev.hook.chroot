@@ -132,6 +132,7 @@ curl -L -o "/tmp/udptunnel.tar.gz" "$UDPTUNNEL_URL"
 cd /tmp
 mkdir udptunnel
 tar xvf ./udptunnel.tar.gz -C ./udptunnel --strip-components 1
+cd ./udptunnel
 make
 make install
 cd /tmp
