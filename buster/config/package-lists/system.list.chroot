@@ -90,6 +90,7 @@ iw
 javascript-common
 less
 libnotify-bin
+libsquashfuse0
 libykpers-1-1
 libyubikey0
 libzmq5
@@ -148,6 +149,7 @@ shed
 smartmontools
 smbclient
 squashfs-tools
+squashfuse
 strace
 sudo
 sysstat

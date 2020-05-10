@@ -7,7 +7,7 @@ SKEL_PATH="/etc/skel"
 GUERO_GITHUB_PATH="$SKEL_PATH/.config/mmguero"
 mkdir -p "$(dirname "$GUERO_GITHUB_PATH")"
 
-git clone --recursive --depth 1 https://github.com/mmguero/config.git "$GUERO_GITHUB_PATH"
+git clone --recursive --depth 1 --single-branch -b master https://github.com/mmguero/config.git "$GUERO_GITHUB_PATH"
 rm -rf "$GUERO_GITHUB_PATH"/.git
 
 [[ -r "$GUERO_GITHUB_PATH"/bash/rc ]] && rm -vf "$SKEL_PATH"/.bashrc && \
@@ -64,19 +64,24 @@ mkdir -p "$SKEL_PATH"/.local/bin
 LINKED_SCRIPTS=(
   clarence-0.4.4
   keepassxc_delay.sh
-  sound_cap.sh
   screenshot.sh
+  self_signed_key_gen.sh
+  sound_cap.sh
   tilix.sh
   vid_rename.sh
   vid_to_dvd_mpeg.sh
   windems.sh
 )
 for i in ${LINKED_SCRIPTS[@]}; do
-  rm -vf "$SKEL_PATH"/.local/bin/"$i" && ln -vrs "$GUERO_GITHUB_PATH"/scripts/"$i" "$SKEL_PATH"/.local/bin/
+  [[ -e "$GUERO_GITHUB_PATH"/scripts/"$i" ]] && \
+    rm -vf "$SKEL_PATH"/.local/bin/"$i" && ln -vrs "$GUERO_GITHUB_PATH"/scripts/"$i" "$SKEL_PATH"/.local/bin/
 done
 
 [[ -r "$GUERO_GITHUB_PATH"/bash/context-color/context-color ]] && rm -vf "$SKEL_PATH"/.local/bin/context-color && \
   ln -vrs "$GUERO_GITHUB_PATH"/bash/context-color/context-color "$SKEL_PATH"/.local/bin/context-color
+
+[[ -r "$GUERO_GITHUB_PATH"/bash/bashtop/bashtop ]] && rm -vf "$SKEL_PATH"/.local/bin/bashtop && \
+  ln -vrs "$GUERO_GITHUB_PATH"/bash/bashtop/bashtop "$SKEL_PATH"/.local/bin/bashtop
 
 # not exactly in /etc/skel, so sue me
 [[ -r "$GUERO_GITHUB_PATH"/linux/openvpn/client/update-resolv-conf.sh ]] && rm -vf /usr/local/bin/update-resolv-conf.sh && \

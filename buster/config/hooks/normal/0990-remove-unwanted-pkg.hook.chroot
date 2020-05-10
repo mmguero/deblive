@@ -18,8 +18,8 @@ dpkg-reconfigure localepurge
 localepurge
 
 # remove development packages
-apt-get -y --purge remove autoconf automake bison build-essential cmake flex libc6-dbg linux-headers-$(uname -r) ninja-build swig \
-                    $(dpkg --get-selections | grep -v deinstall$ | cut -f1 | grep -P -- '-dev(:\w+)?$' | grep -Pv -- '^(dpkg|libgcc)') || true
+apt-get -y --purge remove autoconf automake bison build-essential checkinstall cmake flex gdb libc6-dbg linux-headers-$(uname -r) ninja-build swig \
+                    $(dpkg --get-selections | grep -Pv "(^(libyaml-dev|dpkg|libgcc)|deinstall$)" | cut -f1 | grep -P -- '-dev(:\w+)?$') || true
 
 # remove unwanted packages
 apt-get -y --purge remove deluge \
@@ -33,6 +33,9 @@ apt-get -y --purge remove deluge \
 
 apt-get -y autoremove
 apt-get clean
+
+# remove any residual configs
+dpkg -l | awk '/^rc/ { print $2 }' | xargs -r -l dpkg --purge
 
 # disable automatic running of some services (but don't abort if we fail)
 systemctl disable systemd-timesyncd.service || true

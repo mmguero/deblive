@@ -1,10 +1,15 @@
 #!/bin/bash
 
-NETSNIFF_VER="0.6.6"
+NETSNIFF_VER="0.6.7"
 NETSNIFF_URL="https://github.com/netsniff-ng/netsniff-ng/archive/v$NETSNIFF_VER.tar.gz"
 
-ZEEK_VER="3.0.1"
-ZEEK_URL="https://www.zeek.org/downloads/zeek-$ZEEK_VER.tar.gz"
+ZEEK_VER="3.0.6"
+ZEEK_URL="https://old.zeek.org/downloads/zeek-$ZEEK_VER.tar.gz"
+ZEEK_INSTALL_PLUGINS_SH_URL="https://raw.githubusercontent.com/mmguero-dev/Malcolm/development/shared/bin/zeek_install_plugins.sh"
+ZEEK_LOCAL_POLICY_URLS=(
+  "https://raw.githubusercontent.com/mmguero-dev/Malcolm/development/sensor-iso/config/includes.chroot/usr/local/etc/zeek/local.zeek"
+  "https://raw.githubusercontent.com/mmguero-dev/Malcolm/development/sensor-iso/config/includes.chroot/usr/local/etc/zeek/login.zeek"
+)
 ZEEK_PATCH_URLS=(
   # nothing here for now
 )
@@ -15,12 +20,13 @@ OPENRESOLV_URL="https://roy.marples.name/downloads/openresolv/openresolv-$OPENRE
 RESPONDER_VER="3.0.0.0"
 RESPONDER_URL="https://github.com/lgandx/Responder/archive/v${RESPONDER_VER}.tar.gz"
 
-BURPSUITE_VER="2.1.07"
+BURPSUITE_VER="2020.4"
 BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=jar"
 
-GHIDRA_URL="https://ghidra-sre.org/ghidra_9.1.1_PUBLIC_20191218.zip"
-SYNERGY_URL="https://binaries.symless.com/synergy/v1-core-standard/v1.11.0-stable-b2173efb/synergy_1.11.0.stable_b147%2Bb2173efb_debian_amd64.deb"
-PCLOUD_URL="https://p-def4.pcloud.com/cBZetST9hZtTO10SZZZHNp7a7Z2ZZRP5ZkZVcA5VZAkZJFZL5ZqZlJZ5XZX0Z2JZpFZ6JZ9XZG5Z5kZg5Z1EnhkZV1JO38Gs4hBEDarKfEMXzXqXGWVX/pcloud"
+GHIDRA_URL="https://ghidra-sre.org/ghidra_9.1.2_PUBLIC_20200212.zip"
+SYNERGY_URL="https://binaries.symless.com/synergy/v1-core-standard/v1.11.1-stable-55ec3105/synergy_1.11.1.stable~b159%2B55ec3105_debian_amd64.deb"
+PCLOUD_URL="https://p-def1.pcloud.com/cBZLReAUjZLbsoWfZZZs6w6a7Z2ZZKK7ZkZpOo5VZzFZtkZO0ZYXZ45Z37ZpVZY0Z3FZr5ZGFZh5ZVXZyVZtouTkZGaPgu6ApT6XKEq3GWUTzOhvyQlt7/pcloud"
+UDPTUNNEL_URL="https://codeload.github.com/rfc1036/udptunnel/tar.gz/master"
 
 # Install netsniff-ng
 cd /tmp
@@ -58,8 +64,9 @@ checkinstall -y -D --strip=yes --stripso=yes --install=yes --fstrans=no --pkgnam
 # install 3rd party Zeek plugins and scripts
 export PATH=/opt/zeek/bin:$PATH
 zkg autoconfig
-bash /usr/local/bin/zeek_install_plugins.sh
-rm -Rf /root/.zkg /usr/local/src/*/.git
+curl -L -o /tmp/zeek_install_plugins.sh "$ZEEK_INSTALL_PLUGINS_SH_URL"
+bash /tmp/zeek_install_plugins.sh
+rm -Rf /root/.zkg /usr/local/src/*/.git /tmp/zeek_install_plugins.sh
 
 cat << 'EOF' >> /opt/zeek/etc/zeekctl.cfg
 # all interfaces using lb_method=custom should use AF_PACKET
@@ -68,61 +75,10 @@ lb_custom.InterfacePrefix=af_packet::
 EOF
 
 # set up default zeek local policy
-cat << 'EOF' > /opt/zeek/share/zeek/site/local.zeek
-##! Zeek local site policy. Customize as appropriate.
-##!
-##! See https://github.com/zeek/zeekctl
-##!     https://docs.zeek.org/en/stable/script-reference/scripts.html
-##!     https://github.com/zeek/zeek/blob/master/scripts/site/local.zeek
-
-redef Broker::default_listen_address = "127.0.0.1";
-redef ignore_checksums = T;
-redef HTTP::default_capture_password = T;
-redef FTP::default_capture_password = T;
-redef SOCKS::default_capture_password = T;
-
-@load tuning/defaults
-@load misc/scan
-@load frameworks/software/vulnerable
-@load frameworks/software/version-changes
-@load frameworks/software/windows-version-detection
-@load-sigs frameworks/signatures/detect-windows-shells
-@load protocols/conn/known-hosts
-@load protocols/conn/known-services
-@load protocols/dhcp/software
-@load protocols/dns/detect-external-names
-@load protocols/ftp/detect
-@load protocols/ftp/software
-@load protocols/http/detect-sqli
-@load protocols/http/detect-webapps
-@load protocols/http/software
-@load protocols/http/software-browser-plugins
-@load protocols/mysql/software
-@load protocols/smtp/software
-@load protocols/ssh/detect-bruteforcing
-@load protocols/ssh/geo-data
-@load protocols/ssh/interesting-hostnames
-@load protocols/ssh/software
-@load protocols/ssl/known-certs
-@load protocols/ssl/log-hostcerts-only
-@load protocols/ssl/validate-certs
-@load tuning/track-all-assets.zeek
-@load frameworks/files/hash-all-files
-@load policy/protocols/conn/vlan-logging
-@load policy/protocols/conn/mac-logging
-@load policy/protocols/modbus/track-memmap
-@load policy/protocols/modbus/known-masters-slaves
-@load policy/protocols/mqtt
-# @load frameworks/files/detect-MHR
-
-# custom packages installed manually
-@load Salesforce/GQUIC
-@load ./bzar
-# custom packages managed by zkg via packages/packages.zeek
-@load ./packages/packages.zeek
-# and apparently some installed packages (BRO::LDAP) are loaded automatically
-
-EOF
+cd /opt/zeek/share/zeek/site/
+for i in ${ZEEK_LOCAL_POLICY_URLS[@]}; do
+  curl -L -J -O "$i"
+done
 
 # cleanup
 cd /tmp
@@ -171,14 +127,31 @@ rm -f "/tmp/synergy_debian_amd64.deb"
 curl -L -o "/usr/bin/pcloud" "$PCLOUD_URL"
 chmod 755 "/usr/bin/pcloud"
 
+# udptunnel
+curl -L -o "/tmp/udptunnel.tar.gz" "$UDPTUNNEL_URL"
+cd /tmp
+mkdir udptunnel
+tar xvf ./udptunnel.tar.gz -C ./udptunnel --strip-components 1
+make
+make install
+cd /tmp
+rm -rf /tmp/udptunnel*
+
 # set up capabilities for network-related tools
 EXE_LESS_CAP=(
-  /sbin/ethtool
-  /opt/zeek/bin/zeek
   /opt/zeek/bin/capstats
+  /opt/zeek/bin/zeek
+  /sbin/ethtool
   /usr/bin/dumpcap
+  /usr/bin/ncat
+  /usr/bin/openssl
+  /usr/bin/socat
+  /usr/bin/stunnel3
+  /usr/bin/stunnel4
+  /usr/bin/tcpcryptd
   /usr/bin/tcpflow
   /usr/bin/tcpreplay
+  /usr/local/sbin/udptunnel
   /usr/sbin/arpspoof
   /usr/sbin/dnsspoof
   /usr/sbin/dsniff
@@ -189,6 +162,7 @@ EXE_LESS_CAP=(
   /usr/sbin/nethogs
   /usr/sbin/sshmitm
   /usr/sbin/sshow
+  /usr/sbin/tcpd
   /usr/sbin/tcpdump
   /usr/sbin/tcpkill
   /usr/sbin/tcpnice
@@ -202,6 +176,7 @@ EXE_MORE_CAP=(
   /usr/sbin/curvetun
   /usr/sbin/flowtop
   /usr/sbin/ifpps
+  /usr/sbin/inetd
   /usr/sbin/mausezahn
   /usr/sbin/netsniff-ng
   /usr/sbin/stenotype
@@ -209,11 +184,11 @@ EXE_MORE_CAP=(
 )
 for i in ${EXE_LESS_CAP[@]}; do
   $SUDO_CMD chown root:netdev "$i" && \
-    $SUDO_CMD setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' "$i"
+    $SUDO_CMD setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_NET_BIND_SERVICE+eip' "$i"
 done
 for i in ${EXE_MORE_CAP[@]}; do
   $SUDO_CMD chown root:netdev "$i" && \
-    $SUDO_CMD setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_IPC_LOCK+eip CAP_SYS_ADMIN+eip' "$i"
+    $SUDO_CMD setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_NET_BIND_SERVICE+eip CAP_IPC_LOCK+eip CAP_SYS_ADMIN+eip' "$i"
 done
 
 mkdir -p /var/lib/stenographer && \
