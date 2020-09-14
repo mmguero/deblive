@@ -41,7 +41,7 @@ BURPSUITE_VER="2020.9.1"
 BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=jar"
 
 GHIDRA_URL="https://ghidra-sre.org/ghidra_9.1.2_PUBLIC_20200212.zip"
-SYNERGY_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/synergy_1.12.0.stable~b20200827.1+cb8064e8_debian10_amd64.deb"
+SYNERGY_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/synergy_debian_amd64.deb"
 PCLOUD_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/pcloud"
 UDPTUNNEL_URL="https://codeload.github.com/rfc1036/udptunnel/tar.gz/master"
 
