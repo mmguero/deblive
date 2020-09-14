@@ -266,12 +266,16 @@ EXE_MORE_CAP=(
   /usr/sbin/trafgen
 )
 for i in ${EXE_LESS_CAP[@]}; do
-  $SUDO_CMD chown root:netdev "$i" && \
-    $SUDO_CMD setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_NET_BIND_SERVICE+eip' "$i"
+  if [[ -e "$i" ]]; then
+    $SUDO_CMD chown root:netdev "$i" && \
+      $SUDO_CMD setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_NET_BIND_SERVICE+eip' "$i"
+  fi
 done
 for i in ${EXE_MORE_CAP[@]}; do
-  $SUDO_CMD chown root:netdev "$i" && \
-    $SUDO_CMD setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_NET_BIND_SERVICE+eip CAP_IPC_LOCK+eip CAP_SYS_ADMIN+eip' "$i"
+  if [[ -e "$i" ]]; then
+    $SUDO_CMD chown root:netdev "$i" && \
+      $SUDO_CMD setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_NET_BIND_SERVICE+eip CAP_IPC_LOCK+eip CAP_SYS_ADMIN+eip' "$i"
+  fi
 done
 
 ###
