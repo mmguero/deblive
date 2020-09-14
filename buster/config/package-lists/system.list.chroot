@@ -27,7 +27,6 @@ cloc
 coreutils
 cpio
 cpufrequtils
-crda
 cryptmount
 cryptsetup-bin
 cryptsetup-initramfs
@@ -193,7 +192,6 @@ uuid-runtime
 vbindiff
 vim-tiny
 wamerican
-wireless-regdb
 wireless-tools
 xbitmaps
 xfsprogs
