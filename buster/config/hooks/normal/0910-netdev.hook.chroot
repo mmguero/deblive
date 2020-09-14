@@ -34,15 +34,15 @@ CAPA_URL="https://github.com/fireeye/capa/releases/download/v${CAPA_VERSION}/cap
 OPENRESOLV_VER="3.9.2"
 OPENRESOLV_URL="https://roy.marples.name/downloads/openresolv/openresolv-$OPENRESOLV_VER.tar.xz"
 
-RESPONDER_VER="3.0.0.0"
+RESPONDER_VER="3.0.1.0"
 RESPONDER_URL="https://github.com/lgandx/Responder/archive/v${RESPONDER_VER}.tar.gz"
 
 BURPSUITE_VER="2020.9.1"
 BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=jar"
 
 GHIDRA_URL="https://ghidra-sre.org/ghidra_9.1.2_PUBLIC_20200212.zip"
-SYNERGY_URL="https://binaries.symless.com/synergy/v1-core-standard/v1.11.1-stable-55ec3105/synergy_1.11.1.stable~b159%2B55ec3105_debian_amd64.deb"
-PCLOUD_URL="https://p-def1.pcloud.com/cBZLReAUjZLbsoWfZZZs6w6a7Z2ZZKK7ZkZpOo5VZzFZtkZO0ZYXZ45Z37ZpVZY0Z3FZr5ZGFZh5ZVXZyVZtouTkZGaPgu6ApT6XKEq3GWUTzOhvyQlt7/pcloud"
+SYNERGY_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/synergy_1.12.0.stable~b20200827.1+cb8064e8_debian10_amd64.deb"
+PCLOUD_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/pcloud"
 UDPTUNNEL_URL="https://codeload.github.com/rfc1036/udptunnel/tar.gz/master"
 
 # Install netsniff-ng
@@ -273,10 +273,5 @@ for i in ${EXE_MORE_CAP[@]}; do
   $SUDO_CMD chown root:netdev "$i" && \
     $SUDO_CMD setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_NET_BIND_SERVICE+eip CAP_IPC_LOCK+eip CAP_SYS_ADMIN+eip' "$i"
 done
-
-mkdir -p /var/lib/stenographer && \
-  chown root:stenographer /var/lib/stenographer /usr/sbin/stenotype /etc/stenographer/certs/*.pem && \
-  chmod 440 /etc/stenographer/certs/*.pem && \
-  chmod 775 /var/lib/stenographer /usr/sbin/stenotype
 
 ###
