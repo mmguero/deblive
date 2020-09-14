@@ -8,6 +8,19 @@ sed -i "s/.*PermitEmptyPasswords.*/PermitEmptyPasswords no/g" /etc/ssh/sshd_conf
 sed -i "s/.*AddressFamily any.*/AddressFamily inet/" /etc/ssh/sshd_config
 
 # enable firewall, disallow everything in except SSH
+sed -i "s/LOGLEVEL=.*/LOGLEVEL=off/" /etc/ufw/ufw.conf
+sed -i 's/DEFAULT_FORWARD_POLICY=.*/DEFAULT_FORWARD_POLICY="ACCEPT"/' /etc/default/ufw
+sed -i "s/#net\/ipv4\/ip_forward=1/net\/ipv4\/ip_forward=1/" /etc/ufw/sysctl.conf
+read -r -d '' MASQUERADECFG <<- EOM
+# NAT table rules
+*nat
+:POSTROUTING ACCEPT [0:0]
+-A POSTROUTING -o docker0 -s 172.17.0.0/16 -j MASQUERADE
+COMMIT
+EOM
+awk '1' <(echo "$MASQUERADECFG") /etc/ufw/before.rules > /tmp/before.rules && \
+  cat /tmp/before.rules > /etc/ufw/before.rules && \
+  rm -f /tmp/before.rules
 /usr/sbin/ufw --force enable
 /usr/sbin/ufw default deny incoming
 /usr/sbin/ufw default allow outgoing
@@ -20,23 +33,29 @@ UFW_ALLOW_RULES=(
   nfs
   ntp
   ssh
+  1194
   4001/tcp
   24800/tcp
-  28400/tcp
-  8443/tcp
-  9443/tcp
+  51820/udp
 )
 for i in ${UFW_ALLOW_RULES[@]}; do
   ufw allow "$i"
 done
 
+# docker
+cat << 'EOF' > /etc/docker/daemon.json
+{
+  "iptables": false
+}
+EOF
+
 # performance parameters for networking, disk, etc.
 cat << 'EOF' >> /etc/sysctl.conf
-# allow dmg reading
+# don't restrict dmesg to root
 kernel.dmesg_restrict=0
 
 # the maximum number of open file handles
-fs.file-max=65536
+fs.file-max=2097152
 
 # increase maximums for inotify watches
 fs.inotify.max_user_watches=131072
@@ -45,9 +64,6 @@ fs.inotify.max_user_instances=512
 
 # the maximum number of memory map areas a process may have
 vm.max_map_count=262144
-
-# the maximum number of incoming connections
-net.core.somaxconn=65535
 
 # decrease "swappiness" (swapping out runtime memory vs. dropping pages)
 vm.swappiness=1
@@ -58,7 +74,7 @@ vm.dirty_background_ratio=40
 # maximum % of dirty system memory before committing everything
 vm.dirty_ratio=80
 
-# network buffer sizes
+net.core.somaxconn=65535
 net.core.netdev_max_backlog=250000
 net.core.optmem_max=33554432
 net.core.rmem_default=425984
@@ -82,7 +98,7 @@ if [[ ! -f /etc/sudoers.d/power_groups ]]; then
 %disk ALL=(root) NOPASSWD: /bin/mount
 %disk ALL=(root) NOPASSWD: /bin/umount
 %netdev ALL=(root) NOPASSWD: /usr/sbin/openvpn
-%netdev ALL=(root) NOPASSWD: /usr/bin/wg
+%netdev ALL=(root) NOPASSWD: /usr/local/bin/wwg.sh
 %cryptkeeper ALL=(root) NOPASSWD:/sbin/cryptsetup
 EOT
   chmod 440 /etc/sudoers.d/power_groups

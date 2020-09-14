@@ -73,7 +73,7 @@ if [ -d "$WORKDIR" ]; then
   echo "linux-image-$(uname -r)" > ./config/package-lists/kernel.list.chroot
   echo "linux-headers-$(uname -r)" >> ./config/package-lists/kernel.list.chroot
   echo "linux-compiler-gcc-8-x86=$(dpkg -s linux-compiler-gcc-8-x86 | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
-  echo "linux-kbuild-4.19=$(dpkg -s linux-kbuild-4.19 | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
+  echo "linux-kbuild-5.7=$(dpkg -s linux-kbuild-5.7 | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
   echo "firmware-linux=$(dpkg -s firmware-linux | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
   echo "firmware-linux-free=$(dpkg -s firmware-linux-free | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
   echo "firmware-linux-nonfree=$(dpkg -s firmware-linux-nonfree | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
@@ -82,19 +82,14 @@ if [ -d "$WORKDIR" ]; then
   echo "firmware-iwlwifi=$(dpkg -s firmware-iwlwifi | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
   echo "firmware-atheros=$(dpkg -s firmware-atheros | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
 
-  # virtualbox-guest .deb package(s) in its own clean environment (rather than in hooks/)
-  if [[ -d "$CONFIG_PATH/vbox-guest-build" ]]; then
-    rsync -a "$CONFIG_PATH/vbox-guest-build" .
-    mkdir -p ./config/packages.chroot/
-    bash ./vbox-guest-build/build-docker-image.sh
-    docker run --rm -v "$(pwd)"/vbox-guest-build:/build vboxguest-build:latest -o /build
-    rm -f ./vbox-guest-build/*-source*.deb \
-          ./vbox-guest-build/*-dbgsym*.deb \
-          ./vbox-guest-build/virtualbox_*.deb \
-          ./vbox-guest-build/virtualbox-dkms_*.deb \
-          ./vbox-guest-build/virtualbox-qt_*.deb
-    mv ./vbox-guest-build/*.deb ./config/packages.chroot/
-  fi
+  # and make sure we remove the old stuff when it's all over
+  echo "#!/bin/sh" > ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
+  echo "export LC_ALL=C.UTF-8" >> ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
+  echo "export LANG=C.UTF-8" >> ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
+  echo "apt-get -y --purge remove *4.19* || true" >> ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
+  echo "apt-get -y autoremove" >> ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
+  echo "apt-get clean" >> ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
+  chmod +x ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
 
   chown -R root:root *
 

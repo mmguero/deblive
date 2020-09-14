@@ -63,7 +63,6 @@ dpkg -s albert >/dev/null 2>&1 && mkdir -p "$SKEL_PATH"/.config/autostart && \
 mkdir -p "$SKEL_PATH"/.local/bin
 LINKED_SCRIPTS=(
   clarence-0.4.4
-  keepassxc_delay.sh
   screenshot.sh
   self_signed_key_gen.sh
   sound_cap.sh
@@ -80,12 +79,15 @@ done
 [[ -r "$GUERO_GITHUB_PATH"/bash/context-color/context-color ]] && rm -vf "$SKEL_PATH"/.local/bin/context-color && \
   ln -vrs "$GUERO_GITHUB_PATH"/bash/context-color/context-color "$SKEL_PATH"/.local/bin/context-color
 
-[[ -r "$GUERO_GITHUB_PATH"/bash/bashtop/bashtop ]] && rm -vf "$SKEL_PATH"/.local/bin/bashtop && \
-  ln -vrs "$GUERO_GITHUB_PATH"/bash/bashtop/bashtop "$SKEL_PATH"/.local/bin/bashtop
-
 # not exactly in /etc/skel, so sue me
+[[ -r "$GUERO_GITHUB_PATH"/linux/wireguard-ufw/wwg.sh ]] && rm -vf /usr/local/bin/wwg.sh && \
+  cp -fv "$GUERO_GITHUB_PATH"/linux/wireguard-ufw/wwg.sh /usr/local/bin/wwg.sh
+
 [[ -r "$GUERO_GITHUB_PATH"/linux/openvpn/client/update-resolv-conf.sh ]] && rm -vf /usr/local/bin/update-resolv-conf.sh && \
-  ln -vrs "$GUERO_GITHUB_PATH"/linux/openvpn/client/update-resolv-conf.sh /usr/local/bin/update-resolv-conf.sh
+  cp -fv "$GUERO_GITHUB_PATH"/linux/openvpn/client/update-resolv-conf.sh /usr/local/bin/update-resolv-conf.sh
+
+git clone --recursive --depth 1 --single-branch -b master https://github.com/aristocratos/bpytop /usr/local/bin/bpytop
+ln -vrs /usr/local/bin/bpytop/bpytop /usr/local/bin/btop
 
 touch "$SKEL_PATH"/.hushlogin
 echo 'SELECTED_EDITOR="/usr/bin/vim.tiny"' > "$SKEL_PATH"/.selected_editor

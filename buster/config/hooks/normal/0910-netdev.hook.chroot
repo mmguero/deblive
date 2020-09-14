@@ -3,7 +3,9 @@
 NETSNIFF_VER="0.6.7"
 NETSNIFF_URL="https://github.com/netsniff-ng/netsniff-ng/archive/v$NETSNIFF_VER.tar.gz"
 
-ZEEK_VER="3.0.6"
+SPICY_DIR="/opt/spicy"
+ZEEK_DIR="/opt/zeek"
+ZEEK_VER="3.0.10"
 ZEEK_URL="https://old.zeek.org/downloads/zeek-$ZEEK_VER.tar.gz"
 ZEEK_INSTALL_PLUGINS_SH_URL="https://raw.githubusercontent.com/mmguero-dev/Malcolm/development/shared/bin/zeek_install_plugins.sh"
 ZEEK_LOCAL_POLICY_URLS=(
@@ -14,13 +16,28 @@ ZEEK_PATCH_URLS=(
   # nothing here for now
 )
 
+CMAKE_DIR="/opt/cmake"
+CMAKE_VER="3.17.2"
+CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${CMAKE_VER}/cmake-${CMAKE_VER}-Linux-x86_64.tar.gz"
+
+BISON_VER="3.6.2"
+BISON_URL="https://ftp.gnu.org/gnu/bison/bison-${BISON_VER}.tar.gz"
+
+YARA_VERSION="4.0.2"
+YARA_URL="https://github.com/VirusTotal/yara/archive/v${YARA_VERSION}.tar.gz"
+YARA_RULES_URL="https://codeload.github.com/Neo23x0/signature-base/tar.gz/master"
+YARA_RULES_DIR="/opt/yara-rules"
+
+CAPA_VERSION="1.2.0"
+CAPA_URL="https://github.com/fireeye/capa/releases/download/v${CAPA_VERSION}/capa-v${CAPA_VERSION}-linux.zip"
+
 OPENRESOLV_VER="3.9.2"
 OPENRESOLV_URL="https://roy.marples.name/downloads/openresolv/openresolv-$OPENRESOLV_VER.tar.xz"
 
 RESPONDER_VER="3.0.0.0"
 RESPONDER_URL="https://github.com/lgandx/Responder/archive/v${RESPONDER_VER}.tar.gz"
 
-BURPSUITE_VER="2020.4"
+BURPSUITE_VER="2020.9.1"
 BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=jar"
 
 GHIDRA_URL="https://ghidra-sre.org/ghidra_9.1.2_PUBLIC_20200212.zip"
@@ -42,6 +59,30 @@ cd ..
 rm -Rf netsniff-$NETSNIFF_VER.tar.gz netsniff-ng-$NETSNIFF_VER
 ##
 
+# some environment variables needed for build using clang
+export CC="clang-10"
+export CXX="clang++-10"
+export ASM="clang-10"
+export CCACHE_DIR="/var/spool/ccache"
+export CCACHE_COMPRESS=1
+export PATH="${ZEEK_DIR}"/bin:"${CMAKE_DIR}"/bin:$PATH
+
+# download and install cmake (required for Spicy build)
+mkdir -p "${CMAKE_DIR}"
+curl -sSL "${CMAKE_URL}" | \
+  tar xzf - -C "${CMAKE_DIR}" --strip-components 1
+
+# download and install newer Bison (required for Spicy build)
+cd /tmp
+curl -sSL "${BISON_URL}" | tar xzf - -C /tmp
+mv "./bison-${BISON_VER}" ./bison
+cd ./bison
+./configure --prefix=/usr
+make
+# make install
+checkinstall -y -D --strip=yes --stripso=yes --install=yes --fstrans=no --pkgname="bison" --pkgversion="$BISON_VER" --pkgarch="amd64" --pkgsource="$BISON_URL"
+rm -rf /tmp/bison*
+
 # Build and install zeek
 mkdir -p /usr/local/src/zeek-patches
 cd /usr/local/src/zeek-patches
@@ -55,11 +96,10 @@ cd zeek-$ZEEK_VER
 for i in /usr/local/src/zeek-patches/*; do
   patch -p 1 -r - --no-backup-if-mismatch < "$i" || true
 done
-./configure --prefix=/opt/zeek --generator=Ninja
+./configure --prefix="${ZEEK_DIR}" --generator=Ninja --ccache --enable-perftools
 cd build
 ninja
-# ninja install
-checkinstall -y -D --strip=yes --stripso=yes --install=yes --fstrans=no --pkgname="zeek" --pkgversion="$ZEEK_VER" --pkgarch="amd64" --pkgsource="$ZEEK_URL" ninja install
+ninja install
 
 # install 3rd party Zeek plugins and scripts
 export PATH=/opt/zeek/bin:$PATH
@@ -68,7 +108,14 @@ curl -L -o /tmp/zeek_install_plugins.sh "$ZEEK_INSTALL_PLUGINS_SH_URL"
 bash /tmp/zeek_install_plugins.sh
 rm -Rf /root/.zkg /usr/local/src/*/.git /tmp/zeek_install_plugins.sh
 
-cat << 'EOF' >> /opt/zeek/etc/zeekctl.cfg
+# strip for file size
+file "${ZEEK_DIR}"/{lib,bin}/* \
+     "${ZEEK_DIR}"/lib/zeek/plugins/packages/*/lib/* \
+     "${ZEEK_DIR}"/lib/zeek/plugins/*/lib/* \
+     "${SPICY_DIR}"/{lib,bin}/* \
+     "${SPICY_DIR}"/lib/spicy/Zeek_Spicy/lib/* | grep 'ELF 64-bit' | sed 's/:.*//' | xargs -l -r strip -v --strip-unneeded
+
+cat << 'EOF' >> "${ZEEK_DIR}"/etc/zeekctl.cfg
 # all interfaces using lb_method=custom should use AF_PACKET
 lb_custom.InterfacePrefix=af_packet::
 
@@ -83,6 +130,41 @@ done
 # cleanup
 cd /tmp
 rm -Rf zeek-$ZEEK_VER*
+###
+
+# yara
+mkdir -p usr/local/src
+cd /usr/local/src
+
+curl -sSL "${YARA_URL}" | tar xzf - -C /usr/local/src/
+cd "./yara-${YARA_VERSION}"
+./bootstrap.sh
+./configure --prefix=/usr
+  --with-crypto
+  --enable-magic
+  --enable-cuckoo
+  --enable-dotnet
+make
+#make install
+checkinstall -y -D --strip=yes --stripso=yes --install=yes --fstrans=no --pkgname="yara" --pkgversion="$YARA_VERSION" --pkgarch="amd64" --pkgsource="$YARA_URL"
+cd /tmp
+rm -rf /usr/local/src/yara*
+
+mkdir -p ./Neo23x0
+curl -sSL "$YARA_RULES_URL" | tar xzvf - -C ./Neo23x0 --strip-components 1
+mkdir -p "${YARA_RULES_DIR}"/custom
+cp ./Neo23x0/yara/* ./Neo23x0/vendor/yara/* "${YARA_RULES_DIR}"/
+cp ./Neo23x0/LICENSE "${YARA_RULES_DIR}"/_LICENSE
+rm -rf /tmp/Neo23x0
+###
+
+# capa
+cd /tmp
+curl -sSL -o ./capa.zip "${CAPA_URL}"
+unzip ./capa.zip
+mv /tmp/capa /usr/bin/
+chmod +x /usr/bin/capa
+rm -f ./capa.zip
 ###
 
 # Install openresolv (version in buster repos is out of date)

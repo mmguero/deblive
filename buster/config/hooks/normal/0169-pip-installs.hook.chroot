@@ -20,6 +20,7 @@ pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
   git+git://github.com/badele/gitcheck.git \
   git-up \
   habu \
+  humanhash3 \
   ipaddress \
   magic-wormhole \
   mitmproxy \
