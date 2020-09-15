@@ -28,6 +28,9 @@ YARA_URL="https://github.com/VirusTotal/yara/archive/v${YARA_VERSION}.tar.gz"
 YARA_RULES_URL="https://codeload.github.com/Neo23x0/signature-base/tar.gz/master"
 YARA_RULES_DIR="/opt/yara-rules"
 
+CAPA_RULES_URL="https://codeload.github.com/fireeye/capa-rules/tar.gz/master"
+CAPA_RULES_DIR="/opt/capa-rules"
+
 OPENRESOLV_VER="3.9.2"
 OPENRESOLV_URL="https://roy.marples.name/downloads/openresolv/openresolv-$OPENRESOLV_VER.tar.xz"
 
@@ -54,6 +57,7 @@ checkinstall -y -D --strip=yes --stripso=yes --install=yes --fstrans=no --pkgnam
 
 cd ..
 rm -Rf netsniff-$NETSNIFF_VER.tar.gz netsniff-ng-$NETSNIFF_VER
+ln -s -f /usr/sbin/netsniff-ng /usr/local/bin/
 ##
 
 # some environment variables needed for build using clang
@@ -124,6 +128,8 @@ for i in ${ZEEK_LOCAL_POLICY_URLS[@]}; do
   curl -L -J -O "$i"
 done
 
+ln -s -f "${ZEEK_DIR}"/bin/zeek /usr/local/bin/
+
 # cleanup
 cd /tmp
 rm -Rf zeek-$ZEEK_VER*
@@ -154,6 +160,11 @@ cp ./Neo23x0/yara/* ./Neo23x0/vendor/yara/* "${YARA_RULES_DIR}"/
 cp ./Neo23x0/LICENSE "${YARA_RULES_DIR}"/_LICENSE
 rm -rf /tmp/Neo23x0
 ###
+
+# capa (installed via pip) rules
+mkdir -p "${CAPA_RULES_DIR}"
+cd "$(dirname "${CAPA_RULES_DIR}")"
+curl -sSL "$CAPA_RULES_URL" | tar xzvf - -C ./"$(basename "${CAPA_RULES_DIR}")" --strip-components 1
 
 # Install openresolv (version in buster repos is out of date)
 curl -L -o "openresolv-$OPENRESOLV_VER.tar.xz" "$OPENRESOLV_URL"
