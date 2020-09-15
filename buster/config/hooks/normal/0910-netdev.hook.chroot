@@ -28,9 +28,6 @@ YARA_URL="https://github.com/VirusTotal/yara/archive/v${YARA_VERSION}.tar.gz"
 YARA_RULES_URL="https://codeload.github.com/Neo23x0/signature-base/tar.gz/master"
 YARA_RULES_DIR="/opt/yara-rules"
 
-CAPA_VERSION="1.2.0"
-CAPA_URL="https://github.com/fireeye/capa/releases/download/v${CAPA_VERSION}/capa-v${CAPA_VERSION}-linux.zip"
-
 OPENRESOLV_VER="3.9.2"
 OPENRESOLV_URL="https://roy.marples.name/downloads/openresolv/openresolv-$OPENRESOLV_VER.tar.xz"
 
@@ -158,15 +155,6 @@ cp ./Neo23x0/LICENSE "${YARA_RULES_DIR}"/_LICENSE
 rm -rf /tmp/Neo23x0
 ###
 
-# capa
-cd /tmp
-curl -sSL -o ./capa.zip "${CAPA_URL}"
-unzip ./capa.zip
-mv /tmp/capa /usr/bin/
-chmod +x /usr/bin/capa
-rm -f ./capa.zip
-###
-
 # Install openresolv (version in buster repos is out of date)
 curl -L -o "openresolv-$OPENRESOLV_VER.tar.xz" "$OPENRESOLV_URL"
 tar xvf "openresolv-$OPENRESOLV_VER.tar.xz"
@@ -195,10 +183,10 @@ freshclam --stdout --quiet --no-warnings --foreground=true
 mkdir -p /opt/burpsuite
 curl -L -o "/opt/burpsuite/burpsuite_community_v${BURPSUITE_VER}.jar" "$BURPSUITE_URL"
 
-# ghidra
-curl -L -o "/tmp/ghidra.zip" "$GHIDRA_URL"
-unzip "/tmp/ghidra.zip" -d "/opt"
-rm -f "/tmp/ghidra.zip"
+# ghidra (commented out for now because it's huge)
+# curl -L -o "/tmp/ghidra.zip" "$GHIDRA_URL"
+# unzip "/tmp/ghidra.zip" -d "/opt"
+# rm -f "/tmp/ghidra.zip"
 
 # synergy
 curl -L -o "/tmp/synergy_debian_amd64.deb" "$SYNERGY_URL"

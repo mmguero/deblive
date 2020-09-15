@@ -66,7 +66,7 @@ tshark
 ufw
 wget
 whois
-#wireguard
+wireguard
 wireshark
 x11vnc
 x2goclient

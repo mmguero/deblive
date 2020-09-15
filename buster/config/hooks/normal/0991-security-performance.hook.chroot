@@ -43,6 +43,7 @@ for i in ${UFW_ALLOW_RULES[@]}; do
 done
 
 # docker
+mkdir -p /etc/docker/
 cat << 'EOF' > /etc/docker/daemon.json
 {
   "iptables": false

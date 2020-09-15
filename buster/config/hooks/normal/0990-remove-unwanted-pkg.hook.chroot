@@ -18,17 +18,21 @@ dpkg-reconfigure localepurge
 localepurge
 
 # remove development packages
-apt-get -y --purge remove checkinstall bison libc6-dbg ninja-build \
+apt-get -y --purge remove checkinstall cmake cmake-data bison libc6-dbg ninja-build \
                     $(dpkg --get-selections | grep -Pv "(^(libyaml-dev|dpkg|libgcc)|deinstall$)" | cut -f1 | grep -P -- '-dev(:\w+)?$') || true
 
 # remove unwanted packages
 apt-get -y --purge remove deluge \
+                          epiphany-browser \
                           evince \
+                          firmware-netronome \
                           gnome-accessibility-themes \
                           gucharmap \
                           libcupsfilters1 \
                           libcupsimage2 \
+                          openjdk-11-jdk \
                           prelink \
+                          vlc-l10n \
                           yelp || true
 
 apt-get -y autoremove
