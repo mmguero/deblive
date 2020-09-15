@@ -18,8 +18,9 @@ dpkg-reconfigure localepurge
 localepurge
 
 # remove development packages
-apt-get -y --purge remove checkinstall cmake cmake-data bison libc6-dbg ninja-build \
-                    $(dpkg --get-selections | grep -Pv "(^(libyaml-dev|dpkg|libgcc)|deinstall$)" | cut -f1 | grep -P -- '-dev(:\w+)?$') || true
+apt-get -y --purge remove checkinstall bison libc6-dbg ninja-build \
+                    $(dpkg --get-selections | grep -Pv "(^(libyaml-dev|dpkg|libgcc|llvm|clang)|deinstall$)" | cut -f1 | grep -P -- '-dev(:\w+)?$') || true
+rm -rf /opt/cmake /var/spool/ccache
 
 # remove unwanted packages
 apt-get -y --purge remove deluge \
