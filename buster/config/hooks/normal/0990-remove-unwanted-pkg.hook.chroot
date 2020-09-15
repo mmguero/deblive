@@ -25,11 +25,8 @@ apt-get -y --purge remove checkinstall cmake cmake-data bison libc6-dbg ninja-bu
 apt-get -y --purge remove deluge \
                           epiphany-browser \
                           evince \
-                          firmware-netronome \
                           gnome-accessibility-themes \
                           gucharmap \
-                          libcupsfilters1 \
-                          libcupsimage2 \
                           openjdk-11-jdk \
                           prelink \
                           vlc-l10n \
