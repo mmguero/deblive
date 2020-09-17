@@ -1,0 +1,17 @@
+arandr
+dconf-cli
+libnotify-bin
+lightdm
+lxde
+lxpanel
+lxsession
+x11-apps
+x11-session-utils
+x11-xfs-utils
+x11-xserver-utils
+xinit
+xorg
+xscreensaver
+xserver-xorg
+xserver-xorg-core
+xserver-xorg-video-qxl

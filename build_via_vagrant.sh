@@ -87,6 +87,4 @@ if [[ -n $NEED_SHUTDOWN ]]; then
   echo "$VM_NAME is stopped." >&2
 fi
 
-[[ -r "$DOCKER_IMAGES_LOCAL" ]] && rm -vf "$DOCKER_IMAGES_LOCAL"
-
 popd

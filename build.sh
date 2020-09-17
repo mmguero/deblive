@@ -96,6 +96,10 @@ if [ -d "$WORKDIR" ]; then
   # put the date in the grub.cfg entries
   sed -i "s/\(Install Debian\)/\1 $(date +'%Y-%m-%d %H:%M:%S')/g" ./config/includes.binary/boot/grub/grub.cfg ./config/includes.binary/isolinux/install.cfg
 
+  mkdir -p ./config/includes.installer
+  cp -v ./config/includes.binary/install/* ./config/includes.installer/
+  cp -v ./config/includes.chroot/usr/local/bin/preseed*.sh ./config/includes.installer/
+
   lb config \
     --image-name "$IMAGE_NAME" \
     --debian-installer live \
