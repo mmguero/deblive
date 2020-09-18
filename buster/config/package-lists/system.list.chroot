@@ -71,9 +71,6 @@ google-perftools
 gpart
 gparted
 grep
-grub-efi-amd64
-grub-efi-amd64-bin
-grub-efi-ia32-bin
 gvfs
 gvfs-backends
 gvfs-daemons
@@ -115,6 +112,7 @@ libyubikey0
 libzmq5
 llvm-10
 lm-sensors
+localepurge
 lsof
 lvm2
 lzma

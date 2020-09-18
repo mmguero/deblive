@@ -20,13 +20,13 @@ else
   fi
 fi
 
-
 if [ ! -d "/usr/share/live/build/hooks" ]; then
   echo "/usr/share/live/build/hooks does not exist, install live-build before proceeding" 1>&2
   exit $BUILD_ERROR_CODE
 fi
 
 RUN_PATH="$(pwd)"
+SCRIPT_PATH="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 pushd "$CONFIG_PATH" >/dev/null 2>&1
 
 source ./vars.txt
@@ -57,6 +57,10 @@ if [ -d "$WORKDIR" ]; then
   mkdir -p ./output "./work/$IMAGE_NAME-Live-Build"
   pushd "./work/$IMAGE_NAME-Live-Build" >/dev/null 2>&1
   rsync -a "$CONFIG_PATH/config" .
+
+  ls "$SCRIPT_PATH"/shared/bin/*.sh >/dev/null 2>&1 && \
+    mkdir -p ./config/includes.chroot/usr/local/bin && \
+    cp -v "$SCRIPT_PATH"/shared/bin/*.sh ./config/includes.chroot/usr/local/bin/
 
   mkdir -p ./config/hooks/live
   pushd ./config/hooks/live
@@ -94,11 +98,19 @@ if [ -d "$WORKDIR" ]; then
   chown -R root:root *
 
   # put the date in the grub.cfg entries
-  sed -i "s/\(Install Debian\)/\1 $(date +'%Y-%m-%d %H:%M:%S')/g" ./config/includes.binary/boot/grub/grub.cfg ./config/includes.binary/isolinux/install.cfg
+  for INSTALL_FILE in ./config/includes.binary/boot/grub/grub.cfg ./config/includes.binary/isolinux/install.cfg; do
+    if [ -f "$INSTALL_FILE" ]; then
+      sed -i "s/\(Install Debian\)/\1 $(date +'%Y-%m-%d %H:%M:%S')/g" "$INSTALL_FILE"
+    fi
+  done
 
   mkdir -p ./config/includes.installer
-  cp -v ./config/includes.binary/install/* ./config/includes.installer/
-  cp -v ./config/includes.chroot/usr/local/bin/preseed*.sh ./config/includes.installer/
+
+  ls ./config/includes.binary/install/* >/dev/null 2>&1 && \
+    cp -v ./config/includes.binary/install/* ./config/includes.installer/ || true
+
+  ls ./config/includes.chroot/usr/local/bin/preseed*.sh >/dev/null 2>&1 && \
+    cp -v ./config/includes.chroot/usr/local/bin/preseed*.sh ./config/includes.installer/ || true
 
   lb config \
     --image-name "$IMAGE_NAME" \
