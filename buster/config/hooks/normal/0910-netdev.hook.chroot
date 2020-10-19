@@ -5,7 +5,7 @@ NETSNIFF_URL="https://github.com/netsniff-ng/netsniff-ng/archive/v$NETSNIFF_VER.
 
 SPICY_DIR="/opt/spicy"
 ZEEK_DIR="/opt/zeek"
-ZEEK_VER="3.0.10"
+ZEEK_VER="3.0.11"
 ZEEK_URL="https://old.zeek.org/downloads/zeek-$ZEEK_VER.tar.gz"
 ZEEK_INSTALL_PLUGINS_SH_URL="https://raw.githubusercontent.com/mmguero-dev/Malcolm/development/shared/bin/zeek_install_plugins.sh"
 ZEEK_LOCAL_POLICY_URLS=(
@@ -17,10 +17,10 @@ ZEEK_PATCH_URLS=(
 )
 
 CMAKE_DIR="/opt/cmake"
-CMAKE_VER="3.17.2"
+CMAKE_VER="3.18.4"
 CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${CMAKE_VER}/cmake-${CMAKE_VER}-Linux-x86_64.tar.gz"
 
-BISON_VER="3.6.2"
+BISON_VER="3.7.2"
 BISON_URL="https://ftp.gnu.org/gnu/bison/bison-${BISON_VER}.tar.gz"
 
 YARA_VERSION="4.0.2"
@@ -41,6 +41,7 @@ BURPSUITE_VER="2020.9.1"
 BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=jar"
 
 GHIDRA_URL="https://ghidra-sre.org/ghidra_9.1.2_PUBLIC_20200212.zip"
+CROC_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/croc_amd64.deb"
 SYNERGY_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/synergy_debian_amd64.deb"
 PCLOUD_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/pcloud"
 UDPTUNNEL_URL="https://codeload.github.com/rfc1036/udptunnel/tar.gz/master"
@@ -209,6 +210,11 @@ curl -L -o "/opt/burpsuite/burpsuite_community_v${BURPSUITE_VER}.jar" "$BURPSUIT
 curl -L -o "/tmp/synergy_debian_amd64.deb" "$SYNERGY_URL"
 dpkg -i "/tmp/synergy_debian_amd64.deb"
 rm -f "/tmp/synergy_debian_amd64.deb"
+
+# croc
+curl -L -o "/tmp/croc_amd64.deb" "$CROC_URL"
+dpkg -i "/tmp/croc_amd64.deb"
+rm -f "/tmp/croc_amd64.deb"
 
 # pcloud
 curl -L -o "/usr/bin/pcloud" "$PCLOUD_URL"
