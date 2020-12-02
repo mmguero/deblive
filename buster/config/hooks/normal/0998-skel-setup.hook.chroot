@@ -63,12 +63,18 @@ dpkg -s albert >/dev/null 2>&1 && mkdir -p "$SKEL_PATH"/.config/autostart && \
 mkdir -p "$SKEL_PATH"/.local/bin
 LINKED_SCRIPTS=(
   clarence-0.4.4
+  mpvurl.sh
+  nc_web_server.sh
+  office_webcam.sh
+  ovpn_password_change.sh
   screenshot.sh
   self_signed_key_gen.sh
   sound_cap.sh
+  ssh_speed_test.sh
   tilix.sh
+  trashthumbs.sh
+  vid_cap.sh
   vid_rename.sh
-  vid_to_dvd_mpeg.sh
   windems.sh
 )
 for i in ${LINKED_SCRIPTS[@]}; do
@@ -85,9 +91,6 @@ done
 
 [[ -r "$GUERO_GITHUB_PATH"/linux/openvpn/client/update-resolv-conf.sh ]] && rm -vf /usr/local/bin/update-resolv-conf.sh && \
   cp -fv "$GUERO_GITHUB_PATH"/linux/openvpn/client/update-resolv-conf.sh /usr/local/bin/update-resolv-conf.sh
-
-git clone --recursive --depth 1 --single-branch -b master https://github.com/aristocratos/bpytop /usr/local/bin/bpytop
-ln -vrs /usr/local/bin/bpytop/bpytop /usr/local/bin/btop
 
 touch "$SKEL_PATH"/.hushlogin
 echo 'SELECTED_EDITOR="/usr/bin/vim.tiny"' > "$SKEL_PATH"/.selected_editor

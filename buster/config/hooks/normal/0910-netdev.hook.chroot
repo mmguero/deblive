@@ -1,5 +1,15 @@
 #!/bin/bash
 
+function git_latest_release () {
+  if [ "$1" ]; then
+    (set -o pipefail && curl -sL -f "https://api.github.com/repos/$1/releases/latest" | jq '.tag_name' | sed -e 's/^"//' -e 's/"$//' ) || \
+      (set -o pipefail && curl -sL -f "https://api.github.com/repos/$1/releases" | jq '.[0].tag_name' | sed -e 's/^"//' -e 's/"$//' ) || \
+      echo unknown
+  else
+    echo "unknown">&2
+  fi
+}
+
 NETSNIFF_VER="0.6.7"
 NETSNIFF_URL="https://github.com/netsniff-ng/netsniff-ng/archive/v$NETSNIFF_VER.tar.gz"
 
@@ -41,7 +51,6 @@ BURPSUITE_VER="2020.9.1"
 BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=jar"
 
 GHIDRA_URL="https://ghidra-sre.org/ghidra_9.1.2_PUBLIC_20200212.zip"
-CROC_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/croc_amd64.deb"
 SYNERGY_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/synergy_debian_amd64.deb"
 PCLOUD_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/pcloud"
 UDPTUNNEL_URL="https://codeload.github.com/rfc1036/udptunnel/tar.gz/master"
@@ -212,13 +221,16 @@ dpkg -i "/tmp/synergy_debian_amd64.deb"
 rm -f "/tmp/synergy_debian_amd64.deb"
 
 # croc
-curl -L -o "/tmp/croc_amd64.deb" "$CROC_URL"
-dpkg -i "/tmp/croc_amd64.deb"
-rm -f "/tmp/croc_amd64.deb"
+CROC_RELEASE="$(git_latest_release schollz/croc | sed 's/^v//')"
+TMP_CLONE_DIR="$(mktemp -d)"
+curl -L "https://github.com/schollz/croc/releases/download/v${CROC_RELEASE}/croc_${CROC_RELEASE}_Linux-64bit.tar.gz" | tar xzf - -C "${TMP_CLONE_DIR}"
+cp -f "${TMP_CLONE_DIR}"/croc /usr/local/bin/croc
+chmod 755 /usr/local/bin/croc
+rm -rf "$TMP_CLONE_DIR"
 
 # pcloud
-curl -L -o "/usr/bin/pcloud" "$PCLOUD_URL"
-chmod 755 "/usr/bin/pcloud"
+curl -L -o "/usr/local/bin/pcloud" "$PCLOUD_URL"
+chmod 755 "/usr/local/bin/pcloud"
 
 # udptunnel
 curl -L -o "/tmp/udptunnel.tar.gz" "$UDPTUNNEL_URL"
@@ -230,6 +242,24 @@ make
 make install
 cd /tmp
 rm -rf /tmp/udptunnel*
+
+# bpytop
+git clone --recursive --depth 1 --single-branch -b master https://github.com/aristocratos/bpytop /usr/local/bin/bpytop
+ln -vrs /usr/local/bin/bpytop/bpytop.py /usr/local/bin/btop
+
+# some fonts
+LATEST_NERDFONT_RELEASE="$(git_latest_release ryanoasis/nerd-fonts)"
+mkdir -p /usr/local/share/fonts
+pushd /usr/local/share/fonts >/dev/null 2>&1
+for NERDFONT in DejaVuSansMono FiraCode FiraMono Hack Incosolata LiberationMono SourceCodePro Ubuntu UbuntuMono; do
+  curl -L -o ./$NERDFONT.zip "https://github.com/ryanoasis/nerd-fonts/releases/download/$LATEST_NERDFONT_RELEASE/$NERDFONT.zip"
+  unzip -o ./$NERDFONT.zip
+done
+popd >/dev/null 2>&1
+rm -f /usr/local/share/fonts/*Nerd*Windows*.ttf /usr/local/share/fonts/*.zip /usr/local/share/fonts/*Nerd*.otf
+chmod 755 /usr/local/share/fonts
+chmod 644 /usr/local/share/fonts/*.*
+fc-cache -f -v
 
 # set up capabilities for network-related tools
 EXE_LESS_CAP=(

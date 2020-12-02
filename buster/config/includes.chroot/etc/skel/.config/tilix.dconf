@@ -15,6 +15,6 @@ cursor-colors-set=false
 highlight-colors-set=false
 use-theme-colors=false
 bold-color-set=false
-font='Hack 12'
+font='Hack Nerd Font Regular 12'
 terminal-bell='none'
 background-color='#272822'
