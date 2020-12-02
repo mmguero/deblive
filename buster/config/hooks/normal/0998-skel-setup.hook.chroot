@@ -52,8 +52,16 @@ rm -rf "$GUERO_GITHUB_PATH"/.git
 if [[ -d "$GUERO_GITHUB_PATH"/linux/lxde-desktop.config ]]; then
   while IFS= read -d $'\0' -r CONFDIR; do
     DIRNAME="$(basename "$CONFDIR")"
-    rm -vf "$SKEL_PATH"/.config/"$DIRNAME" && ln -vrs "$CONFDIR" "$SKEL_PATH"/.config/"$DIRNAME"
+    rm -vrf "$SKEL_PATH"/.config/"$DIRNAME" && ln -vrs "$CONFDIR" "$SKEL_PATH"/.config/"$DIRNAME"
   done < <(find "$GUERO_GITHUB_PATH"/linux/lxde-desktop.config -mindepth 1 -maxdepth 1 -type d -print0)
+fi
+
+if [[ -d "$GUERO_GITHUB_PATH"/sublime ]]; then
+  mkdir -p "$SKEL_PATH"/.config/sublime-text-3/Packages/User
+  while IFS= read -d $'\0' -r CONFFILE; do
+    FNAME="$(basename "$CONFFILE")"
+    rm -vf "$SKEL_PATH"/.config/sublime-text-3/Packages/User/"$FNAME" && ln -vrs "$CONFFILE" "$SKEL_PATH"/.config/sublime-text-3/Packages/User/"$FNAME"
+  done < <(find "$GUERO_GITHUB_PATH"/sublime -mindepth 1 -maxdepth 1 -type f -print0)
 fi
 
 dpkg -s albert >/dev/null 2>&1 && mkdir -p "$SKEL_PATH"/.config/autostart && \
