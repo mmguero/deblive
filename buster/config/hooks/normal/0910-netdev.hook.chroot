@@ -247,6 +247,11 @@ rm -rf /tmp/udptunnel*
 git clone --recursive --depth 1 --single-branch -b master https://github.com/aristocratos/bpytop /usr/local/bin/bpytop
 ln -vrs /usr/local/bin/bpytop/bpytop.py /usr/local/bin/btop
 
+# veracrypt
+curl -L -o "/tmp/veracrypt-console-Debian-10-amd64.deb" "$(curl -sSL https://www.veracrypt.fr/en/Downloads.html | grep -Pio 'https://.+?veracrypt-console.+?Debian-10-amd64.deb' | sed "s/&#43;/+/" | head -n 1)"
+dpkg -i "/tmp/veracrypt-console-Debian-10-amd64.deb"
+rm -f "/tmp/veracrypt-console-Debian-10-amd64.deb"
+
 # some fonts
 LATEST_NERDFONT_RELEASE="$(git_latest_release ryanoasis/nerd-fonts)"
 mkdir -p /usr/local/share/fonts

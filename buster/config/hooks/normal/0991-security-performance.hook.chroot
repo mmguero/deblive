@@ -101,6 +101,7 @@ if [[ ! -f /etc/sudoers.d/power_groups ]]; then
 %netdev ALL=(root) NOPASSWD: /usr/sbin/openvpn
 %netdev ALL=(root) NOPASSWD: /usr/local/bin/wwg.sh
 %cryptkeeper ALL=(root) NOPASSWD:/sbin/cryptsetup
+%cryptkeeper ALL=(root) NOPASSWD:/usr/bin/veracrypt
 EOT
   chmod 440 /etc/sudoers.d/power_groups
 fi # ! -f /etc/sudoers.d/power_groups
