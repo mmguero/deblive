@@ -52,9 +52,6 @@ EOF
 
 # performance parameters for networking, disk, etc.
 cat << 'EOF' >> /etc/sysctl.conf
-# allow unprivileged user namespaces
-kernel.unprivileged_userns_clone=1
-
 # don't restrict dmesg to root
 kernel.dmesg_restrict=0
 
