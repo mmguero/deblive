@@ -252,6 +252,9 @@ curl -L -o "/tmp/veracrypt-console-Debian-10-amd64.deb" "$(curl -sSL https://www
 dpkg -i "/tmp/veracrypt-console-Debian-10-amd64.deb"
 rm -f "/tmp/veracrypt-console-Debian-10-amd64.deb"
 
+# x11docker
+curl -fsSL https://raw.githubusercontent.com/mviereck/x11docker/master/x11docker | bash -s -- --update
+
 # some fonts
 LATEST_NERDFONT_RELEASE="$(git_latest_release ryanoasis/nerd-fonts)"
 mkdir -p /usr/local/share/fonts
