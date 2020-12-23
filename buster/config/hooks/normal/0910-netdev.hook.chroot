@@ -228,6 +228,14 @@ cp -f "${TMP_CLONE_DIR}"/croc /usr/local/bin/croc
 chmod 755 /usr/local/bin/croc
 rm -rf "$TMP_CLONE_DIR"
 
+# gron
+GRON_RELEASE="$(git_latest_release tomnomnom/gron | sed 's/^v//')"
+TMP_CLONE_DIR="$(mktemp -d)"
+curl -L "https://github.com/tomnomnom/gron/releases/download/v${GRON_RELEASE}/gron-linux-amd64-${GRON_RELEASE}.tgz" | tar xzf - -C "${TMP_CLONE_DIR}"
+cp -f "${TMP_CLONE_DIR}"/gron /usr/local/bin/gron
+chmod 755 /usr/local/bin/gron
+rm -rf "$TMP_CLONE_DIR"
+
 # pcloud
 curl -L -o "/usr/local/bin/pcloud" "$PCLOUD_URL"
 chmod 755 "/usr/local/bin/pcloud"
