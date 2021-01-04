@@ -236,12 +236,21 @@ cp -f "${TMP_CLONE_DIR}"/gron /usr/local/bin/gron
 chmod 755 /usr/local/bin/gron
 rm -rf "$TMP_CLONE_DIR"
 
+# step-cli
 STEPCLI_RELEASE="$(git_latest_release smallstep/cli | sed 's/^v//')"
 TMP_CLONE_DIR="$(mktemp -d)"
 curl -L "https://github.com/smallstep/cli/releases/download/v${STEPCLI_RELEASE}/step_linux_${STEPCLI_RELEASE}_amd64.tar.gz" | tar xzf - -C "${TMP_CLONE_DIR}"
 cp -f "${TMP_CLONE_DIR}/step_${STEPCLI_RELEASE}"/bin/step /usr/local/bin/step
 chmod 755 /usr/local/bin/step
 rm -rf "$TMP_CLONE_DIR"
+
+# termshark (commented out because for now I'm including wireshark)
+# TERMSHARK_RELEASE="$(git_latest_release gcla/termshark | sed 's/^v//')"
+# TMP_CLONE_DIR="$(mktemp -d)"
+# curl -L "https://github.com/gcla/termshark/releases/download/v${TERMSHARK_RELEASE}/termshark_${TERMSHARK_RELEASE}_linux_x64.tar.gz" | tar xzf - -C "${TMP_CLONE_DIR}"
+# cp -f "${TMP_CLONE_DIR}/termshark_${TERMSHARK_RELEASE}_linux_x64"/termshark/usr/local/bin/termshark
+# chmod 755 /usr/local/bin/termshark
+# rm -rf "$TMP_CLONE_DIR"
 
 # pcloud
 curl -L -o "/usr/local/bin/pcloud" "$PCLOUD_URL"
