@@ -17,6 +17,7 @@ iproute2
 iputils-arping
 iputils-ping
 iputils-tracepath
+iw
 ldap-utils
 libavahi-compat-libdnssd1
 libcap2-bin

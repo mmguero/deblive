@@ -5,7 +5,7 @@ export LANG=C.UTF-8
 
 SKEL_PATH="/etc/skel"
 GUERO_GITHUB_PATH="$SKEL_PATH/.config/mmguero"
-mkdir -p "$(dirname "$GUERO_GITHUB_PATH")"
+mkdir -p "$(dirname "$GUERO_GITHUB_PATH")" "$SKEL_PATH/.local/bin"
 
 git clone --recursive --depth 1 --single-branch -b master https://github.com/mmguero/config.git "$GUERO_GITHUB_PATH"
 rm -rf "$GUERO_GITHUB_PATH"/.git
@@ -27,6 +27,9 @@ rm -rf "$GUERO_GITHUB_PATH"/.git
 
 [[ -r "$GUERO_GITHUB_PATH"/git/gitignore_global ]] && rm -vf "$SKEL_PATH"/.gitignore_global && \
   ln -vrs "$GUERO_GITHUB_PATH"/git/gitignore_global "$SKEL_PATH"/.gitignore_global
+
+[[ -r "$GUERO_GITHUB_PATH"/git/git_clone_all.sh ]] && rm -vf "$SKEL_PATH"/.local/bin/git_clone_all.sh && \
+  ln -vrs "$GUERO_GITHUB_PATH"/git/git_clone_all.sh "$SKEL_PATH"/.local/bin/git_clone_all.sh
 
 [[ -r "$GUERO_GITHUB_PATH"/linux/tmux/tmux.conf ]] && rm -vf "$SKEL_PATH"/.tmux.conf && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/tmux/tmux.conf "$SKEL_PATH"/.tmux.conf

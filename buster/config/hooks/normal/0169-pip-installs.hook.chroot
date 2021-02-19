@@ -3,20 +3,19 @@
 export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
 
-pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
+# python 3
+pip3 install --no-compile --no-cache-dir --force-reinstall --upgrade \
   bat \
-  beautifulsoup4 \
   cachetools \
   clamd \
-  colorama \
   colored \
-  cryptography \
   Cython \
   debinterface \
   dhcpwn \
   docker-compose \
   entrypoint2 \
   fierce \
+  flare-capa \
   git+git://github.com/badele/gitcheck.git \
   git-up \
   habu \
@@ -24,28 +23,20 @@ pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
   ipaddress \
   magic-wormhole \
   mitmproxy \
-  netifaces \
   numpy \
   ordered-set \
   pandas \
   patool \
   Pillow \
-  psutil \
   py-cui \
-  pyinotify \
   pyshark \
-  python-magic \
-  pythondialog \
   pyunpack \
   pywinrm \
   pyyaml \
-  pyzmq \
-  requests\[security\] \
   rpyc \
   rupy \
   safety \
   scanless \
-  scapy \
   scipy \
   tldr \
   trackerjacker \
@@ -54,9 +45,6 @@ pip3 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
   wapiti3 \
   youtube-dl \
   zkg
-
-pip2 install --system --no-compile --no-cache-dir --force-reinstall --upgrade \
-  flare-capa
 
 git clone --depth 1 https://github.com/MarkBaggett/MarkBaggett /opt/MarkBaggett && \
   rm -rf /opt/MarkBaggett/.git
