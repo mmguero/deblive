@@ -76,4 +76,5 @@ apt-get install -y --no-install-recommends -t testing \
   python3-zmq \
   samba-libs \
   smbclient \
+  swig \
   zlib1g-dev

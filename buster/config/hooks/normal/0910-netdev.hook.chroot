@@ -130,7 +130,6 @@ cd "./yara-${YARA_VERSION}"
 make
 #make install
 checkinstall -y -D --strip=yes --stripso=yes --install=yes --fstrans=no --pkgname="yara" --pkgversion="$YARA_VERSION" --pkgarch="amd64" --pkgsource="$YARA_URL"
-cp *.deb /opt/hedgehog_install_artifacts/
 cd /tmp
 rm -rf /usr/local/src/yara*
 
