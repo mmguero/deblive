@@ -211,6 +211,14 @@ cp -f "${TMP_CLONE_DIR}"/gron /usr/local/bin/gron
 chmod 755 /usr/local/bin/gron
 rm -rf "$TMP_CLONE_DIR"
 
+# sq
+SQ_RELEASE="$(git_latest_release neilotoole/sq | sed 's/^v//')"
+TMP_CLONE_DIR="$(mktemp -d)"
+curl -L "https://github.com/neilotoole/sq/releases/download/v${SQ_RELEASE}/sq-linux-${LINUX_ARCH}.tar.gz" | tar xzf - -C "${TMP_CLONE_DIR}"
+cp -f "${TMP_CLONE_DIR}"/sq /usr/local/bin/gron
+chmod 755 /usr/local/bin/gron
+rm -rf "$TMP_CLONE_DIR"
+
 # step-cli
 STEPCLI_RELEASE="$(git_latest_release smallstep/cli | sed 's/^v//')"
 TMP_CLONE_DIR="$(mktemp -d)"
