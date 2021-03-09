@@ -38,7 +38,6 @@ apt-get -y --purge remove deluge \
                           enchant \
                           evince \
                           mailutils \
-                          poppler-data \
                           gnome-accessibility-themes \
                           gucharmap \
                           openjdk-11-jdk \
