@@ -43,6 +43,8 @@ RESPONDER_URL="https://github.com/lgandx/Responder/archive/v${RESPONDER_VER}.tar
 BURPSUITE_VER="2021.2.1"
 BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=jar"
 
+BRUTESHARK_URL="https://github.com/odedshimon/BruteShark/releases/latest/download/BruteSharkCli"
+
 GHIDRA_URL="https://ghidra-sre.org/ghidra_9.2.2_PUBLIC_20201229.zip"
 SYNERGY_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/synergy_debian_amd64.deb"
 PCLOUD_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/pcloud"
@@ -184,6 +186,12 @@ freshclam --stdout --quiet --no-warnings --foreground=true
 # burpsuite
 mkdir -p /opt/burpsuite
 curl -L -o "/opt/burpsuite/burpsuite_community_v${BURPSUITE_VER}.jar" "$BURPSUITE_URL"
+
+# BruteShark
+# Create a symbolic link between libpcap.so and the actual libpcap file (e.g. libpcap.so.0.8)
+find /usr/lib/x86_64-linux-gnu -type f -name "libpcap.so.*" | head -1 | xargs -i ln -s -r "{}" /usr/lib/x86_64-linux-gnu/libpcap.so
+curl -L -o /usr/local/bin/BruteSharkCli "$BRUTESHARK_URL"
+chmod 755 /usr/local/bin/BruteSharkCli
 
 # ghidra (commented out for now because it's huge)
 # curl -L -o "/tmp/ghidra.zip" "$GHIDRA_URL"
