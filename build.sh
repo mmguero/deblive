@@ -131,8 +131,8 @@ if [ -d "$WORKDIR" ]; then
     --apt-indices none \
     --apt-source-archives false \
     --archive-areas 'main contrib non-free' \
-    --debootstrap-options "--include=apt-transport-https,bc,gnupg,ca-certificates,openssl --no-merged-usr" \
-    --apt-options "--allow-downgrades --allow-remove-essential --allow-change-held-packages -o Acquire::Check-Valid-Until=false --yes"
+    --debootstrap-options "--include=apt-transport-https,bc,ca-certificates,gnupg,jq,openssl --no-merged-usr" \
+    --apt-options "--yes --allow-downgrades --allow-remove-essential --allow-change-held-packages -oAcquire::Check-Valid-Until=false -oAPT::Default-Release=buster"
 
   lb build 2>&1 | tee "$WORKDIR/output/$IMAGE_NAME-$IMAGE_VERSION-build.log"
   if [ -f "$IMAGE_NAME-amd64.hybrid.iso" ]; then

@@ -1,10 +1,10 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
 
 curl -o /tmp/firefox.tar.bz2 -L "https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=en-US"
-if [[ $(file -b --mime-type /tmp/firefox.tar.bz2) = 'application/x-bzip2' ]]; then
+if [ $(file -b --mime-type /tmp/firefox.tar.bz2) = 'application/x-bzip2' ]; then
   mkdir -p /opt
   rm -rvf /opt/firefox
   tar -xvf /tmp/firefox.tar.bz2 -C /opt/
@@ -31,3 +31,5 @@ StartupNotify=true
 EOF
   fi
 fi # /tmp/firefox.tar.bz2 check
+
+rm -f /tmp/firefox.tar.bz2

@@ -15,7 +15,7 @@ NETSNIFF_URL="https://github.com/netsniff-ng/netsniff-ng/archive/v$NETSNIFF_VER.
 
 SPICY_DIR="/opt/spicy"
 ZEEK_DIR="/opt/zeek"
-ZEEK_VER="3.0.12"
+ZEEK_VER="3.0.13"
 ZEEK_URL="https://old.zeek.org/downloads/zeek-$ZEEK_VER.tar.gz"
 ZEEK_INSTALL_PLUGINS_SH_URL="https://raw.githubusercontent.com/mmguero-dev/Malcolm/development/shared/bin/zeek_install_plugins.sh"
 ZEEK_LOCAL_POLICY_URLS=(
@@ -66,7 +66,7 @@ ln -s -f /usr/sbin/netsniff-ng /usr/local/bin/
 # some environment variables needed for build
 export CCACHE_DIR="/var/spool/ccache"
 export CCACHE_COMPRESS=1
-export PATH="${ZEEK_DIR}"/bin:$PATH
+export PATH="${ZEEK_DIR}"/bin:"${SPICY_DIR}"/bin:$PATH
 
 # Build and install zeek
 mkdir -p /usr/local/src/zeek-patches
@@ -215,8 +215,8 @@ rm -rf "$TMP_CLONE_DIR"
 SQ_RELEASE="$(git_latest_release neilotoole/sq | sed 's/^v//')"
 TMP_CLONE_DIR="$(mktemp -d)"
 curl -L "https://github.com/neilotoole/sq/releases/download/v${SQ_RELEASE}/sq-linux-${LINUX_ARCH}.tar.gz" | tar xzf - -C "${TMP_CLONE_DIR}"
-cp -f "${TMP_CLONE_DIR}"/sq /usr/local/bin/gron
-chmod 755 /usr/local/bin/gron
+cp -f "${TMP_CLONE_DIR}"/sq /usr/local/bin/sq
+chmod 755 /usr/local/bin/sq
 rm -rf "$TMP_CLONE_DIR"
 
 # step-cli

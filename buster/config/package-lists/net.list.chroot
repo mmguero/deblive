@@ -12,6 +12,7 @@ epiphany-browser
 ethtool
 filezilla
 freerdp2-x11
+htpdate
 iperf
 iproute2
 iputils-arping
@@ -22,12 +23,15 @@ ldap-utils
 libavahi-compat-libdnssd1
 libcap2-bin
 libcurl4
+libmmdb2-0
+libpcap0.8
 libpurple-bin
 libssh2-1
 macchanger
 mosh
 ncat
 net-tools
+netcat-openbsd
 netdiscover
 nethogs
 netsed
@@ -36,6 +40,7 @@ netwag
 netwox
 ngrep
 nmap
+ntp
 openbsd-inetd
 openssh-client
 openssh-server
