@@ -222,7 +222,7 @@ rm -rf "$TMP_CLONE_DIR"
 # sq
 SQ_RELEASE="$(git_latest_release neilotoole/sq | sed 's/^v//')"
 TMP_CLONE_DIR="$(mktemp -d)"
-curl -L "https://github.com/neilotoole/sq/releases/download/v${SQ_RELEASE}/sq-linux-${LINUX_ARCH}.tar.gz" | tar xzf - -C "${TMP_CLONE_DIR}"
+curl -L "https://github.com/neilotoole/sq/releases/download/v${SQ_RELEASE}/sq-linux-amd64.tar.gz" | tar xzf - -C "${TMP_CLONE_DIR}"
 cp -f "${TMP_CLONE_DIR}"/sq /usr/local/bin/sq
 chmod 755 /usr/local/bin/sq
 rm -rf "$TMP_CLONE_DIR"
