@@ -95,6 +95,16 @@ if [ -d "$WORKDIR" ]; then
   echo "apt-get clean" >> ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
   chmod +x ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
 
+  # write out some version stuff specific to this installation version
+  echo "BUILD_ID=\"$(date +'%Y-%m-%d')-${IMAGE_VERSION}\""                      > ./config/includes.chroot/etc/.os-info
+  echo "VARIANT=\"${IMAGE_NAME} (${IMAGE_DISTRIBUTION}) v${IMAGE_VERSION}\""   >> ./config/includes.chroot/etc/.os-info
+  echo "VARIANT_ID=\"${IMAGE_NAME}\""                                          >> ./config/includes.chroot/etc/.os-info
+  echo "ID_LIKE=\"debian\""                                                    >> ./config/includes.chroot/etc/.os-info
+  echo "HOME_URL=\"https://github.com/mmguero/deblive\""                       >> ./config/includes.chroot/etc/.os-info
+  echo "DOCUMENTATION_URL=\"https://github.com/mmguero/deblive\""              >> ./config/includes.chroot/etc/.os-info
+  echo "SUPPORT_URL=\"https://github.com/mmguero/deblive\""                    >> ./config/includes.chroot/etc/.os-info
+  echo "BUG_REPORT_URL=\"https://github.com/mmguero/deblive\""                 >> ./config/includes.chroot/etc/.os-info
+
   chown -R root:root *
 
   # put the date in the grub.cfg entries

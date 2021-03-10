@@ -7,7 +7,7 @@ SKEL_PATH="/etc/skel"
 GUERO_GITHUB_PATH="$SKEL_PATH/.config/mmguero"
 mkdir -p "$(dirname "$GUERO_GITHUB_PATH")" "$SKEL_PATH/.local/bin"
 
-git clone --recursive --depth 1 --single-branch -b master https://github.com/mmguero/config.git "$GUERO_GITHUB_PATH"
+git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/mmguero/config.git "$GUERO_GITHUB_PATH"
 rm -rf "$GUERO_GITHUB_PATH"/.git
 
 [[ -r "$GUERO_GITHUB_PATH"/bash/rc ]] && rm -vf "$SKEL_PATH"/.bashrc && \
@@ -75,16 +75,9 @@ mkdir -p "$SKEL_PATH"/.local/bin
 LINKED_SCRIPTS=(
   clarence-0.4.4
   mpvurl.sh
-  nc_web_server.sh
-  office_webcam.sh
-  ovpn_password_change.sh
   screenshot.sh
-  self_signed_key_gen.sh
-  sound_cap.sh
   ssh_speed_test.sh
   tilix.sh
-  trashthumbs.sh
-  vid_cap.sh
   vid_rename.sh
   windems.sh
 )
