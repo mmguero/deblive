@@ -48,8 +48,6 @@ dwarfdump
 ebtables
 efibootmgr
 eject
-exfat-fuse
-exfat-utils
 fakeroot
 fatresize
 fdisk
