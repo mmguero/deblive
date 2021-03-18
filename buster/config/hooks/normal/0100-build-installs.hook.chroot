@@ -25,6 +25,7 @@ apt-get install -y --no-install-recommends -t testing \
   ccache \
   checkinstall \
   cmake \
+  exfat-utils \
   fusesmb \
   google-perftools \
   libatomic1 \
