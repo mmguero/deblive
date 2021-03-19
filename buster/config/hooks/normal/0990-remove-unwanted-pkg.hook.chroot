@@ -37,7 +37,7 @@ apt-get -y --purge remove deluge \
                           epiphany-browser \
                           enchant \
                           evince \
-                          exfat-utils \
+                          exfat-fuse \
                           mailutils \
                           gnome-accessibility-themes \
                           gucharmap \
