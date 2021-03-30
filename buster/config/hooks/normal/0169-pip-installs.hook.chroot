@@ -15,7 +15,6 @@ pip3 install --no-compile --no-cache-dir --force-reinstall --upgrade \
   docker-compose \
   entrypoint2 \
   fierce \
-  flare-capa \
   git+git://github.com/badele/gitcheck.git \
   git-up \
   habu \
