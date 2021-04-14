@@ -29,6 +29,9 @@ BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&
 
 BRUTESHARK_URL="https://github.com/odedshimon/BruteShark/releases/latest/download/BruteSharkCli"
 
+CHEPY_PLUGINS_URL="https://codeload.github.com/securisec/chepy_plugins/tar.gz/master"
+CHEPY_PLUGINS_DIR="/opt/chepy-plugins"
+
 GHIDRA_URL="https://ghidra-sre.org/ghidra_9.2.2_PUBLIC_20201229.zip"
 SYNERGY_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/synergy_debian_amd64.deb"
 PCLOUD_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/pcloud"
@@ -54,6 +57,14 @@ cp ./Neo23x0/yara/* ./Neo23x0/vendor/yara/* "${YARA_RULES_DIR}"/
 cp ./Neo23x0/LICENSE "${YARA_RULES_DIR}"/_LICENSE
 rm -rf /tmp/Neo23x0
 ###
+
+# chepy plugins
+mkdir -p "$CHEPY_PLUGINS_DIR"
+cd "$(dirname "$CHEPY_PLUGINS_DIR")"
+curl -sSL "$CHEPY_PLUGINS_URL" | tar xzvf - -C "$(basename "$CHEPY_PLUGINS_DIR")" --strip-components 1
+rm -rf "$CHEPY_PLUGINS_DIR"/{tests,docs}
+###
+
 
 # update clamav signatures
 freshclam --stdout --quiet --no-warnings
