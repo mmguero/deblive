@@ -5,7 +5,6 @@ export LANG=C.UTF-8
 
 # python 3
 pip3 install --no-compile --no-cache-dir --force-reinstall --upgrade \
-  bat \
   cachetools \
   clamd \
   colored \
@@ -42,8 +41,7 @@ pip3 install --no-compile --no-cache-dir --force-reinstall --upgrade \
   unix-elf \
   urllib3 \
   wapiti3 \
-  youtube-dl \
-  zkg
+  youtube-dl
 
 git clone --depth 1 https://github.com/MarkBaggett/MarkBaggett /opt/MarkBaggett && \
   rm -rf /opt/MarkBaggett/.git

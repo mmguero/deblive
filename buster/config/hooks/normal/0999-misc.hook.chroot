@@ -3,6 +3,10 @@
 export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
 
+# some apt-get installs that needed to be handled manually
+apt-get install -y --no-install-recommends -t buster-backports \
+  exfat-utils
+
 # allow pmount to some mapper areas
 if ! grep -q mapper /etc/pmount.allow; then
   tee -a /etc/pmount.allow > /dev/null <<'EOT'
