@@ -39,7 +39,6 @@ python3 -m pip install --no-compile --no-cache-dir --force-reinstall --upgrade \
   scipy \
   tldr \
   trackerjacker \
-  unix-elf \
   urllib3 \
   wapiti3 \
   youtube-dl
