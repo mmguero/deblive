@@ -4,11 +4,12 @@ export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
 
 SKEL_PATH="/etc/skel"
-GUERO_GITHUB_PATH="$SKEL_PATH/.config/mmguero"
-mkdir -p "$(dirname "$GUERO_GITHUB_PATH")" "$SKEL_PATH/.local/bin"
-
+GUERO_GITHUB_PATH="$SKEL_PATH/.config/mmguero.config"
+GUERO_DOCKER_GITHUB_PATH="$SKEL_PATH/.config/mmguero.docker"
+mkdir -p "$(dirname "$GUERO_GITHUB_PATH")" "$(dirname "$GUERO_DOCKER_GITHUB_PATH")" "$SKEL_PATH/.local/bin"
 git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/mmguero/config.git "$GUERO_GITHUB_PATH"
-rm -rf "$GUERO_GITHUB_PATH"/.git
+git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/mmguero-personal/docker.git "$GUERO_DOCKER_GITHUB_PATH"
+rm -rf "$GUERO_GITHUB_PATH"/.git "$GUERO_DOCKER_GITHUB_PATH"/.git
 
 [[ -r "$GUERO_GITHUB_PATH"/bash/rc ]] && rm -vf "$SKEL_PATH"/.bashrc && \
   ln -vrs "$GUERO_GITHUB_PATH"/bash/rc "$SKEL_PATH"/.bashrc
@@ -76,9 +77,7 @@ LINKED_SCRIPTS=(
   clarence-0.4.4
   mpvurl.sh
   screenshot.sh
-  ssh_speed_test.sh
   tilix.sh
-  vid_rename.sh
   windems.sh
 )
 for i in ${LINKED_SCRIPTS[@]}; do
@@ -88,6 +87,9 @@ done
 
 [[ -r "$GUERO_GITHUB_PATH"/bash/context-color/context-color ]] && rm -vf "$SKEL_PATH"/.local/bin/context-color && \
   ln -vrs "$GUERO_GITHUB_PATH"/bash/context-color/context-color "$SKEL_PATH"/.local/bin/context-color
+
+[[ -r "$GUERO_DOCKER_GITHUB_PATH"/net/zeek/zeek-docker.sh ]] && rm -vf "$SKEL_PATH"/.local/bin/zeek-docker.sh && \
+  ln -vrs "$GUERO_DOCKER_GITHUB_PATH"/net/zeek/zeek-docker.sh "$SKEL_PATH"/.local/bin/zeek-docker.sh
 
 # not exactly in /etc/skel, so sue me
 [[ -r "$GUERO_GITHUB_PATH"/linux/wireguard-ufw/wwg.sh ]] && rm -vf /usr/local/bin/wwg.sh && \

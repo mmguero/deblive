@@ -4,8 +4,11 @@ export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
 
 # some apt-get installs that needed to be handled manually
-apt-get install -y --no-install-recommends -t buster-backports \
-  exfat-utils
+# (e.g., I want to force stuff from backports without apt-pinning)
+if [[ /etc/apt/forced-backports-packages.conf ]]; then
+  apt-get install -y --no-install-recommends -t buster-backports \
+    $(cat /etc/apt/forced-backports-packages.conf)
+fi
 
 # allow pmount to some mapper areas
 if ! grep -q mapper /etc/pmount.allow; then

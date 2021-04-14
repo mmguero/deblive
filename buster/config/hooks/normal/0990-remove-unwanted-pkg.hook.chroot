@@ -39,7 +39,8 @@ apt-get -y --purge remove deluge \
                           openjdk-11-jdk \
                           prelink \
                           vlc-l10n \
-                          yelp || true
+                          yelp \
+                          youtube-dl || true
 
 apt-get -y autoremove
 
