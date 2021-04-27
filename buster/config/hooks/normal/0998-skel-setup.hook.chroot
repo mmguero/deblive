@@ -85,6 +85,9 @@ for i in ${LINKED_SCRIPTS[@]}; do
     rm -vf "$SKEL_PATH"/.local/bin/"$i" && ln -vrs "$GUERO_GITHUB_PATH"/scripts/"$i" "$SKEL_PATH"/.local/bin/
 done
 
+[[ -r "$GUERO_GITHUB_PATH"/bash/development_setup.sh ]] && rm -vf "$SKEL_PATH"/.local/bin/development_setup.sh && \
+  ln -vrs "$GUERO_GITHUB_PATH"/bash/development_setup.sh "$SKEL_PATH"/.local/bin/development_setup.sh
+
 [[ -r "$GUERO_GITHUB_PATH"/bash/context-color/context-color ]] && rm -vf "$SKEL_PATH"/.local/bin/context-color && \
   ln -vrs "$GUERO_GITHUB_PATH"/bash/context-color/context-color "$SKEL_PATH"/.local/bin/context-color
 
