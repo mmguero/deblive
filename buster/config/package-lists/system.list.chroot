@@ -159,7 +159,6 @@ python3-setuptools
 qemu-utils
 rar
 rename
-ripgrep
 rtkit
 samba-libs
 sed
