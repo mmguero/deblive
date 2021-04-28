@@ -119,6 +119,7 @@ CROC_RELEASE="$(git_latest_release schollz/croc | sed 's/^v//')"
 TMP_CLONE_DIR="$(mktemp -d)"
 curl -L "https://github.com/schollz/croc/releases/download/v${CROC_RELEASE}/croc_${CROC_RELEASE}_Linux-64bit.tar.gz" | tar xzf - -C "${TMP_CLONE_DIR}"
 cp -f "${TMP_CLONE_DIR}"/croc /usr/local/bin/croc
+cp -f "${TMP_CLONE_DIR}"/bash_autocomplete /etc/bash_completion.d/croc.bash
 chmod 755 /usr/local/bin/croc
 rm -rf "$TMP_CLONE_DIR"
 
@@ -141,10 +142,22 @@ rm -rf "$TMP_CLONE_DIR"
 # step-cli
 STEPCLI_RELEASE="$(git_latest_release smallstep/cli | sed 's/^v//')"
 TMP_CLONE_DIR="$(mktemp -d)"
-curl -L "https://github.com/smallstep/cli/releases/download/v${STEPCLI_RELEASE}/step_linux_${STEPCLI_RELEASE}_amd64.tar.gz" | tar xzf - -C "${TMP_CLONE_DIR}"
-cp -f "${TMP_CLONE_DIR}/step_${STEPCLI_RELEASE}"/bin/step /usr/local/bin/step
+curl -L "https://github.com/smallstep/cli/releases/download/v${STEPCLI_RELEASE}/step_linux_${STEPCLI_RELEASE}_amd64.tar.gz" | tar xzf - -C "${TMP_CLONE_DIR}" --strip-components 1
+cp -f "${TMP_CLONE_DIR}"/bin/step /usr/local/bin/step
+cp -f "${TMP_CLONE_DIR}"/autocomplete/bash_autocomplete /etc/bash_completion.d/step.bash
 chmod 755 /usr/local/bin/step
 rm -rf "$TMP_CLONE_DIR"
+
+# ripgrep
+RIPGREP_RELEASE="$(git_latest_release BurntSushi/ripgrep | sed 's/^v//')"
+TMP_CLONE_DIR="$(mktemp -d)"
+RIPGREP_URL="https://github.com/BurntSushi/ripgrep/releases/download/${RIPGREP_RELEASE}/ripgrep-${RIPGREP_RELEASE}-x86_64-unknown-linux-musl.tar.gz"
+curl -L "${RIPGREP_URL}" | tar xvzf - -C "${TMP_CLONE_DIR}" --strip-components 1
+cp -f "${TMP_CLONE_DIR}"/rg /usr/local/bin/rg
+cp -f "${TMP_CLONE_DIR}"/complete/rg.bash /etc/bash_completion.d/rg.bash
+chmod 755 /usr/local/bin/rg
+rm -rf "$TMP_CLONE_DIR"
+
 
 # termshark (commented out because for now I'm including wireshark)
 # TERMSHARK_RELEASE="$(git_latest_release gcla/termshark | sed 's/^v//')"
