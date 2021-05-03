@@ -4,8 +4,7 @@ export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
 export CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
-python3 -m pip install -U pip
-python3 -m pip install --no-compile --no-cache-dir --force-reinstall --upgrade \
+pip3 install --no-compile --no-cache-dir --force-reinstall --upgrade \
   cachetools \
   chepy[extras] \
   clamd \
@@ -31,6 +30,7 @@ python3 -m pip install --no-compile --no-cache-dir --force-reinstall --upgrade \
   Pillow \
   py-cui \
   pyshark \
+  python-dateutil \
   pyunpack \
   pywinrm \
   pyyaml \
