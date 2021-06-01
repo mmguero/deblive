@@ -158,6 +158,32 @@ cp -f "${TMP_CLONE_DIR}"/complete/rg.bash /etc/bash_completion.d/rg.bash
 chmod 755 /usr/local/bin/rg
 rm -rf "$TMP_CLONE_DIR"
 
+# bat
+BAT_RELEASE="$(git_latest_release sharkdp/bat | sed 's/^v//')"
+TMP_CLONE_DIR="$(mktemp -d)"
+BAT_URL="https://github.com/sharkdp/bat/releases/download/v${BAT_RELEASE}/bat-v${BAT_RELEASE}-x86_64-unknown-linux-gnu.tar.gz"
+curl -L "${BAT_URL}" | tar xvzf - -C "${TMP_CLONE_DIR}" --strip-components 1
+cp -f "${TMP_CLONE_DIR}"/bat /usr/local/bin/bat
+chmod 755 /usr/local/bin/bat
+rm -rf "$TMP_CLONE_DIR"
+
+# fd
+FD_RELEASE="$(git_latest_release sharkdp/fd | sed 's/^v//')"
+TMP_CLONE_DIR="$(mktemp -d)"
+FD_URL="https://github.com/sharkdp/fd/releases/download/v${FD_RELEASE}/fd-v${FD_RELEASE}-x86_64-unknown-linux-gnu.tar.gz"
+curl -L "${FD_URL}" | tar xvzf - -C "${TMP_CLONE_DIR}" --strip-components 1
+cp -f "${TMP_CLONE_DIR}"/fd /usr/local/bin/fd
+chmod 755 /usr/local/bin/fd
+rm -rf "$TMP_CLONE_DIR"
+
+# watchexec
+WATCHEXEC_RELEASE="$(git_latest_release watchexec/watchexec | sed 's/^cli-v//')"
+TMP_CLONE_DIR="$(mktemp -d)"
+WATCHEXEC_URL="https://github.com/watchexec/watchexec/releases/download/cli-v${WATCHEXEC_RELEASE}/watchexec-${WATCHEXEC_RELEASE}-x86_64-unknown-linux-gnu.tar.xz"
+curl -L "${WATCHEXEC_URL}" | xz -d | tar xvf - -C "${TMP_CLONE_DIR}" --strip-components 1
+cp -f "${TMP_CLONE_DIR}"/watchexec /usr/local/bin/watchexec
+chmod 755 /usr/local/bin/watchexec
+rm -rf "$TMP_CLONE_DIR"
 
 # termshark (commented out because for now I'm including wireshark)
 # TERMSHARK_RELEASE="$(git_latest_release gcla/termshark | sed 's/^v//')"
