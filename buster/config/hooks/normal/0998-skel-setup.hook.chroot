@@ -94,6 +94,9 @@ done
 [[ -r "$GUERO_DOCKER_GITHUB_PATH"/net/zeek/zeek-docker.sh ]] && rm -vf "$SKEL_PATH"/.local/bin/zeek-docker.sh && \
   ln -vrs "$GUERO_DOCKER_GITHUB_PATH"/net/zeek/zeek-docker.sh "$SKEL_PATH"/.local/bin/zeek-docker.sh
 
+[[ -r "$GUERO_DOCKER_GITHUB_PATH"/infosec/capa/capa-docker.sh ]] && rm -vf "$SKEL_PATH"/.local/bin/capa-docker.sh && \
+  ln -vrs "$GUERO_DOCKER_GITHUB_PATH"/infosec/capa/capa-docker.sh "$SKEL_PATH"/.local/bin/capa-docker.sh
+
 # not exactly in /etc/skel, so sue me
 [[ -r "$GUERO_GITHUB_PATH"/linux/wireguard-ufw/wwg.sh ]] && rm -vf /usr/local/bin/wwg.sh && \
   cp -fv "$GUERO_GITHUB_PATH"/linux/wireguard-ufw/wwg.sh /usr/local/bin/wwg.sh

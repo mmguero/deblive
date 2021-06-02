@@ -176,6 +176,17 @@ cp -f "${TMP_CLONE_DIR}"/fd /usr/local/bin/fd
 chmod 755 /usr/local/bin/fd
 rm -rf "$TMP_CLONE_DIR"
 
+# as-tree
+ASTREE_RELEASE="$(git_latest_release jez/as-tree | sed 's/^v//')"
+TMP_CLONE_DIR="$(mktemp -d)"
+curl -o "${TMP_CLONE_DIR}"/as-tree.zip -L "https://github.com/jez/as-tree/releases/download/${ASTREE_RELEASE}/as-tree-${ASTREE_RELEASE}-linux.zip"
+pushd "$TMP_CLONE_DIR" >/dev/null 2>&1
+unzip ./as-tree.zip
+chmod 755 ./as-tree
+cp -f ./as-tree /usr/local/bin/as-tree
+popd >/dev/null 2>&1
+rm -rf "$TMP_CLONE_DIR"
+
 # watchexec
 WATCHEXEC_RELEASE="$(git_latest_release watchexec/watchexec | sed 's/^cli-v//')"
 TMP_CLONE_DIR="$(mktemp -d)"
