@@ -15,8 +15,8 @@ pip3 install --no-compile --no-cache-dir --force-reinstall --upgrade \
   docker-compose \
   entrypoint2 \
   fierce \
-  git+git://github.com/badele/gitcheck.git \
-  git+git://github.com/mmguero/python-mmguero.git \
+  git+https://github.com/badele/gitcheck.git \
+  git+https://github.com/mmguero/python-mmguero.git \
   git-up \
   habu \
   humanhash3 \
