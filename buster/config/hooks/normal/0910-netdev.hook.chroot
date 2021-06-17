@@ -196,6 +196,15 @@ cp -f "${TMP_CLONE_DIR}"/watchexec /usr/local/bin/watchexec
 chmod 755 /usr/local/bin/watchexec
 rm -rf "$TMP_CLONE_DIR"
 
+TMP_CLONE_DIR="$(mktemp -d)"
+curl -o "${TMP_CLONE_DIR}"/ngrok.zip -L "https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip"
+pushd "$TMP_CLONE_DIR" >/dev/null 2>&1
+unzip ./ngrok.zip
+chmod 755 ./ngrok
+cp -f ./ngrok /usr/local/bin/ngrok
+popd >/dev/null 2>&1
+rm -rf "$TMP_CLONE_DIR"
+
 # termshark (commented out because for now I'm including wireshark)
 # TERMSHARK_RELEASE="$(git_latest_release gcla/termshark | sed 's/^v//')"
 # TMP_CLONE_DIR="$(mktemp -d)"

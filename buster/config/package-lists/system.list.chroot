@@ -98,6 +98,9 @@ libnl-route-3-200
 libnotify-bin
 libpam-pwquality
 librocksdb5.17
+libsecret-1-0
+libsecret-1-dev
+libsecret-tools
 libsquashfuse0
 libssl1.1
 libssl-dev

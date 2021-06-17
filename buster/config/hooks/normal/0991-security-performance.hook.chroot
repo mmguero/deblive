@@ -112,6 +112,9 @@ fi # ! -f /etc/sudoers.d/power_groups
 # enable cryptsetup support on boot
 sed -i "s/#CRYPTSETUP=.*/CRYPTSETUP=y/" /etc/cryptsetup-initramfs/conf-hook
 
+# git and libsecret credential caching
+make --directory=/usr/share/doc/git/contrib/credential/libsecret
+
 # set up /etc/os-release information (override values in /etc/os-release with custom values)
 if [[ -f /etc/.os-info ]]; then
   awk '
