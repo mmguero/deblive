@@ -254,6 +254,9 @@ chmod 755 /usr/local/share/fonts
 chmod 644 /usr/local/share/fonts/*.*
 fc-cache -f -v
 
+# git and libsecret credential caching
+make --directory=/usr/share/doc/git/contrib/credential/libsecret
+
 # set up capabilities for network-related tools
 EXE_LESS_CAP=(
   /sbin/ethtool
