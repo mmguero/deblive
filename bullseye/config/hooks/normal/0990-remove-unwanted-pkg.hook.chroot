@@ -1,0 +1,60 @@
+#!/bin/bash
+
+cat > /tmp/localepurge.preseed << EOF
+localepurge localepurge/nopurge multiselect en, en_US, en_us.UTF-8, C.UTF-8
+localepurge localepurge/use-dpkg-feature boolean false
+localepurge localepurge/none_selected boolean false
+localepurge localepurge/verbose boolean true
+localepurge localepurge/dontbothernew boolean false
+localepurge localepurge/quickndirtycalc boolean false
+localepurge localepurge/mandelete boolean true
+localepurge localepurge/showfreedspace boolean true
+localepurge localepurge/remove_no note
+EOF
+debconf-set-selections < /tmp/localepurge.preseed
+rm -f /tmp/localepurge.preseed
+apt-get -y install localepurge
+dpkg-reconfigure localepurge
+localepurge
+
+# remove development packages
+apt-get -y --purge remove \
+  checkinstall \
+  gdb \
+  google-perftools \
+  libc6-dbg \
+  libllvm9 \
+  $(dpkg --get-selections | grep -Pv "(^(libyaml|libsecret|dpkg|libgcc|libc6|libstdc\+\+)|deinstall$)" | cut -f1 | grep -P -- '-dev(:\w+)?$') || true
+rm -rf /var/spool/ccache
+
+# remove unwanted packages
+apt-get -y --purge remove deluge \
+                          epiphany-browser \
+                          evince \
+                          exfat-fuse \
+                          mailutils \
+                          gnome-accessibility-themes \
+                          gucharmap \
+                          openjdk-11-jdk \
+                          vlc-l10n \
+                          yelp \
+                          youtube-dl || true
+
+apt-get -y autoremove
+
+rm -f /etc/apt/sources.list.d/testing.list
+apt-get -y update
+
+apt-get clean
+
+# remove any residual configs
+dpkg -l | awk '/^rc/ { print $2 }' | xargs -r -l dpkg --purge
+
+# disable automatic running of some services (but don't abort if we fail)
+systemctl disable ctrl-alt-del.target || true
+systemctl disable apt-daily.service || true
+systemctl disable apt-daily.timer || true
+systemctl disable apt-daily-upgrade.timer || true
+systemctl disable apt-daily-upgrade.service || true
+systemctl disable clamav-daemon.service || true
+systemctl disable clamav-freshclam.service || true
