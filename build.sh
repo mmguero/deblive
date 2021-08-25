@@ -107,31 +107,18 @@ if [ -d "$WORKDIR" ]; then
 
   chown -R root:root *
 
-  # put the date in the grub.cfg entries
-  for INSTALL_FILE in ./config/includes.binary/boot/grub/grub.cfg ./config/includes.binary/isolinux/install.cfg; do
-    if [ -f "$INSTALL_FILE" ]; then
-      sed -i "s/\(Install Debian\)/\1 $(date +'%Y-%m-%d %H:%M:%S')/g" "$INSTALL_FILE"
-    fi
-  done
-
-  mkdir -p ./config/includes.installer
-
-  ls ./config/includes.binary/install/* >/dev/null 2>&1 && \
-    cp -v ./config/includes.binary/install/* ./config/includes.installer/ || true
-
-  ls ./config/includes.chroot/usr/local/bin/preseed*.sh >/dev/null 2>&1 && \
-    cp -v ./config/includes.chroot/usr/local/bin/preseed*.sh ./config/includes.installer/ || true
-
   lb config \
     --image-name "$IMAGE_NAME" \
     --debian-installer live \
     --debian-installer-gui false \
     --debian-installer-distribution $IMAGE_DISTRIBUTION \
     --distribution $IMAGE_DISTRIBUTION \
+    --iso-application "$IMAGE_NAME" \
+    --iso-publisher "$IMAGE_PUBLISHER $(date +'%Y-%m-%d %H:%M:%S')" \
     --linux-packages "linux-image-$(uname -r | sed 's/-amd64$//')" \
     --architectures amd64 \
     --binary-images iso-hybrid \
-    --bootloaders "syslinux,grub-efi" \
+    --bootappend-live "boot=live components username=user nosplash random.trust_cpu=on elevator=deadline cgroup_enable=memory swapaccount=1 cgroup.memory=nokmem" \
     --memtest none \
     --chroot-filesystem squashfs \
     --backports $APT_BACKPORTS \
