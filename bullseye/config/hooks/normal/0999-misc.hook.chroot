@@ -18,6 +18,10 @@ if [[ -f /etc/apt/forced-fasttrack-packages.conf ]]; then
     $(cat /etc/apt/forced-fasttrack-packages.conf)
 fi
 
+# thunar > pcmanfm
+mv /usr/bin/pcmanfm /usr/bin/pcmanfm.orig
+ln -s -r /usr/bin/thunar /usr/bin/pcmanfm
+
 # allow pmount to some mapper areas
 if ! grep -q mapper /etc/pmount.allow; then
   tee -a /etc/pmount.allow > /dev/null <<'EOT'
