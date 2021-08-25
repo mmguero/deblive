@@ -76,6 +76,7 @@ if [ -d "$WORKDIR" ]; then
   # make sure we install the newer kernel, firmwares, and kernel headers
   echo "linux-image-$(uname -r)" > ./config/package-lists/kernel.list.chroot
   echo "linux-headers-$(uname -r)" >> ./config/package-lists/kernel.list.chroot
+  echo "linux-headers-$(uname -r | sed 's/amd64/common/')" >> ./config/package-lists/kernel.list.chroot
   echo "linux-compiler-gcc-10-x86=$(dpkg -s linux-compiler-gcc-10-x86 | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
   echo "linux-kbuild-5.10=$(dpkg -s linux-kbuild-5.10 | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
   echo "firmware-linux=$(dpkg -s firmware-linux | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
