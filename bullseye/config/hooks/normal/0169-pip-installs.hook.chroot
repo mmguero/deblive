@@ -23,14 +23,12 @@ pip3 install --no-compile --no-cache-dir --force-reinstall --upgrade \
   ipaddress \
   magic-wormhole \
   mitmproxy \
-  numpy \
   ordered-set \
   pandas \
   patool \
   Pillow \
   py-cui \
   pyshark \
-  python-dateutil \
   pyunpack \
   pywinrm \
   pyyaml \
@@ -38,10 +36,9 @@ pip3 install --no-compile --no-cache-dir --force-reinstall --upgrade \
   rupy \
   safety \
   scanless \
-  scipy \
+  scapy \
   tldr \
   trackerjacker \
-  urllib3 \
   wapiti3 \
   youtube-dl
 
