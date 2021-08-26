@@ -1,20 +1,20 @@
 #!/bin/bash
 
 cat > /tmp/localepurge.preseed << EOF
-localepurge localepurge/nopurge multiselect en, en_US, en_us.UTF-8, C.UTF-8
-localepurge localepurge/use-dpkg-feature boolean false
-localepurge localepurge/none_selected boolean false
-localepurge localepurge/verbose boolean true
-localepurge localepurge/dontbothernew boolean false
-localepurge localepurge/quickndirtycalc boolean false
-localepurge localepurge/mandelete boolean true
-localepurge localepurge/showfreedspace boolean true
-localepurge localepurge/remove_no note
+localepurge	localepurge/remove_no	note
+localepurge	localepurge/verbose	boolean	false
+localepurge	localepurge/use-dpkg-feature	boolean	false
+localepurge	localepurge/quickndirtycalc	boolean	false
+localepurge	localepurge/dontbothernew	boolean	true
+localepurge	localepurge/mandelete	boolean	true
+localepurge	localepurge/nopurge	multiselect	en,	en_us.UTF-8
+localepurge	localepurge/showfreedspace	boolean	true
+localepurge	localepurge/none_selected	boolean	false
 EOF
 debconf-set-selections < /tmp/localepurge.preseed
 rm -f /tmp/localepurge.preseed
 apt-get -y install localepurge
-dpkg-reconfigure localepurge
+dpkg-reconfigure --frontend=noninteractive localepurge
 localepurge
 
 # remove development packages
