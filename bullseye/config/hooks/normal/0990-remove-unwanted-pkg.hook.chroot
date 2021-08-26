@@ -15,6 +15,10 @@ debconf-set-selections < /tmp/localepurge.preseed
 rm -f /tmp/localepurge.preseed
 apt-get -y install localepurge
 dpkg-reconfigure --frontend=noninteractive localepurge
+sed -i "s/^\(USE_DPKG\)/#\1/" /etc/locale.nopurge
+sed -i "s/^\(NEEDSCONFIGFIRST\)/#\1/" /etc/locale.nopurge
+echo "en" >> /etc/locale.nopurge
+echo "en_US.UTF-8" >> /etc/locale.nopurge
 localepurge
 
 # remove development packages
