@@ -176,6 +176,16 @@ cp -f "${TMP_CLONE_DIR}"/fd /usr/local/bin/fd
 chmod 755 /usr/local/bin/fd
 rm -rf "$TMP_CLONE_DIR"
 
+# ffsend
+FFSEND_RELEASE="$(git_latest_release timvisee/ffsend | sed 's/^v//')"
+TMP_CLONE_DIR="$(mktemp -d)"
+curl -o "${TMP_CLONE_DIR}"/ffsend -L "https://github.com/timvisee/ffsend/releases/download/v${FFSEND_RELEASE}/ffsend-v${FFSEND_RELEASE}-linux-x64-static"
+pushd "$TMP_CLONE_DIR" >/dev/null 2>&1
+chmod 755 ./ffsend
+cp -f ./ffsend /usr/local/bin/ffsend
+popd >/dev/null 2>&1
+rm -rf "$TMP_CLONE_DIR"
+
 # as-tree
 ASTREE_RELEASE="$(git_latest_release jez/as-tree | sed 's/^v//')"
 TMP_CLONE_DIR="$(mktemp -d)"
