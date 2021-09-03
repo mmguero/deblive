@@ -57,6 +57,7 @@ fuse3
 fuseext2
 fusefat
 fuseiso
+fuse-overlayfs
 fzf
 gawk
 gdb
@@ -149,6 +150,7 @@ pigz
 pipebench
 pkg-config
 pmount
+podman
 policykit-1
 procps
 psmisc
@@ -166,6 +168,7 @@ samba-libs
 sed
 sharutils
 shed
+slirp4netns
 smartmontools
 smbclient
 sparse

@@ -12,7 +12,6 @@ pip3 install --no-compile --no-cache-dir --force-reinstall --upgrade \
   Cython \
   debinterface \
   dhcpwn \
-  docker-compose \
   entrypoint2 \
   fierce \
   git+https://github.com/badele/gitcheck.git \

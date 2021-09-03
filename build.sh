@@ -119,7 +119,7 @@ if [ -d "$WORKDIR" ]; then
     --linux-packages "linux-image-$(uname -r | sed 's/-amd64$//')" \
     --architectures amd64 \
     --binary-images iso-hybrid \
-    --bootappend-live "boot=live components username=user nosplash random.trust_cpu=on elevator=deadline cgroup_enable=memory swapaccount=1 cgroup.memory=nokmem" \
+    --bootappend-live "boot=live components username=user nosplash random.trust_cpu=on elevator=deadline systemd.unified_cgroup_hierarchy=1" \
     --memtest none \
     --chroot-filesystem squashfs \
     --backports $APT_BACKPORTS \

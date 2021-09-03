@@ -11,16 +11,6 @@ sed -i "s/.*AddressFamily any.*/AddressFamily inet/" /etc/ssh/sshd_config
 sed -i "s/LOGLEVEL=.*/LOGLEVEL=off/" /etc/ufw/ufw.conf
 sed -i 's/DEFAULT_FORWARD_POLICY=.*/DEFAULT_FORWARD_POLICY="ACCEPT"/' /etc/default/ufw
 sed -i "s/#net\/ipv4\/ip_forward=1/net\/ipv4\/ip_forward=1/" /etc/ufw/sysctl.conf
-read -r -d '' MASQUERADECFG <<- EOM
-# NAT table rules
-*nat
-:POSTROUTING ACCEPT [0:0]
--A POSTROUTING ! -o docker0 -s 172.28.0.0/16 -j MASQUERADE
-COMMIT
-EOM
-awk '1' <(echo "$MASQUERADECFG") /etc/ufw/before.rules > /tmp/before.rules && \
-  cat /tmp/before.rules > /etc/ufw/before.rules && \
-  rm -f /tmp/before.rules
 /usr/sbin/ufw --force enable
 /usr/sbin/ufw default deny incoming
 /usr/sbin/ufw default allow outgoing
@@ -42,16 +32,10 @@ for i in ${UFW_ALLOW_RULES[@]}; do
   ufw allow "$i"
 done
 
-# docker
-mkdir -p /etc/docker/
-cat << 'EOF' > /etc/docker/daemon.json
-{
-  "iptables": false,
-  "default-address-pools":[
-    {"base":"172.28.0.0/16","size":24}
-  ]
-}
-EOF
+# podman
+curl -o /usr/local/bin/podman-compose https://raw.githubusercontent.com/containers/podman-compose/devel/podman_compose.py
+chmod 755 /usr/local/bin/podman-compose
+ln -s -r /usr/bin/podman /usr/local/bin/docker
 
 # performance parameters for networking, disk, etc.
 cat << 'EOF' >> /etc/sysctl.conf
@@ -89,6 +73,10 @@ net.ipv4.tcp_rmem=10240 425984 33554432
 net.ipv4.tcp_wmem=10240 425984 33554432
 net.ipv4.udp_mem=10240 425984 33554432
 net.ipv4.ip_forward=1
+net.ipv4.ip_unprivileged_port_start = 443
+
+# container-related
+kernel.unprivileged_userns_clone=1
 EOF
 
 # custom power groups
