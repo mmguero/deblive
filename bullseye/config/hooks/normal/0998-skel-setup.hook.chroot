@@ -53,11 +53,11 @@ rm -rf "$GUERO_GITHUB_PATH"/.git "$GUERO_DOCKER_GITHUB_PATH"/.git
 [[ -r "$GUERO_GITHUB_PATH"/gdb/hexdump.py ]] && mkdir -p "$SKEL_PATH"/.config/gdb && rm -vf "$SKEL_PATH"/.config/gdb/hexdump.py && \
   ln -vrs "$GUERO_GITHUB_PATH"/gdb/hexdump.py "$SKEL_PATH"/.config/gdb/hexdump.py
 
-if [[ -d "$GUERO_GITHUB_PATH"/linux/lxde-desktop.config ]]; then
+if [[ -d "$GUERO_GITHUB_PATH"/linux/xfce-desktop.config ]]; then
   while IFS= read -d $'\0' -r CONFDIR; do
     DIRNAME="$(basename "$CONFDIR")"
     rm -vrf "$SKEL_PATH"/.config/"$DIRNAME" && ln -vrs "$CONFDIR" "$SKEL_PATH"/.config/"$DIRNAME"
-  done < <(find "$GUERO_GITHUB_PATH"/linux/lxde-desktop.config -mindepth 1 -maxdepth 1 -type d -print0)
+  done < <(find "$GUERO_GITHUB_PATH"/linux/xfce-desktop.config -mindepth 1 -maxdepth 1 -type d -print0)
 fi
 
 if [[ -d "$GUERO_GITHUB_PATH"/sublime ]]; then
@@ -110,12 +110,4 @@ echo 'set nocompatible' > "$SKEL_PATH"/.vimrc
 cat <<EOT >> "$SKEL_PATH"/.Xresources
 xscreensaver.mode: blank
 xscreensaver.lock: false
-EOT
-
-# make thunar default file manager
-cat <<EOT >> "$SKEL_PATH"/.config/mimeapps.list
-
-[Default Applications]
-inode/directory=Thunar-folder-handler.desktop
-application/x-gnome-saved-search=Thunar-folder-handler.desktop
 EOT

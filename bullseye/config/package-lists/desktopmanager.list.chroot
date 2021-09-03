@@ -1,12 +1,10 @@
 albert
 arandr
 dconf-cli
+diodon
 fonts-symbola
 libnotify-bin
 lightdm
-lxde
-lxpanel
-lxsession
 numix-gtk-theme
 nxagent
 open-vm-tools-desktop
@@ -24,8 +22,8 @@ xauth
 xautomation
 xbindkeys
 xclip
-xfdesktop4
-xinit
+xfce4
+xfce4-goodies
 xinit
 xorg
 xpra
