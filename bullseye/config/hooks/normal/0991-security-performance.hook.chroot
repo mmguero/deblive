@@ -32,11 +32,6 @@ for i in ${UFW_ALLOW_RULES[@]}; do
   ufw allow "$i"
 done
 
-# podman
-curl -o /usr/local/bin/podman-compose https://raw.githubusercontent.com/containers/podman-compose/devel/podman_compose.py
-chmod 755 /usr/local/bin/podman-compose
-ln -s -r /usr/bin/podman /usr/local/bin/docker
-
 # performance parameters for networking, disk, etc.
 cat << 'EOF' >> /etc/sysctl.conf
 # don't restrict dmesg to root

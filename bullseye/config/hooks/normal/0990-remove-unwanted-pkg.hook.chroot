@@ -35,7 +35,6 @@ rm -rf /var/spool/ccache
 apt-get -y --purge remove deluge \
                           epiphany-browser \
                           evince \
-                          exfat-fuse \
                           linux-image-*-rt-* \
                           mailutils \
                           gnome-accessibility-themes \

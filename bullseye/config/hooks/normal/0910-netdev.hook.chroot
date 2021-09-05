@@ -10,7 +10,7 @@ function git_latest_release () {
   fi
 }
 
-CAPA_VERSION="1.6.0"
+CAPA_VERSION="2.0.0"
 CAPA_URL="https://github.com/fireeye/capa/releases/download/v${CAPA_VERSION}/capa-v${CAPA_VERSION}-linux.zip"
 CAPA_DIR="/usr/local/bin"
 CAPA_BIN="${CAPA_DIR}/capa"
@@ -21,10 +21,10 @@ YARA_RULES_DIR="/opt/yara-rules"
 OPENRESOLV_VER="3.12.0"
 OPENRESOLV_URL="https://roy.marples.name/downloads/openresolv/openresolv-$OPENRESOLV_VER.tar.xz"
 
-RESPONDER_VER="3.0.3.0"
+RESPONDER_VER="3.0.6.0"
 RESPONDER_URL="https://github.com/lgandx/Responder/archive/v${RESPONDER_VER}.tar.gz"
 
-BURPSUITE_VER="2021.2.1"
+BURPSUITE_VER="2021.8.2"
 BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=jar"
 
 BRUTESHARK_URL="https://github.com/odedshimon/BruteShark/releases/latest/download/BruteSharkCli"
@@ -36,6 +36,23 @@ GHIDRA_URL="https://ghidra-sre.org/ghidra_9.2.2_PUBLIC_20201229.zip"
 SYNERGY_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/synergy_debian_amd64.deb"
 PCLOUD_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/pcloud"
 UDPTUNNEL_URL="https://codeload.github.com/rfc1036/udptunnel/tar.gz/master"
+
+# podman
+curl -o /usr/local/bin/podman-compose https://raw.githubusercontent.com/containers/podman-compose/devel/podman_compose.py
+chmod 755 /usr/local/bin/podman-compose
+ln -s -r /usr/bin/podman /usr/local/bin/docker
+
+# vagrant
+curl -o /tmp/vagrant.deb "https://releases.hashicorp.com$(curl -fsL "https://releases.hashicorp.com$(curl -fsL "https://releases.hashicorp.com/vagrant" | grep 'href="/vagrant/' | head -n 1 | grep -o '".*"' | tr -d '"' )" | grep "x86_64\.deb" | head -n 1 | grep -o 'href=".*"' | sed 's/href=//' | tr -d '"')"
+dpkg -i /tmp/vagrant.deb
+rm -f /tmp/vagrant.deb
+mkdir -p /opt/vagrant-plugins
+pushd /opt/vagrant-plugins >/dev/null 2>&1
+git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/sciurus/vagrant-mutate
+git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/aidanns/vagrant-reload
+git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/invernizzi/vagrant-scp
+git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/dustymabe/vagrant-sshfs
+popd >/dev/null 2>&1
 
 # capa
 cd /tmp

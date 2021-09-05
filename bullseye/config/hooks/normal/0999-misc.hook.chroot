@@ -37,3 +37,7 @@ fi
 
 [[ -f /etc/xdg/autostart/gnome-keyring-pkcs11.desktop ]] && \
   sed -i 's/^\(OnlyShowIn=.*\);/\1;XFCE;/' /etc/xdg/autostart/gnome-keyring-pkcs11.desktop
+
+[[ -f /etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop ]] && \
+  sed -i 's/^\(Hidden=\).*/\1false/' /etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop
+
