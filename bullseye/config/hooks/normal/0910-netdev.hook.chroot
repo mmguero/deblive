@@ -48,10 +48,9 @@ dpkg -i /tmp/vagrant.deb
 rm -f /tmp/vagrant.deb
 mkdir -p /opt/vagrant-plugins
 pushd /opt/vagrant-plugins >/dev/null 2>&1
-git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/sciurus/vagrant-mutate
-git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/aidanns/vagrant-reload
-git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/invernizzi/vagrant-scp
-git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/dustymabe/vagrant-sshfs
+for GEM in vagrant-mutate vagrant-reload vagrant-scp vagrant-sshfs; do
+  gem fetch "$GEM"
+done
 popd >/dev/null 2>&1
 
 # capa
