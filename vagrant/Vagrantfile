@@ -15,6 +15,8 @@ end
 
 Vagrant.configure("2") do |config|
 
+  config.vm.define "vagrant-deblive-build"
+
   config.vm.box = "bento/debian-11"
 
   config.vm.network "private_network", type: "dhcp"
