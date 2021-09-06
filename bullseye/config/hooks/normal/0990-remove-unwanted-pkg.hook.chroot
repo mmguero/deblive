@@ -49,7 +49,7 @@ apt-get -y autoremove
 
 # but keep build-essential
 apt-get -y update
-apt-get -y --no-install-recommends build-essential
+apt-get -y --no-install-recommends install build-essential
 apt-get clean
 
 # remove any residual configs
