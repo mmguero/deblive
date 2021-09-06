@@ -35,6 +35,8 @@ rm -rf /var/spool/ccache
 apt-get -y --purge remove deluge \
                           epiphany-browser \
                           evince \
+                          firmware-netronome \
+                          firmware-qcom-soc \
                           linux-image-*-rt-* \
                           mailutils \
                           gnome-accessibility-themes \
