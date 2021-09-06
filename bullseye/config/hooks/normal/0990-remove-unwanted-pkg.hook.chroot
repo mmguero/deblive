@@ -28,7 +28,7 @@ apt-get -y --purge remove \
   google-perftools \
   libc6-dbg \
   libllvm9 \
-  $(dpkg --get-selections | grep -Pv "(^(libyaml|libsecret|dpkg|libgcc|libc6|libstdc\+\+)|deinstall$)" | cut -f1 | grep -P -- '-dev(:\w+)?$') || true
+  $(dpkg --get-selections | grep -Pv "(^(libyaml|libsecret|libvirt|dpkg|libgcc|libc6|libstdc\+\+)|deinstall$)" | cut -f1 | grep -P -- '-dev(:\w+)?$') || true
 rm -rf /var/spool/ccache
 
 # remove unwanted packages
@@ -43,12 +43,11 @@ apt-get -y --purge remove deluge \
                           vlc-l10n \
                           yelp \
                           youtube-dl || true
-
 apt-get -y autoremove
 
-rm -f /etc/apt/sources.list.d/testing.list
+# but keep build-essential
 apt-get -y update
-
+apt-get -y --no-install-recommends build-essential
 apt-get clean
 
 # remove any residual configs

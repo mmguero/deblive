@@ -46,12 +46,6 @@ ln -s -r /usr/bin/podman /usr/local/bin/docker
 curl -o /tmp/vagrant.deb "https://releases.hashicorp.com$(curl -fsL "https://releases.hashicorp.com$(curl -fsL "https://releases.hashicorp.com/vagrant" | grep 'href="/vagrant/' | head -n 1 | grep -o '".*"' | tr -d '"' )" | grep "x86_64\.deb" | head -n 1 | grep -o 'href=".*"' | sed 's/href=//' | tr -d '"')"
 dpkg -i /tmp/vagrant.deb
 rm -f /tmp/vagrant.deb
-mkdir -p /opt/vagrant-plugins
-pushd /opt/vagrant-plugins >/dev/null 2>&1
-for GEM in vagrant-mutate vagrant-reload vagrant-scp vagrant-sshfs; do
-  gem fetch "$GEM"
-done
-popd >/dev/null 2>&1
 
 # capa
 cd /tmp
