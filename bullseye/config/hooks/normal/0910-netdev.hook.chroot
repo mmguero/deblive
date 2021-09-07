@@ -168,6 +168,16 @@ cp -f "${TMP_CLONE_DIR}"/complete/rg.bash /etc/bash_completion.d/rg.bash
 chmod 755 /usr/local/bin/rg
 rm -rf "$TMP_CLONE_DIR"
 
+# age
+AGE_RELEASE="$(git_latest_release FiloSottile/age | sed 's/^v//')"
+TMP_CLONE_DIR="$(mktemp -d)"
+AGE_URL="https://github.com/FiloSottile/age/releases/download/v${AGE_RELEASE}/age-v${AGE_RELEASE}-linux-amd64.tar.gz"
+curl -L "${AGE_URL}" | tar xvzf - -C "${TMP_CLONE_DIR}" --strip-components 1
+cp -f "${TMP_CLONE_DIR}"/age /usr/local/bin/age
+cp -f "${TMP_CLONE_DIR}"/age-keygen /usr/local/bin/age-keygen
+chmod 755 /usr/local/bin/age /usr/local/bin/age-keygen
+rm -rf "$TMP_CLONE_DIR"
+
 # bat
 BAT_RELEASE="$(git_latest_release sharkdp/bat | sed 's/^v//')"
 TMP_CLONE_DIR="$(mktemp -d)"
@@ -216,6 +226,7 @@ cp -f "${TMP_CLONE_DIR}"/watchexec /usr/local/bin/watchexec
 chmod 755 /usr/local/bin/watchexec
 rm -rf "$TMP_CLONE_DIR"
 
+# ngrok
 TMP_CLONE_DIR="$(mktemp -d)"
 curl -o "${TMP_CLONE_DIR}"/ngrok.zip -L "https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip"
 pushd "$TMP_CLONE_DIR" >/dev/null 2>&1
