@@ -6,7 +6,7 @@ export LANG=C.UTF-8
 SKEL_PATH="/etc/skel"
 GUERO_GITHUB_PATH="$SKEL_PATH/.config/mmguero.config"
 GUERO_DOCKER_GITHUB_PATH="$SKEL_PATH/.config/mmguero.docker"
-mkdir -p "$(dirname "$GUERO_GITHUB_PATH")" "$(dirname "$GUERO_DOCKER_GITHUB_PATH")" "$SKEL_PATH/.local/bin"
+mkdir -p "$(dirname "$GUERO_GITHUB_PATH")" "$(dirname "$GUERO_DOCKER_GITHUB_PATH")" "$SKEL_PATH/.local/bin" "$SKEL_PATH/tmp"
 git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/mmguero/config.git "$GUERO_GITHUB_PATH"
 git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/mmguero-personal/docker.git "$GUERO_DOCKER_GITHUB_PATH"
 rm -rf "$GUERO_GITHUB_PATH"/.git "$GUERO_DOCKER_GITHUB_PATH"/.git
