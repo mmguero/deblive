@@ -54,6 +54,7 @@ sox
 twolame
 vlc
 vlc-data
+vlc-plugin-bittorrent
 vorbis-tools
 wodim
 x264
