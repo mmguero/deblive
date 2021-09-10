@@ -5,6 +5,16 @@ export LANG=C.UTF-8
 export DEBIAN_FRONTEND=noninteractive
 export DEBCONF_NONINTERACTIVE_SEEN=true
 
+function git_latest_release () {
+  if [ "$1" ]; then
+    (set -o pipefail && curl -sL -f "https://api.github.com/repos/$1/releases/latest" | jq '.tag_name' | sed -e 's/^"//' -e 's/"$//' ) || \
+      (set -o pipefail && curl -sL -f "https://api.github.com/repos/$1/releases" | jq '.[0].tag_name' | sed -e 's/^"//' -e 's/"$//' ) || \
+      echo unknown
+  else
+    echo "unknown">&2
+  fi
+}
+
 dpkg-reconfigure libdvd-pkg
 
 # some apt-get installs that needed to be handled manually
@@ -97,3 +107,16 @@ done
 [[ -f /etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop ]] && \
   sed -i 's/^\(Hidden=\).*/\1false/' /etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop
 
+# some fonts
+LATEST_NERDFONT_RELEASE="$(git_latest_release ryanoasis/nerd-fonts)"
+mkdir -p /usr/local/share/fonts
+pushd /usr/local/share/fonts >/dev/null 2>&1
+for NERDFONT in DejaVuSansMono FiraCode FiraMono Hack Incosolata LiberationMono SourceCodePro Ubuntu UbuntuMono; do
+  curl -L -o ./$NERDFONT.zip "https://github.com/ryanoasis/nerd-fonts/releases/download/$LATEST_NERDFONT_RELEASE/$NERDFONT.zip"
+  unzip -o ./$NERDFONT.zip
+done
+popd >/dev/null 2>&1
+rm -f /usr/local/share/fonts/*Nerd*Windows*.ttf /usr/local/share/fonts/*.zip /usr/local/share/fonts/*Nerd*.otf
+chmod 755 /usr/local/share/fonts
+chmod 644 /usr/local/share/fonts/*.*
+fc-cache -f -v

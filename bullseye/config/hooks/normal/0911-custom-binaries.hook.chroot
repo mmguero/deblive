@@ -159,17 +159,3 @@ rm -rf "$TMP_CLONE_DIR"
 PCLOUD_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/pcloud"
 curl -L -o "/usr/local/bin/pcloud" "$PCLOUD_URL"
 chmod 755 "/usr/local/bin/pcloud"
-
-# some fonts
-LATEST_NERDFONT_RELEASE="$(git_latest_release ryanoasis/nerd-fonts)"
-mkdir -p /usr/local/share/fonts
-pushd /usr/local/share/fonts >/dev/null 2>&1
-for NERDFONT in DejaVuSansMono FiraCode FiraMono Hack Incosolata LiberationMono SourceCodePro Ubuntu UbuntuMono; do
-  curl -L -o ./$NERDFONT.zip "https://github.com/ryanoasis/nerd-fonts/releases/download/$LATEST_NERDFONT_RELEASE/$NERDFONT.zip"
-  unzip -o ./$NERDFONT.zip
-done
-popd >/dev/null 2>&1
-rm -f /usr/local/share/fonts/*Nerd*Windows*.ttf /usr/local/share/fonts/*.zip /usr/local/share/fonts/*Nerd*.otf
-chmod 755 /usr/local/share/fonts
-chmod 644 /usr/local/share/fonts/*.*
-fc-cache -f -v
