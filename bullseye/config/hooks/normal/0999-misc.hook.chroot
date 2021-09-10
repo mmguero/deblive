@@ -35,6 +35,62 @@ if ! grep -q mapper /etc/pmount.allow; then
 EOT
 fi
 
+# set up capabilities for network-related tools
+EXE_LESS_CAP=(
+  /sbin/ethtool
+  /usr/bin/dumpcap
+  /usr/bin/ncat
+  /usr/bin/openssl
+  /usr/bin/socat
+  /usr/bin/stunnel3
+  /usr/bin/stunnel4
+  /usr/bin/tcpcryptd
+  /usr/bin/tcpflow
+  /usr/bin/tcpreplay
+  /usr/local/sbin/udptunnel
+  /usr/sbin/arpspoof
+  /usr/sbin/dnsspoof
+  /usr/sbin/dsniff
+  /usr/sbin/filesnarf
+  /usr/sbin/macof
+  /usr/sbin/mailsnarf
+  /usr/sbin/msgsnarf
+  /usr/sbin/nethogs
+  /usr/sbin/sshmitm
+  /usr/sbin/sshow
+  /usr/sbin/tcpd
+  /usr/sbin/tcpdump
+  /usr/sbin/tcpkill
+  /usr/sbin/tcpnice
+  /usr/sbin/urlsnarf
+  /usr/sbin/webmitm
+  /usr/sbin/webspy
+)
+EXE_MORE_CAP=(
+  /usr/sbin/astraceroute
+  /usr/sbin/bpfc
+  /usr/sbin/curvetun
+  /usr/sbin/flowtop
+  /usr/sbin/ifpps
+  /usr/sbin/inetd
+  /usr/sbin/mausezahn
+  /usr/sbin/netsniff-ng
+  /usr/sbin/stenotype
+  /usr/sbin/trafgen
+)
+for i in ${EXE_LESS_CAP[@]}; do
+  if [[ -e "$i" ]]; then
+    chown root:netdev "$i" && \
+      setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_NET_BIND_SERVICE+eip' "$i"
+  fi
+done
+for i in ${EXE_MORE_CAP[@]}; do
+  if [[ -e "$i" ]]; then
+    chown root:netdev "$i" && \
+      setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_NET_BIND_SERVICE+eip CAP_IPC_LOCK+eip CAP_SYS_ADMIN+eip' "$i"
+  fi
+done
+
 [[ -f /etc/xdg/autostart/gnome-keyring-pkcs11.desktop ]] && \
   sed -i 's/^\(OnlyShowIn=.*\);/\1;XFCE;/' /etc/xdg/autostart/gnome-keyring-pkcs11.desktop
 
