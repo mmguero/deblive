@@ -10,44 +10,11 @@ function git_latest_release () {
   fi
 }
 
+# capa
 CAPA_VERSION="2.0.0"
 CAPA_URL="https://github.com/fireeye/capa/releases/download/v${CAPA_VERSION}/capa-v${CAPA_VERSION}-linux.zip"
 CAPA_DIR="/usr/local/bin"
 CAPA_BIN="${CAPA_DIR}/capa"
-
-YARA_RULES_URL="https://codeload.github.com/Neo23x0/signature-base/tar.gz/master"
-YARA_RULES_DIR="/opt/yara-rules"
-
-OPENRESOLV_VER="3.12.0"
-OPENRESOLV_URL="https://roy.marples.name/downloads/openresolv/openresolv-$OPENRESOLV_VER.tar.xz"
-
-RESPONDER_VER="3.0.6.0"
-RESPONDER_URL="https://github.com/lgandx/Responder/archive/v${RESPONDER_VER}.tar.gz"
-
-BURPSUITE_VER="2021.8.2"
-BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=jar"
-
-BRUTESHARK_URL="https://github.com/odedshimon/BruteShark/releases/latest/download/BruteSharkCli"
-
-CHEPY_PLUGINS_URL="https://codeload.github.com/securisec/chepy_plugins/tar.gz/master"
-CHEPY_PLUGINS_DIR="/opt/chepy-plugins"
-
-GHIDRA_URL="https://ghidra-sre.org/ghidra_9.2.2_PUBLIC_20201229.zip"
-SYNERGY_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/synergy_debian_amd64.deb"
-PCLOUD_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/pcloud"
-UDPTUNNEL_URL="https://codeload.github.com/rfc1036/udptunnel/tar.gz/master"
-
-# podman
-curl -o /usr/local/bin/podman-compose https://raw.githubusercontent.com/containers/podman-compose/devel/podman_compose.py
-chmod 755 /usr/local/bin/podman-compose
-ln -s -r /usr/bin/podman /usr/local/bin/docker
-
-# vagrant
-curl -o /tmp/vagrant.deb "https://releases.hashicorp.com$(curl -fsL "https://releases.hashicorp.com$(curl -fsL "https://releases.hashicorp.com/vagrant" | grep 'href="/vagrant/' | head -n 1 | grep -o '".*"' | tr -d '"' )" | grep "x86_64\.deb" | head -n 1 | grep -o 'href=".*"' | sed 's/href=//' | tr -d '"')"
-dpkg -i /tmp/vagrant.deb
-rm -f /tmp/vagrant.deb
-
-# capa
 cd /tmp
 rm -rf /tmp/capa*
 curl -fsSL -o ./capa.zip "${CAPA_URL}"
@@ -56,73 +23,6 @@ chmod 755 ./capa
 mkdir -p "${CAPA_DIR}"
 mv ./capa "${CAPA_BIN}"
 rm -rf /tmp/capa*
-###
-
-# yara rules
-cd /tmp
-mkdir -p ./Neo23x0
-curl -sSL "$YARA_RULES_URL" | tar xzvf - -C ./Neo23x0 --strip-components 1
-mkdir -p "${YARA_RULES_DIR}"/custom
-cp ./Neo23x0/yara/* ./Neo23x0/vendor/yara/* "${YARA_RULES_DIR}"/
-cp ./Neo23x0/LICENSE "${YARA_RULES_DIR}"/_LICENSE
-rm -rf /tmp/Neo23x0
-###
-
-# chepy plugins
-mkdir -p "$CHEPY_PLUGINS_DIR"
-cd "$(dirname "$CHEPY_PLUGINS_DIR")"
-curl -sSL "$CHEPY_PLUGINS_URL" | tar xzvf - -C "$(basename "$CHEPY_PLUGINS_DIR")" --strip-components 1
-rm -rf "$CHEPY_PLUGINS_DIR"/{tests,docs}
-###
-
-
-# update clamav signatures
-freshclam --stdout --quiet --no-warnings
-###
-
-# Install openresolv (version in repos is out of date)
-curl -L -o "openresolv-$OPENRESOLV_VER.tar.xz" "$OPENRESOLV_URL"
-tar xvf "openresolv-$OPENRESOLV_VER.tar.xz"
-cd "openresolv-$OPENRESOLV_VER"/
-./configure --prefix=/
-make
-# make install
-checkinstall -y -D --strip=yes --stripso=yes --install=yes --fstrans=no --pkgname="openresolv" --pkgversion="$OPENRESOLV_VER" --pkgarch="amd64" --pkgsource="$OPENRESOLV_URL"
-cd ../
-rm -rf "openresolv-$OPENRESOLV_VER.tar.xz" "openresolv-$OPENRESOLV_VER"
-###
-
-# Install responder.py
-curl -L -o "Responder-${RESPONDER_VER}.tar.gz" "$RESPONDER_URL"
-tar -xvzf Responder-${RESPONDER_VER}.tar.gz
-mv ./Responder-${RESPONDER_VER} /opt/responder
-rm -Rf Responder-${RESPONDER_VER}.tar.gz
-ln -s /opt/responder/Responder.py /usr/local/bin/Responder.py
-###
-
-# update freshclam
-systemctl status clamav-freshclam && systemctl stop clamav-freshclam
-freshclam --stdout --quiet --no-warnings --foreground=true
-
-# burpsuite
-mkdir -p /opt/burpsuite
-curl -L -o "/opt/burpsuite/burpsuite_community_v${BURPSUITE_VER}.jar" "$BURPSUITE_URL"
-
-# BruteShark
-# Create a symbolic link between libpcap.so and the actual libpcap file (e.g. libpcap.so.0.8)
-find /usr/lib/x86_64-linux-gnu -type f -name "libpcap.so.*" | head -1 | xargs -i ln -s -r "{}" /usr/lib/x86_64-linux-gnu/libpcap.so
-curl -L -o /usr/local/bin/BruteSharkCli "$BRUTESHARK_URL"
-chmod 755 /usr/local/bin/BruteSharkCli
-
-# ghidra (commented out for now because it's huge)
-# curl -L -o "/tmp/ghidra.zip" "$GHIDRA_URL"
-# unzip "/tmp/ghidra.zip" -d "/opt"
-# rm -f "/tmp/ghidra.zip"
-
-# synergy
-curl -L -o "/tmp/synergy_debian_amd64.deb" "$SYNERGY_URL"
-dpkg -i "/tmp/synergy_debian_amd64.deb"
-rm -f "/tmp/synergy_debian_amd64.deb"
 
 # croc
 CROC_RELEASE="$(git_latest_release schollz/croc | sed 's/^v//')"
@@ -245,31 +145,14 @@ rm -rf "$TMP_CLONE_DIR"
 # rm -rf "$TMP_CLONE_DIR"
 
 # pcloud
+PCLOUD_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/pcloud"
 curl -L -o "/usr/local/bin/pcloud" "$PCLOUD_URL"
 chmod 755 "/usr/local/bin/pcloud"
-
-# udptunnel
-curl -L -o "/tmp/udptunnel.tar.gz" "$UDPTUNNEL_URL"
-cd /tmp
-mkdir udptunnel
-tar xvf ./udptunnel.tar.gz -C ./udptunnel --strip-components 1
-cd ./udptunnel
-make
-make install
-cd /tmp
-rm -rf /tmp/udptunnel*
-
-# bpytop
-git clone --recursive --depth 1 --single-branch -b master https://github.com/aristocratos/bpytop /usr/local/bin/bpytop
-ln -vrs /usr/local/bin/bpytop/bpytop.py /usr/local/bin/btop
 
 # veracrypt
 curl -L -o "/tmp/veracrypt-console-Debian-10-amd64.deb" "$(curl -sSL https://www.veracrypt.fr/en/Downloads.html | grep -Pio 'https://.+?veracrypt-console.+?Debian-10-amd64.deb' | sed "s/&#43;/+/" | head -n 1)"
 dpkg -i "/tmp/veracrypt-console-Debian-10-amd64.deb"
 rm -f "/tmp/veracrypt-console-Debian-10-amd64.deb"
-
-# x11docker
-curl -fsSL https://raw.githubusercontent.com/mviereck/x11docker/master/x11docker | bash -s -- --update
 
 # some fonts
 LATEST_NERDFONT_RELEASE="$(git_latest_release ryanoasis/nerd-fonts)"
@@ -284,64 +167,3 @@ rm -f /usr/local/share/fonts/*Nerd*Windows*.ttf /usr/local/share/fonts/*.zip /us
 chmod 755 /usr/local/share/fonts
 chmod 644 /usr/local/share/fonts/*.*
 fc-cache -f -v
-
-# git and libsecret credential caching
-make --directory=/usr/share/doc/git/contrib/credential/libsecret
-
-# set up capabilities for network-related tools
-EXE_LESS_CAP=(
-  /sbin/ethtool
-  /usr/bin/dumpcap
-  /usr/bin/ncat
-  /usr/bin/openssl
-  /usr/bin/socat
-  /usr/bin/stunnel3
-  /usr/bin/stunnel4
-  /usr/bin/tcpcryptd
-  /usr/bin/tcpflow
-  /usr/bin/tcpreplay
-  /usr/local/sbin/udptunnel
-  /usr/sbin/arpspoof
-  /usr/sbin/dnsspoof
-  /usr/sbin/dsniff
-  /usr/sbin/filesnarf
-  /usr/sbin/macof
-  /usr/sbin/mailsnarf
-  /usr/sbin/msgsnarf
-  /usr/sbin/nethogs
-  /usr/sbin/sshmitm
-  /usr/sbin/sshow
-  /usr/sbin/tcpd
-  /usr/sbin/tcpdump
-  /usr/sbin/tcpkill
-  /usr/sbin/tcpnice
-  /usr/sbin/urlsnarf
-  /usr/sbin/webmitm
-  /usr/sbin/webspy
-)
-EXE_MORE_CAP=(
-  /usr/sbin/astraceroute
-  /usr/sbin/bpfc
-  /usr/sbin/curvetun
-  /usr/sbin/flowtop
-  /usr/sbin/ifpps
-  /usr/sbin/inetd
-  /usr/sbin/mausezahn
-  /usr/sbin/netsniff-ng
-  /usr/sbin/stenotype
-  /usr/sbin/trafgen
-)
-for i in ${EXE_LESS_CAP[@]}; do
-  if [[ -e "$i" ]]; then
-    $SUDO_CMD chown root:netdev "$i" && \
-      $SUDO_CMD setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_NET_BIND_SERVICE+eip' "$i"
-  fi
-done
-for i in ${EXE_MORE_CAP[@]}; do
-  if [[ -e "$i" ]]; then
-    $SUDO_CMD chown root:netdev "$i" && \
-      $SUDO_CMD setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_NET_BIND_SERVICE+eip CAP_IPC_LOCK+eip CAP_SYS_ADMIN+eip' "$i"
-  fi
-done
-
-###

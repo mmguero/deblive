@@ -5,6 +5,7 @@ export LANG=C.UTF-8
 export CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
 pip3 install --no-compile --no-cache-dir --force-reinstall --upgrade \
+  bpytop \
   cachetools \
   chepy[extras] \
   clamd \
@@ -26,6 +27,7 @@ pip3 install --no-compile --no-cache-dir --force-reinstall --upgrade \
   pandas \
   patool \
   Pillow \
+  psutil \
   py-cui \
   pyshark \
   pyunpack \
@@ -43,3 +45,11 @@ pip3 install --no-compile --no-cache-dir --force-reinstall --upgrade \
 
 git clone --depth 1 https://github.com/MarkBaggett/MarkBaggett /opt/MarkBaggett && \
   rm -rf /opt/MarkBaggett/.git
+
+# chepy plugins
+CHEPY_PLUGINS_URL="https://codeload.github.com/securisec/chepy_plugins/tar.gz/master"
+CHEPY_PLUGINS_DIR="/opt/chepy-plugins"
+mkdir -p "$CHEPY_PLUGINS_DIR"
+cd "$(dirname "$CHEPY_PLUGINS_DIR")"
+curl -sSL "$CHEPY_PLUGINS_URL" | tar xzvf - -C "$(basename "$CHEPY_PLUGINS_DIR")" --strip-components 1
+rm -rf "$CHEPY_PLUGINS_DIR"/{tests,docs}

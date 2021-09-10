@@ -32,6 +32,10 @@ for i in ${UFW_ALLOW_RULES[@]}; do
   ufw allow "$i"
 done
 
+# update freshclam
+systemctl status clamav-freshclam && systemctl stop clamav-freshclam
+freshclam --stdout --quiet --no-warnings --foreground=true
+
 # performance parameters for networking, disk, etc.
 cat << 'EOF' >> /etc/sysctl.conf
 # don't restrict dmesg to root
