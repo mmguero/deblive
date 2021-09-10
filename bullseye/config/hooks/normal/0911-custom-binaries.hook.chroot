@@ -24,6 +24,17 @@ mkdir -p "${CAPA_DIR}"
 mv ./capa "${CAPA_BIN}"
 rm -rf /tmp/capa*
 
+# yara rules
+YARA_RULES_URL="https://codeload.github.com/Neo23x0/signature-base/tar.gz/master"
+YARA_RULES_DIR="/opt/yara-rules"
+cd /tmp
+mkdir -p ./Neo23x0
+curl -sSL "$YARA_RULES_URL" | tar xzvf - -C ./Neo23x0 --strip-components 1
+mkdir -p "${YARA_RULES_DIR}"/custom
+cp ./Neo23x0/yara/* ./Neo23x0/vendor/yara/* "${YARA_RULES_DIR}"/
+cp ./Neo23x0/LICENSE "${YARA_RULES_DIR}"/_LICENSE
+rm -rf /tmp/Neo23x0
+
 # croc
 CROC_RELEASE="$(git_latest_release schollz/croc | sed 's/^v//')"
 TMP_CLONE_DIR="$(mktemp -d)"

@@ -1,8 +1,5 @@
 #!/bin/bash
 
-YARA_RULES_URL="https://codeload.github.com/Neo23x0/signature-base/tar.gz/master"
-YARA_RULES_DIR="/opt/yara-rules"
-
 OPENRESOLV_VER="3.12.0"
 OPENRESOLV_URL="https://roy.marples.name/downloads/openresolv/openresolv-$OPENRESOLV_VER.tar.xz"
 
@@ -27,16 +24,6 @@ ln -s -r /usr/bin/podman /usr/local/bin/docker
 curl -o /tmp/vagrant.deb "https://releases.hashicorp.com$(curl -fsL "https://releases.hashicorp.com$(curl -fsL "https://releases.hashicorp.com/vagrant" | grep 'href="/vagrant/' | head -n 1 | grep -o '".*"' | tr -d '"' )" | grep "x86_64\.deb" | head -n 1 | grep -o 'href=".*"' | sed 's/href=//' | tr -d '"')"
 dpkg -i /tmp/vagrant.deb
 rm -f /tmp/vagrant.deb
-
-# yara rules
-cd /tmp
-mkdir -p ./Neo23x0
-curl -sSL "$YARA_RULES_URL" | tar xzvf - -C ./Neo23x0 --strip-components 1
-mkdir -p "${YARA_RULES_DIR}"/custom
-cp ./Neo23x0/yara/* ./Neo23x0/vendor/yara/* "${YARA_RULES_DIR}"/
-cp ./Neo23x0/LICENSE "${YARA_RULES_DIR}"/_LICENSE
-rm -rf /tmp/Neo23x0
-###
 
 # Install openresolv (version in repos is out of date)
 curl -L -o "openresolv-$OPENRESOLV_VER.tar.xz" "$OPENRESOLV_URL"
@@ -91,9 +78,6 @@ rm -rf /tmp/udptunnel*
 
 # x11docker
 curl -fsSL https://raw.githubusercontent.com/mviereck/x11docker/master/x11docker | bash -s -- --update
-
-# git and libsecret credential caching
-make --directory=/usr/share/doc/git/contrib/credential/libsecret
 
 # set up capabilities for network-related tools
 EXE_LESS_CAP=(

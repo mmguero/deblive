@@ -36,6 +36,9 @@ done
 systemctl status clamav-freshclam && systemctl stop clamav-freshclam
 freshclam --stdout --quiet --no-warnings --foreground=true
 
+# git and libsecret credential caching
+make --directory=/usr/share/doc/git/contrib/credential/libsecret
+
 # performance parameters for networking, disk, etc.
 cat << 'EOF' >> /etc/sysctl.conf
 # don't restrict dmesg to root
