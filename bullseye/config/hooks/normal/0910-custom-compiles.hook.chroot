@@ -65,6 +65,11 @@ curl -L -o "/tmp/synergy_debian_amd64.deb" "$SYNERGY_URL"
 dpkg -i "/tmp/synergy_debian_amd64.deb"
 rm -f "/tmp/synergy_debian_amd64.deb"
 
+# veracrypt
+curl -L -o "/tmp/veracrypt-console-Debian-10-amd64.deb" "$(curl -sSL https://www.veracrypt.fr/en/Downloads.html | grep -Pio 'https://.+?veracrypt-console.+?Debian-10-amd64.deb' | sed "s/&#43;/+/" | head -n 1)"
+dpkg -i "/tmp/veracrypt-console-Debian-10-amd64.deb"
+rm -f "/tmp/veracrypt-console-Debian-10-amd64.deb"
+
 # udptunnel
 curl -L -o "/tmp/udptunnel.tar.gz" "$UDPTUNNEL_URL"
 cd /tmp
