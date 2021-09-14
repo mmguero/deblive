@@ -43,7 +43,7 @@ jobs:
         name: Checkout
         uses: actions/checkout@v2
       -
-        name: Show files
+        name: Build image
         run: |
           export IMAGE_DISTRIBUTION=bullseye
           sed -i "s/^[[:space:]]*#*[[:space:]]*\(export[[:space:]]*CHECKSUM_RELEASE=\).*/\1false/" $IMAGE_DISTRIBUTION/vars.txt
@@ -60,7 +60,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       -
-        name: Build and push ISO server image
+        name: Build and push server image
         uses: docker/build-push-action@v2
         with:
           context: .
