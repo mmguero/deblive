@@ -1,6 +1,11 @@
-name: ci
+name: iso-build-docker-wrap-push-ghcr
 
 on:
+  push:
+    branches:
+      - 'master'
+    paths:
+      - 'bullseye/**'
   workflow_dispatch:
 
 jobs:
@@ -13,6 +18,10 @@ jobs:
       run:
         shell: bash
     steps:
+      - name: Cancel previous run in progress
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Build environment setup
         run: |
