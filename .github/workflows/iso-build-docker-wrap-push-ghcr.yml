@@ -19,7 +19,8 @@ jobs:
       run:
         shell: bash
     steps:
-      - name: Cancel previous run in progress
+      -
+        name: Cancel previous run in progress
         uses: styfle/cancel-workflow-action@0.9.1
         with:
           ignore_sha: true
