@@ -7,5 +7,3 @@ export APT_SECURITY=true
 export CHECKSUM_RELEASE=true
 export APT_UPDATES=true
 export BUILD_DIR=
-# export KERNEL_TARGET=5.10.0-8-amd64
-# export LINUX_COMPILER_GCC=10

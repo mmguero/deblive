@@ -31,15 +31,6 @@ pushd "$CONFIG_PATH" >/dev/null 2>&1
 
 source ./vars.txt
 
-if [ -z "$KERNEL_TARGET" ]; then
-  KERNEL_TARGET="$(uname -r)"
-fi
-KERNEL_TARGET_VERSION_MAJ_MIN="$(echo "$KERNEL_TARGET" | uname -r | cut -d '.' -f 1,2)"
-KERNEL_TARGET_VERSION_FULL="$(echo "$KERNEL_TARGET" | uname -r | cut -d '-' -f 1)"
-if [ -z "$LINUX_COMPILER_GCC" ]; then
-  LINUX_COMPILER_GCC="$(apt-cache depends gcc | grep 'Depends: gcc-' | cut -d'-' -f2)"
-fi
-
 if [ -z "$BUILD_DIR" ]; then
   WORKDIR="$(mktemp -d -t deblive-XXXXXX)"
 else
@@ -82,37 +73,16 @@ if [ -d "$WORKDIR" ]; then
   rm -f ./0910-remove-apt-sources-lists
   popd >/dev/null 2>&1
 
-  # make sure we install the newer kernel, firmwares, and kernel headers
-  echo "linux-image-$KERNEL_TARGET" > ./config/package-lists/kernel.list.chroot
-  echo "linux-headers-$KERNEL_TARGET" >> ./config/package-lists/kernel.list.chroot
-  echo "linux-headers-$(echo "$KERNEL_TARGET" | sed 's/amd64/common/')" >> ./config/package-lists/kernel.list.chroot
-  for PKG in "linux-compiler-gcc-$LINUX_COMPILER_GCC-x86" \
-             "linux-kbuild-$KERNEL_TARGET_VERSION_MAJ_MIN" \
-             "linux-compiler-gcc-$LINUX_COMPILER_GCC-x86" \
-             "linux-kbuild-$KERNEL_TARGET_VERSION_MAJ_MIN" \
-             firmware-linux \
+  # make sure we install the firmwares, etc.
+  for PKG in firmware-linux \
              firmware-linux-free \
              firmware-linux-nonfree \
              firmware-misc-nonfree \
              firmware-amd-graphics \
              firmware-iwlwifi \
              firmware-atheros; do
-    if dpkg -s "$PKG" >/dev/null 2>&1; then
-      echo "$PKG=$(dpkg -s "$PKG" | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
-    else
-      echo "$PKG" >> ./config/package-lists/kernel.list.chroot
-    fi
+    echo "$PKG" >> ./config/package-lists/firmwares.list.chroot
   done
-
-  # and make sure we remove the old stuff when it's all over
-  # TODO: update this for the latest release (bullseye)
-  echo "#!/bin/sh" > ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
-  echo "export LC_ALL=C.UTF-8" >> ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
-  echo "export LANG=C.UTF-8" >> ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
-  echo "apt-get -y --purge remove *4.19* || true" >> ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
-  echo "apt-get -y autoremove" >> ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
-  echo "apt-get clean" >> ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
-  chmod +x ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
 
   # write out some version stuff specific to this installation version
   echo "BUILD_ID=\"$(date +'%Y-%m-%d')-${IMAGE_VERSION}\""                      > ./config/includes.chroot/etc/.os-info
@@ -135,7 +105,8 @@ if [ -d "$WORKDIR" ]; then
     --distribution $IMAGE_DISTRIBUTION \
     --iso-application "$IMAGE_NAME" \
     --iso-publisher "$IMAGE_PUBLISHER $(date +'%Y-%m-%d %H:%M:%S')" \
-    --linux-packages "linux-image-$(echo "$KERNEL_TARGET" | sed 's/-amd64$//')" \
+    --linux-packages "linux-image linux-headers" \
+    --linux-flavours "amd64:amd64" \
     --architectures amd64 \
     --binary-images iso-hybrid \
     --bootappend-live "boot=live components username=user nosplash random.trust_cpu=on elevator=deadline systemd.unified_cgroup_hierarchy=1" \

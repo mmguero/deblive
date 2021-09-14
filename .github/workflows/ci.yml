@@ -42,11 +42,6 @@ jobs:
       -
         name: Show files
         run: |
-          export KERNEL_TARGET="$(uname -r)"
-          export GCC_TARGET="$(apt-cache depends gcc | grep 'Depends: gcc-' | cut -d'-' -f2)"
-          export IMAGE_DISTRIBUTION=bullseye
-          sed -i "s/^[[:space:]]*#*[[:space:]]*\(export[[:space:]]*KERNEL_TARGET=\).*/\1$KERNEL_TARGET/" $IMAGE_DISTRIBUTION/vars.txt
-          sed -i "s/^[[:space:]]*#*[[:space:]]*\(export[[:space:]]*LINUX_COMPILER_GCC=\).*/\1$GCC_TARGET/" $IMAGE_DISTRIBUTION/vars.txt
           sed -i "s/^[[:space:]]*#*[[:space:]]*\(export[[:space:]]*CHECKSUM_RELEASE=\).*/\1false/" $IMAGE_DISTRIBUTION/vars.txt
           cat $IMAGE_DISTRIBUTION/vars.txt
           sudo /usr/bin/env bash ./build.sh "$IMAGE_DISTRIBUTION"
