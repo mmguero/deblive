@@ -21,6 +21,8 @@ jobs:
       - name: Cancel previous run in progress
         uses: styfle/cancel-workflow-action@0.9.1
         with:
+          ignore_sha: true
+          all_but_latest: true
           access_token: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Build environment setup
