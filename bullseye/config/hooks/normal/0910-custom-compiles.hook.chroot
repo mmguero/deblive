@@ -84,4 +84,7 @@ rm -rf /tmp/udptunnel*
 # x11docker
 curl -fsSL https://raw.githubusercontent.com/mviereck/x11docker/master/x11docker | bash -s -- --update
 
+# git and libsecret credential caching
+make --directory=/usr/share/doc/git/contrib/credential/libsecret
+
 ###

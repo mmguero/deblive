@@ -7,7 +7,7 @@ apt-get -y --purge remove \
   google-perftools \
   libc6-dbg \
   libllvm9 \
-  $(dpkg --get-selections | grep -Pv "(^(libyaml|libsecret|libvirt|libxen|dpkg|libgcc|libc6|libglib2\.0|libstdc\+\+)|deinstall$)" | cut -f1 | grep -P -- '-dev(:\w+)?$') || true
+  $(dpkg --get-selections | grep -Pv "(^(libyaml|libsecret|libvirt|libxen|dpkg|libgcc|libc6|libstdc\+\+)|deinstall$)" | cut -f1 | grep -P -- '-dev(:\w+)?$') || true
 rm -rf /var/spool/ccache
 
 # remove unwanted packages
