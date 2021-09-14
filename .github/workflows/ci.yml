@@ -11,8 +11,48 @@ jobs:
         shell: bash
     steps:
       -
+        name: Build environment setup
+        run: |
+          sudo apt-get -q update
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -t focal-backports --no-install-recommends -y -q \
+               apt-transport-https \
+               bc \
+               build-essential \
+               ca-certificates \
+               curl \
+               debhelper-compat \
+               debootstrap \
+               genisoimage \
+               gettext \
+               git \
+               gnupg2 \
+               jq \
+               po4a \
+               rsync \
+               software-properties-common \
+               squashfs-tools \
+               xorriso
+            git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --branch='debian/1%20210407' 'https://salsa.debian.org/live-team/live-build.git' /tmp/live-build
+            cd /tmp/live-build
+            dpkg-buildpackage -b -uc -us
+            sudo dpkg -i /tmp/live-build*.deb
+      -
         name: Checkout
         uses: actions/checkout@v2
       -
         name: Show files
-        run: ls -l
+        run: |
+          export KERNEL_TARGET="$(uname -r)"
+          export GCC_TARGET="$(apt-cache depends gcc | grep 'Depends: gcc-' | cut -d'-' -f2)"
+          export IMAGE_DISTRIBUTION=bullseye
+          sed -i "s/\(IMAGE_NAME=\).*/\1$IMAGE_NAME/" $IMAGE_DISTRIBUTION/vars.txt
+          sed -i "s/\(IMAGE_VERSION=\).*/\1$IMAGE_VERSION/" $IMAGE_DISTRIBUTION/vars.txt
+          sed -i "s/\(IMAGE_DISTRIBUTION=\).*/\1$IMAGE_DISTRIBUTION/" $IMAGE_DISTRIBUTION/vars.txt
+          sed -i "s/\(IMAGE_PUBLISHER=\).*/\1$IMAGE_PUBLISHER/" $IMAGE_DISTRIBUTION/vars.txt
+          sed -i "s/\(APT_BACKPORTS=\).*/\1$APT_BACKPORTS/" $IMAGE_DISTRIBUTION/vars.txt
+          sed -i "s/\(APT_SECURITY=\).*/\1$APT_SECURITY/" $IMAGE_DISTRIBUTION/vars.txt
+          sed -i "s/\(APT_UPDATES=\).*/\1$APT_UPDATES/" $IMAGE_DISTRIBUTION/vars.txt
+          sed -i "s/\(CHECKSUM_RELEASE=\).*/\1$CHECKSUM_RELEASE/" $IMAGE_DISTRIBUTION/vars.txt
+          sed -i "s/\(KERNEL_TARGET=\).*/\1$KERNEL_TARGET/" $IMAGE_DISTRIBUTION/vars.txt
+          sed -i "s/\(LINUX_COMPILER_GCC=\).*/\1$GCC_TARGET/" $IMAGE_DISTRIBUTION/vars.txt
+          cat $IMAGE_DISTRIBUTION/vars.txt
