@@ -31,6 +31,12 @@ pushd "$CONFIG_PATH" >/dev/null 2>&1
 
 source ./vars.txt
 
+if [ -z "$KERNEL_TARGET" ]; then
+  KERNEL_TARGET="$(uname -r)"
+fi
+KERNEL_TARGET_VERSION_MAJ_MIN="$(echo "$KERNEL_TARGET" | uname -r | cut -d '.' -f 1,2)"
+KERNEL_TARGET_VERSION_FULL="$(echo "$KERNEL_TARGET" | uname -r | cut -d '-' -f 1)"
+
 if [ -z "$BUILD_DIR" ]; then
   WORKDIR="$(mktemp -d -t deblive-XXXXXX)"
 else
@@ -74,20 +80,30 @@ if [ -d "$WORKDIR" ]; then
   popd >/dev/null 2>&1
 
   # make sure we install the newer kernel, firmwares, and kernel headers
-  echo "linux-image-$(uname -r)" > ./config/package-lists/kernel.list.chroot
-  echo "linux-headers-$(uname -r)" >> ./config/package-lists/kernel.list.chroot
-  echo "linux-headers-$(uname -r | sed 's/amd64/common/')" >> ./config/package-lists/kernel.list.chroot
-  echo "linux-compiler-gcc-10-x86=$(dpkg -s linux-compiler-gcc-10-x86 | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
-  echo "linux-kbuild-5.10=$(dpkg -s linux-kbuild-5.10 | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
-  echo "firmware-linux=$(dpkg -s firmware-linux | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
-  echo "firmware-linux-free=$(dpkg -s firmware-linux-free | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
-  echo "firmware-linux-nonfree=$(dpkg -s firmware-linux-nonfree | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
-  echo "firmware-misc-nonfree=$(dpkg -s firmware-misc-nonfree | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
-  echo "firmware-amd-graphics=$(dpkg -s firmware-amd-graphics | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
-  echo "firmware-iwlwifi=$(dpkg -s firmware-iwlwifi | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
-  echo "firmware-atheros=$(dpkg -s firmware-atheros | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
+  echo "linux-image-$KERNEL_TARGET" > ./config/package-lists/kernel.list.chroot
+  echo "linux-headers-$KERNEL_TARGET" >> ./config/package-lists/kernel.list.chroot
+  echo "linux-headers-$(echo "$KERNEL_TARGET" | sed 's/amd64/common/')" >> ./config/package-lists/kernel.list.chroot
+  for PKG in "linux-compiler-gcc-$LINUX_COMPILER_GCC-x86" \
+             "linux-kbuild-$KERNEL_TARGET_VERSION_MAJ_MIN" \
+             "linux-compiler-gcc-$LINUX_COMPILER_GCC-x86" \
+             "linux-kbuild-$KERNEL_TARGET_VERSION_MAJ_MIN" \
+             firmware-linux \
+             firmware-linux-free \
+             firmware-linux-nonfree \
+             firmware-misc-nonfree \
+             firmware-amd-graphics \
+             firmware-iwlwifi \
+             firmware-atheros; do
+    if dpkg -s "$PKG" >/dev/null 2>&1; then
+      echo "$PKG=$(dpkg -s "$PKG" | grep ^Version: | cut -d' ' -f2)" >> ./config/package-lists/kernel.list.chroot
+    else
+      echo "$PKG" >> ./config/package-lists/kernel.list.chroot
+    fi
+  done
+  cat ./config/package-lists/kernel.list.chroot
 
   # and make sure we remove the old stuff when it's all over
+  # TODO: update this for the latest release (bullseye)
   echo "#!/bin/sh" > ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
   echo "export LC_ALL=C.UTF-8" >> ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
   echo "export LANG=C.UTF-8" >> ./config/hooks/normal/9999-remove-old-kernel-artifacts.hook.chroot
@@ -108,6 +124,7 @@ if [ -d "$WORKDIR" ]; then
 
   chown -R root:root *
 
+  echo "live-build version: $(lb --version)"
   lb config \
     --image-name "$IMAGE_NAME" \
     --debian-installer live \
@@ -116,7 +133,7 @@ if [ -d "$WORKDIR" ]; then
     --distribution $IMAGE_DISTRIBUTION \
     --iso-application "$IMAGE_NAME" \
     --iso-publisher "$IMAGE_PUBLISHER $(date +'%Y-%m-%d %H:%M:%S')" \
-    --linux-packages "linux-image-$(uname -r | sed 's/-amd64$//')" \
+    --linux-packages "linux-image-$(echo "$KERNEL_TARGET" | sed 's/-amd64$//')" \
     --architectures amd64 \
     --binary-images iso-hybrid \
     --bootappend-live "boot=live components username=user nosplash random.trust_cpu=on elevator=deadline systemd.unified_cgroup_hierarchy=1" \
