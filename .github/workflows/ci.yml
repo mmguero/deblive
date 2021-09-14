@@ -45,14 +45,7 @@ jobs:
           export KERNEL_TARGET="$(uname -r)"
           export GCC_TARGET="$(apt-cache depends gcc | grep 'Depends: gcc-' | cut -d'-' -f2)"
           export IMAGE_DISTRIBUTION=bullseye
-          sed -i "s/\(IMAGE_NAME=\).*/\1$IMAGE_NAME/" $IMAGE_DISTRIBUTION/vars.txt
-          sed -i "s/\(IMAGE_VERSION=\).*/\1$IMAGE_VERSION/" $IMAGE_DISTRIBUTION/vars.txt
-          sed -i "s/\(IMAGE_DISTRIBUTION=\).*/\1$IMAGE_DISTRIBUTION/" $IMAGE_DISTRIBUTION/vars.txt
-          sed -i "s/\(IMAGE_PUBLISHER=\).*/\1$IMAGE_PUBLISHER/" $IMAGE_DISTRIBUTION/vars.txt
-          sed -i "s/\(APT_BACKPORTS=\).*/\1$APT_BACKPORTS/" $IMAGE_DISTRIBUTION/vars.txt
-          sed -i "s/\(APT_SECURITY=\).*/\1$APT_SECURITY/" $IMAGE_DISTRIBUTION/vars.txt
-          sed -i "s/\(APT_UPDATES=\).*/\1$APT_UPDATES/" $IMAGE_DISTRIBUTION/vars.txt
-          sed -i "s/\(CHECKSUM_RELEASE=\).*/\1$CHECKSUM_RELEASE/" $IMAGE_DISTRIBUTION/vars.txt
-          sed -i "s/\(KERNEL_TARGET=\).*/\1$KERNEL_TARGET/" $IMAGE_DISTRIBUTION/vars.txt
-          sed -i "s/\(LINUX_COMPILER_GCC=\).*/\1$GCC_TARGET/" $IMAGE_DISTRIBUTION/vars.txt
+          sed -i "s/^[[:space:]]*#*[[:space:]]*\(export[[:space:]]*KERNEL_TARGET=\).*/\1$KERNEL_TARGET/" $IMAGE_DISTRIBUTION/vars.txt
+          sed -i "s/^[[:space:]]*#*[[:space:]]*\(export[[:space:]]*LINUX_COMPILER_GCC=\).*/\1$GCC_TARGET/" $IMAGE_DISTRIBUTION/vars.txt
           cat $IMAGE_DISTRIBUTION/vars.txt
+          sudo /usr/bin/env bash ./build.sh "$IMAGE_DISTRIBUTION"
