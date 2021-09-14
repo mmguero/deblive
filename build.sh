@@ -36,6 +36,9 @@ if [ -z "$KERNEL_TARGET" ]; then
 fi
 KERNEL_TARGET_VERSION_MAJ_MIN="$(echo "$KERNEL_TARGET" | uname -r | cut -d '.' -f 1,2)"
 KERNEL_TARGET_VERSION_FULL="$(echo "$KERNEL_TARGET" | uname -r | cut -d '-' -f 1)"
+if [ -z "$LINUX_COMPILER_GCC" ]; then
+  LINUX_COMPILER_GCC="$(apt-cache depends gcc | grep 'Depends: gcc-' | cut -d'-' -f2)"
+fi
 
 if [ -z "$BUILD_DIR" ]; then
   WORKDIR="$(mktemp -d -t deblive-XXXXXX)"

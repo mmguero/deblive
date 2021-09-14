@@ -4,12 +4,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  qemu:
+  build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v2
-      -
-        name: Current platform
-        run: uname -a
+      - uses: actions/checkout@v2
+        run: ls -l
