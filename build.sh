@@ -100,7 +100,6 @@ if [ -d "$WORKDIR" ]; then
       echo "$PKG" >> ./config/package-lists/kernel.list.chroot
     fi
   done
-  cat ./config/package-lists/kernel.list.chroot
 
   # and make sure we remove the old stuff when it's all over
   # TODO: update this for the latest release (bullseye)
@@ -143,6 +142,7 @@ if [ -d "$WORKDIR" ]; then
     --security $APT_SECURITY \
     --updates $APT_UPDATES \
     --source false \
+    --apt-secure $CHECKSUM_RELEASE \
     --apt-indices false \
     --apt-source-archives false \
     --archive-areas 'main contrib non-free' \
