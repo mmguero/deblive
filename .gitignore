@@ -1,9 +1,3 @@
-# binaries
-pcloud*
-
-# large packages
-*.deb
-
 # development/artifacts
 .vagrant
 *.iso

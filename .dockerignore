@@ -1,3 +1,5 @@
 **
 !/deblive-*.log
 !/deblive-*.iso
+!/docker/supervisord.conf
+
