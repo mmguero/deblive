@@ -44,20 +44,18 @@ RUN apt-get -q update && \
       supervisor && \
     apt-get -y autoremove -qq && \
     apt-get clean && \
-    rm -rf /var/cache/apt/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-ADD deblive-*.log /deblive/
-ADD deblive-*.iso /deblive/deblive.iso
-ADD https://www.debian.org/favicon.ico /deblive/favicon.ico
-ADD docker/supervisord.conf /etc/supervisord.conf
-
-RUN groupadd --gid ${DEFAULT_GID} ${PUSER} && \
+    rm -rf /var/cache/apt/* /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    groupadd --gid ${DEFAULT_GID} ${PUSER} && \
       useradd -M --uid ${DEFAULT_UID} --gid ${DEFAULT_GID} --home /nonexistant ${PUSER} && \
       usermod -a -G tty ${PUSER} && \
     mkdir -p /deblive && \
       chown -R ${DEFAULT_UID}:${DEFAULT_GID} /deblive && \
-      chmod 750 /deblive && \
-      chmod 640 /deblive/*
+      chmod 750 /deblive
+
+ADD docker/supervisord.conf /etc/supervisord.conf
+ADD --chown=${DEFAULT_UID}:${DEFAULT_GID} deblive-*.log /deblive/
+ADD --chown=${DEFAULT_UID}:${DEFAULT_GID} deblive-*.iso /deblive/deblive.iso
+ADD --chown=${DEFAULT_UID}:${DEFAULT_GID} https://www.debian.org/favicon.ico /deblive/favicon.ico
 
 EXPOSE $HTTP_SERVER_PORT
 
