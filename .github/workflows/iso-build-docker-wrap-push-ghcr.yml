@@ -77,6 +77,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: isosrv.Dockerfile
+          file: docker/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/deblive:latest
