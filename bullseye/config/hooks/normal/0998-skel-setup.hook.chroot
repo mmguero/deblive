@@ -35,9 +35,6 @@ rm -rf "$GUERO_GITHUB_PATH"/.git "$GUERO_DOCKER_GITHUB_PATH"/.git
 [[ -r "$GUERO_GITHUB_PATH"/linux/tmux/tmux.conf ]] && rm -vf "$SKEL_PATH"/.tmux.conf && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/tmux/tmux.conf "$SKEL_PATH"/.tmux.conf
 
-[[ -r "$GUERO_GITHUB_PATH"/linux/albert/albert.conf ]] && mkdir -p "$SKEL_PATH"/.config/albert && rm -vf "$SKEL_PATH"/.config/albert/albert.conf && \
-  ln -vrs "$GUERO_GITHUB_PATH"/linux/albert/albert.conf "$SKEL_PATH"/.config/albert/albert.conf
-
 [[ -r "$GUERO_GITHUB_PATH"/linux/xbindkeys/xbindkeysrc ]] && rm -vf "$SKEL_PATH"/.xbindkeysrc && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/xbindkeys/xbindkeysrc "$SKEL_PATH"/.xbindkeysrc
 
@@ -67,10 +64,6 @@ if [[ -d "$GUERO_GITHUB_PATH"/sublime ]]; then
     rm -vf "$SKEL_PATH"/.config/sublime-text-3/Packages/User/"$FNAME" && ln -vrs "$CONFFILE" "$SKEL_PATH"/.config/sublime-text-3/Packages/User/"$FNAME"
   done < <(find "$GUERO_GITHUB_PATH"/sublime -mindepth 1 -maxdepth 1 -type f -print0)
 fi
-
-dpkg -s albert >/dev/null 2>&1 && mkdir -p "$SKEL_PATH"/.config/autostart && \
-  rm -vf "$SKEL_PATH"/.config/autostart/albert.desktop && \
-  ln -vs /usr/share/applications/albert.desktop "$SKEL_PATH"/.config/autostart/albert.desktop
 
 mkdir -p "$SKEL_PATH"/.local/bin
 LINKED_SCRIPTS=(
