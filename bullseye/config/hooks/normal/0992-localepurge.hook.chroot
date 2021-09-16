@@ -7,7 +7,7 @@ localepurge localepurge/use-dpkg-feature  boolean false
 localepurge localepurge/quickndirtycalc boolean false
 localepurge localepurge/dontbothernew boolean true
 localepurge localepurge/mandelete boolean true
-localepurge localepurge/nopurge multiselect en, en_us, en_us.UTF-8
+localepurge localepurge/nopurge multiselect en, en_US, en_US.UTF-8
 localepurge localepurge/showfreedspace  boolean true
 localepurge localepurge/none_selected boolean false
 EOF
@@ -22,6 +22,10 @@ echo "en_US.UTF-8" >> /etc/locale.nopurge
 localepurge
 
 cat > /etc/environment << EOF
-LANG=en_US.utf-8
-LC_ALL=en_US.utf-8
+LANG=en_US.UTF-8
+LC_ALL=en_US.UTF-8
+EOF
+
+cat > /etc/locale.conf << EOF
+LANG=en_US.UTF-8
 EOF
