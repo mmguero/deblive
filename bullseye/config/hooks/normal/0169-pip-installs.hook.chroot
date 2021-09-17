@@ -5,6 +5,7 @@ export LANG=C.UTF-8
 export CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
 pip3 install --no-compile --no-cache-dir --force-reinstall --upgrade \
+  black \
   bpytop \
   cachetools \
   chepy[extras] \
