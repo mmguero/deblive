@@ -19,6 +19,7 @@ gstreamer1.0-plugins-ugly
 handbrake
 handbrake-cli
 imagemagick
+kazam
 lame
 libaacs0
 libaudio-scrobbler-perl
@@ -49,7 +50,6 @@ netpbm
 normalize-audio
 perlmagick
 pithos
-recordmydesktop
 sox
 twolame
 vlc
