@@ -12,6 +12,7 @@ rm -rf /var/spool/ccache
 
 # remove unwanted packages
 apt-get -y --purge remove deluge \
+                          docker-scan-plugin \
                           epiphany-browser \
                           evince \
                           firmware-netronome \
