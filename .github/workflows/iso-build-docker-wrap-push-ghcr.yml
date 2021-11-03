@@ -60,7 +60,6 @@ jobs:
         name: Build image
         run: |
           export IMAGE_DISTRIBUTION=bullseye
-          sed -i "s/^[[:space:]]*#*[[:space:]]*\(export[[:space:]]*CHECKSUM_RELEASE=\).*/\1false/" $IMAGE_DISTRIBUTION/vars.txt
           cat $IMAGE_DISTRIBUTION/vars.txt
           sudo /usr/bin/env bash ./build.sh "$IMAGE_DISTRIBUTION"
       -
