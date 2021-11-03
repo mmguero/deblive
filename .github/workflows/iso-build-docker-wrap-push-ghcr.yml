@@ -39,6 +39,7 @@ jobs:
                curl \
                debhelper-compat \
                debootstrap \
+               debian-archive-keyring \
                genisoimage \
                gettext \
                git \
