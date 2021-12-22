@@ -5,13 +5,17 @@ export LANG=C.UTF-8
 export CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
 pip3 install --no-compile --no-cache-dir --force-reinstall --upgrade \
+  beautifulsoup4 \
   black \
   bpytop \
   cachetools \
   chepy[extras] \
   clamd \
+  colorama \
   colored \
+  cryptography \
   Cython \
+  dateparser \
   debinterface \
   dhcpwn \
   entrypoint2 \
@@ -30,10 +34,15 @@ pip3 install --no-compile --no-cache-dir --force-reinstall --upgrade \
   Pillow \
   psutil \
   py-cui \
+  pyinotify \
   pyshark \
+  python-dateutil \
+  python-magic \
+  pythondialog \
   pyunpack \
   pywinrm \
   pyyaml \
+  requests\[security\] \
   rpyc \
   rupy \
   safety \
@@ -41,6 +50,7 @@ pip3 install --no-compile --no-cache-dir --force-reinstall --upgrade \
   scapy \
   tldr \
   trackerjacker \
+  urllib3 \
   wapiti3 \
   youtube-dl
 
