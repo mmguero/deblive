@@ -10,8 +10,16 @@ function git_latest_release () {
   fi
 }
 
+# dag
+DAG_RELEASE="$(git_latest_release devmatteini/dag)"
+TMP_CLONE_DIR="$(mktemp -d)"
+curl -L "https://github.com/devmatteini/dag/releases/download/${DAG_RELEASE}/dag-${DAG_RELEASE}.tar.gz" | tar xvzf - -C "${TMP_CLONE_DIR}" --strip-components 1
+cp -f "${TMP_CLONE_DIR}"/dag /usr/local/bin/dag
+chmod 755 /usr/local/bin/dag
+rm -rf "$TMP_CLONE_DIR"
+
 # capa
-CAPA_VERSION="2.0.0"
+CAPA_VERSION="3.0.3"
 CAPA_URL="https://github.com/fireeye/capa/releases/download/v${CAPA_VERSION}/capa-v${CAPA_VERSION}-linux.zip"
 CAPA_DIR="/usr/local/bin"
 CAPA_BIN="${CAPA_DIR}/capa"
