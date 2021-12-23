@@ -3,15 +3,15 @@
 OPENRESOLV_VER="3.12.0"
 OPENRESOLV_URL="https://roy.marples.name/downloads/openresolv/openresolv-$OPENRESOLV_VER.tar.xz"
 
-RESPONDER_VER="3.0.6.0"
+RESPONDER_VER="3.1.1.0"
 RESPONDER_URL="https://github.com/lgandx/Responder/archive/v${RESPONDER_VER}.tar.gz"
 
-BURPSUITE_VER="2021.8.2"
+BURPSUITE_VER="2021.12"
 BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=jar"
 
 BRUTESHARK_URL="https://github.com/odedshimon/BruteShark/releases/latest/download/BruteSharkCli"
 
-GHIDRA_URL="https://ghidra-sre.org/ghidra_9.2.2_PUBLIC_20201229.zip"
+GHIDRA_URL="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.1.1_build/ghidra_10.1.1_PUBLIC_20211221.zip"
 SYNERGY_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/synergy_debian_amd64.deb"
 UDPTUNNEL_URL="https://codeload.github.com/rfc1036/udptunnel/tar.gz/master"
 
@@ -45,9 +45,9 @@ rm -Rf Responder-${RESPONDER_VER}.tar.gz
 ln -s /opt/responder/Responder.py /usr/local/bin/Responder.py
 ###
 
-# burpsuite
-mkdir -p /opt/burpsuite
-curl -L -o "/opt/burpsuite/burpsuite_community_v${BURPSUITE_VER}.jar" "$BURPSUITE_URL"
+# burpsuite (commented out for now because it's huge)
+# mkdir -p /opt/burpsuite
+# curl -L -o "/opt/burpsuite/burpsuite_community_v${BURPSUITE_VER}.jar" "$BURPSUITE_URL"
 
 # BruteShark
 # Create a symbolic link between libpcap.so and the actual libpcap file (e.g. libpcap.so.0.8)
@@ -66,9 +66,9 @@ dpkg -i "/tmp/synergy_debian_amd64.deb"
 rm -f "/tmp/synergy_debian_amd64.deb"
 
 # veracrypt
-curl -L -o "/tmp/veracrypt-console-Debian-10-amd64.deb" "$(curl -sSL https://www.veracrypt.fr/en/Downloads.html | grep -Pio 'https://.+?veracrypt-console.+?Debian-10-amd64.deb' | sed "s/&#43;/+/" | head -n 1)"
-dpkg -i "/tmp/veracrypt-console-Debian-10-amd64.deb"
-rm -f "/tmp/veracrypt-console-Debian-10-amd64.deb"
+curl -L -o "/tmp/veracrypt-console-Debian-11-amd64.deb" "$(curl -sSL https://www.veracrypt.fr/en/Downloads.html | grep -Pio 'https://.+?veracrypt-console.+?Debian-11-amd64.deb' | sed "s/&#43;/+/" | head -n 1)"
+dpkg -i "/tmp/veracrypt-console-Debian-11-amd64.deb"
+rm -f "/tmp/veracrypt-console-Debian-11-amd64.deb"
 
 # udptunnel
 curl -L -o "/tmp/udptunnel.tar.gz" "$UDPTUNNEL_URL"
