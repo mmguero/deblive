@@ -4,13 +4,14 @@ export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
 export CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
-pip3 install --no-compile --no-cache-dir --force-reinstall --upgrade \
+python3 -m pip install --no-compile --no-cache-dir --force-reinstall --upgrade \
   beautifulsoup4 \
   black \
   bpytop \
   cachetools \
   chepy[extras] \
   clamd \
+  cleanvid \
   colorama \
   colored \
   cryptography \
@@ -21,13 +22,15 @@ pip3 install --no-compile --no-cache-dir --force-reinstall --upgrade \
   entrypoint2 \
   fierce \
   git+https://github.com/badele/gitcheck.git \
-  git+https://github.com/mmguero/python-mmguero.git \
   git-up \
   habu \
   humanhash3 \
   ipaddress \
   magic-wormhole \
   mitmproxy \
+  mmguero \
+  monkeyplug \
+  montag-cleaner \
   ordered-set \
   pandas \
   patool \
