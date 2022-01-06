@@ -10,12 +10,12 @@ function git_latest_release () {
   fi
 }
 
-# dag
-DAG_RELEASE="$(git_latest_release devmatteini/dag)"
+# dra
+DRA_RELEASE="$(git_latest_release devmatteini/dra)"
 TMP_CLONE_DIR="$(mktemp -d)"
-curl -L "https://github.com/devmatteini/dag/releases/download/${DAG_RELEASE}/dag-${DAG_RELEASE}.tar.gz" | tar xvzf - -C "${TMP_CLONE_DIR}" --strip-components 1
-cp -f "${TMP_CLONE_DIR}"/dag /usr/local/bin/dag
-chmod 755 /usr/local/bin/dag
+curl -L "https://github.com/devmatteini/dra/releases/download/${DRA_RELEASE}/dra-${DRA_RELEASE}.tar.gz" | tar xvzf - -C "${TMP_CLONE_DIR}" --strip-components 1
+cp -f "${TMP_CLONE_DIR}"/dra /usr/local/bin/dra
+chmod 755 /usr/local/bin/dra
 rm -rf "$TMP_CLONE_DIR"
 
 # capa
