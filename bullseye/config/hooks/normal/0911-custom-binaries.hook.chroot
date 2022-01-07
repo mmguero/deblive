@@ -163,6 +163,14 @@ rm -rf "$TMP_CLONE_DIR"
 # chmod 755 /usr/local/bin/termshark
 # rm -rf "$TMP_CLONE_DIR"
 
+# distrobox (https://github.com/89luca89/distrobox)
+TMP_CLONE_DIR="$(mktemp -d)"
+git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/89luca89/distrobox "$TMP_CLONE_DIR"/distrobox
+pushd "$TMP_CLONE_DIR"/distrobox >/dev/null 2>&1
+./install
+popd >/dev/null 2>&1
+rm -rf "$TMP_CLONE_DIR"
+
 # pcloud
 PCLOUD_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/pcloud"
 curl -L -o "/usr/local/bin/pcloud" "$PCLOUD_URL"
