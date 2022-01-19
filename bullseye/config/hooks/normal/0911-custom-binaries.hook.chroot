@@ -77,6 +77,11 @@ cp -f "${TMP_CLONE_DIR}"/autocomplete/bash_autocomplete /etc/bash_completion.d/s
 chmod 755 /usr/local/bin/step
 rm -rf "$TMP_CLONE_DIR"
 
+# supercronic
+SUPERCRONIC_RELEASE="$(git_latest_release aptible/supercronic | sed 's/^v//')"
+curl -o /usr/local/bin/supercronic -L "https://github.com/aptible/supercronic/releases/download/v${SUPERCRONIC_RELEASE}/supercronic-linux-amd64"
+chmod 755 /usr/local/bin/supercronic
+
 # ripgrep
 RIPGREP_RELEASE="$(git_latest_release BurntSushi/ripgrep | sed 's/^v//')"
 TMP_CLONE_DIR="$(mktemp -d)"
