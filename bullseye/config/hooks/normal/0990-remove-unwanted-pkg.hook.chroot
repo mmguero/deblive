@@ -23,8 +23,7 @@ apt-get -y --purge remove deluge \
                           gucharmap \
                           openjdk-11-jdk \
                           vlc-l10n \
-                          yelp \
-                          youtube-dl || true
+                          yelp || true
 apt-get -y autoremove
 
 # but keep build-essential
