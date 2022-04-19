@@ -44,9 +44,9 @@ python3 -m pip install --no-compile --no-cache-dir --force-reinstall --upgrade \
   pythondialog \
   pyunpack \
   pywinrm \
-  pyyaml \
   requests\[security\] \
   rpyc \
+  ruamel.yaml \
   rupy \
   safety \
   scanless \

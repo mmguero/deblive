@@ -6,12 +6,12 @@ OPENRESOLV_URL="https://roy.marples.name/downloads/openresolv/openresolv-$OPENRE
 RESPONDER_VER="3.1.1.0"
 RESPONDER_URL="https://github.com/lgandx/Responder/archive/v${RESPONDER_VER}.tar.gz"
 
-BURPSUITE_VER="2021.12"
-BURPSUITE_URL="https://portswigger.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=jar"
+BURPSUITE_VER="2022.2.4"
+BURPSUITE_URL="https://portswigger-cdn.net/burp/releases/download?product=community&version=${BURPSUITE_VER}&type=Jar"
 
 BRUTESHARK_URL="https://github.com/odedshimon/BruteShark/releases/latest/download/BruteSharkCli"
 
-GHIDRA_URL="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.1.1_build/ghidra_10.1.1_PUBLIC_20211221.zip"
+GHIDRA_URL="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.1.2_build/ghidra_10.1.2_PUBLIC_20220125.zip"
 SYNERGY_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/synergy_debian_amd64.deb"
 UDPTUNNEL_URL="https://codeload.github.com/rfc1036/udptunnel/tar.gz/master"
 
