@@ -1,0 +1,9 @@
+buildah
+catatonit
+fuse-overlayfs
+podman
+podman-aardvark-dns
+podman-netavark
+python3-podman-compose
+slirp4netns
+uidmap

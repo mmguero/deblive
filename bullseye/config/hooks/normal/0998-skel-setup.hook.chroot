@@ -23,6 +23,9 @@ rm -rf "$GUERO_GITHUB_PATH"/.git "$GUERO_DOCKER_GITHUB_PATH"/.git
 [[ -d "$GUERO_GITHUB_PATH"/bash/rc.d ]] && rm -vf "$SKEL_PATH"/.bashrc.d && \
   ln -vrs "$GUERO_GITHUB_PATH"/bash/rc.d "$SKEL_PATH"/.bashrc.d
 
+[[ -d "$GUERO_GITHUB_PATH"/linux/containers ]] && rm -vf "$SKEL_PATH"/.config/containers && \
+        ln $LNFLAGS "$GUERO_GITHUB_PATH"/linux/containers "$SKEL_PATH"/.config/containers
+
 [[ -r "$GUERO_GITHUB_PATH"/git/gitconfig ]] && rm -vf "$SKEL_PATH"/.gitconfig && \
   ln -vrs "$GUERO_GITHUB_PATH"/git/gitconfig "$SKEL_PATH"/.gitconfig
 
@@ -67,7 +70,6 @@ fi
 
 mkdir -p "$SKEL_PATH"/.local/bin
 LINKED_SCRIPTS=(
-  clarence-0.4.4
   mpvurl.sh
   screenshot.sh
   tilix.sh
