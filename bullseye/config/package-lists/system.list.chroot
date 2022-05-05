@@ -190,6 +190,7 @@ unzip
 upower
 usbutils
 user-setup
+uidmap
 uuid-runtime
 vbindiff
 vim-tiny
