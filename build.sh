@@ -109,7 +109,7 @@ if [ -d "$WORKDIR" ]; then
     --linux-flavours "amd64:amd64" \
     --architectures amd64 \
     --binary-images iso-hybrid \
-    --bootappend-live "boot=live components username=user nosplash random.trust_cpu=on elevator=deadline systemd.unified_cgroup_hierarchy=1" \
+    --bootappend-live "boot=live components username=user nosplash elevator=deadline systemd.unified_cgroup_hierarchy=1 cgroup_enable=memory swapaccount=1 cgroup.memory=nokmem random.trust_cpu=on" \
     --memtest none \
     --chroot-filesystem squashfs \
     --backports $APT_BACKPORTS \
