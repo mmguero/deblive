@@ -19,6 +19,7 @@ UDPTUNNEL_URL="https://codeload.github.com/rfc1036/udptunnel/tar.gz/master"
 apt-get install -y --no-install-recommends -t / \
     buildah \
     catatonit \
+    containernetworking-dnsname \
     fuse-overlayfs \
     podman \
     podman-aardvark-dns \
