@@ -41,6 +41,7 @@ debtags
 default-jre
 dialog
 diffutils
+direnv
 dirmngr
 dmidecode
 dosfstools

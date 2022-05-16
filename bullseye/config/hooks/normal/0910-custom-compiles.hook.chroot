@@ -15,7 +15,11 @@ GHIDRA_URL="https://github.com/NationalSecurityAgency/ghidra/releases/download/G
 SYNERGY_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/synergy_debian_amd64.deb"
 UDPTUNNEL_URL="https://codeload.github.com/rfc1036/udptunnel/tar.gz/master"
 
-# podman (install from alvistack/Debian_11 PPA)
+DOCKER_COMPOSE_VERSION=2.5.0
+DOCKER_COMPOSE_BIN=/usr/local/lib/docker/cli-plugins/docker-compose
+DOCKER_COMPOSE_URL="https://github.com/docker/compose/releases/download/v$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m)"
+
+# podman (install from alvistack/Debian_11 PPA), podman-compose and docker-compose
 apt-get install -y --no-install-recommends -t / \
     buildah \
     catatonit \
@@ -26,8 +30,13 @@ apt-get install -y --no-install-recommends -t / \
     python3-podman-compose \
     slirp4netns
 
+mkdir -p "$(dirname "$DOCKER_COMPOSE_BIN")"
+curl -L -o "$COMPOSE_BIN" "$DOCKER_COMPOSE_URL"
+chmod 755 "$DOCKER_COMPOSE_BIN"
+ln -s -r -f "$DOCKER_COMPOSE_BIN" /usr/local/bin/docker-compose
+
 # vagrant
-curl -o /tmp/vagrant.deb "https://releases.hashicorp.com$(curl -fsL "https://releases.hashicorp.com$(curl -fsL "https://releases.hashicorp.com/vagrant" | grep 'href="/vagrant/' | head -n 1 | grep -o '".*"' | tr -d '"' )" | grep "x86_64\.deb" | head -n 1 | grep -o 'href=".*"' | sed 's/href=//' | tr -d '"')"
+curl -o /tmp/vagrant.deb "$(curl -fsL "https://releases.hashicorp.com$(curl -fsL "https://releases.hashicorp.com/vagrant" | grep 'href="/vagrant/' | head -n 1 | grep -o '".*"' | tr -d '"' )" | grep "x86_64\.deb" | head -n 1 | grep -o 'href=".*"' | sed 's/href=//' | tr -d '"')"
 dpkg -i /tmp/vagrant.deb
 rm -f /tmp/vagrant.deb
 
