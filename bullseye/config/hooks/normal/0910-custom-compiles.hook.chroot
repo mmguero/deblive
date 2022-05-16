@@ -31,7 +31,7 @@ apt-get install -y --no-install-recommends -t / \
     slirp4netns
 
 mkdir -p "$(dirname "$DOCKER_COMPOSE_BIN")"
-curl -L -o "$COMPOSE_BIN" "$DOCKER_COMPOSE_URL"
+curl -L -o "$DOCKER_COMPOSE_BIN" "$DOCKER_COMPOSE_URL"
 chmod 755 "$DOCKER_COMPOSE_BIN"
 ln -s -r -f "$DOCKER_COMPOSE_BIN" /usr/local/bin/docker-compose
 
