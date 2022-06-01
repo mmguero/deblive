@@ -132,7 +132,12 @@ if [ -d "$WORKDIR" ]; then
     echo "Error creating ISO, see log file"
     BUILD_ERROR_CODE=2
   fi
-  mv "$WORKDIR/output/$IMAGE_NAME-$IMAGE_VERSION-build.log" "$RUN_PATH/"
+  if [ -f "$WORKDIR/output/$IMAGE_NAME-$IMAGE_VERSION-build.log" ]; then
+    mv "$WORKDIR/output/$IMAGE_NAME-$IMAGE_VERSION-build.log" "$RUN_PATH/" && \
+      echo "Created \"$RUN_PATH/$IMAGE_NAME-$IMAGE_VERSION-build.log\""
+  else
+    echo "Error creating log file"
+  fi
 
   popd >/dev/null 2>&1
   popd >/dev/null 2>&1
