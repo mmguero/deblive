@@ -69,7 +69,7 @@ jobs:
         id: repo-checkout
         uses: actions/checkout@v2
       -
-        name: Build image
+        name: Build ISO image
         id: build-iso-image
         run: |
           export IMAGE_DISTRIBUTION=bullseye
@@ -84,8 +84,8 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       -
-        name: Build
-        id: build-docker-image
+        name: Build container image
+        id: build-container-image
         uses: redhat-actions/buildah-build@v2
         with:
           image: ${{ env.IMAGE_NAME }}
@@ -100,6 +100,6 @@ jobs:
         id: push-to-ghcr
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: ${{ steps.build-docker-image.outputs.image }}
-          tags: ${{ steps.build-docker-image.outputs.tags }}
+          image: ${{ steps.build-container-image.outputs.image }}
+          tags: ${{ steps.build-container-image.outputs.tags }}
           registry: ${{ env.REGISTRY }}
