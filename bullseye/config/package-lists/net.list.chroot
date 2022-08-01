@@ -22,11 +22,13 @@ iw
 ldap-utils
 libavahi-compat-libdnssd1
 libcap2-bin
+libcharon-extra-plugins
 libcurl4
 libmmdb2-0
 libpcap0.8
 libpurple-bin
 libssh2-1
+libstrongswan-standard-plugins
 macchanger
 mosh
 ncat

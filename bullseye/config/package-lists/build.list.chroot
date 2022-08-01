@@ -5,4 +5,5 @@ binutils
 build-essential
 checkinstall
 cmake
+equivs
 make
