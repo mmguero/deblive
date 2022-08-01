@@ -52,6 +52,7 @@ pidgin-extprefs
 pidgin-plugin-pack
 pidgin-sipe
 rdesktop
+resolvconf
 rsync
 sniffit
 snmp
@@ -60,6 +61,7 @@ ssh-askpass
 sshfs
 sshuttle
 ssldump
+strongswan
 stunnel4
 tcpd
 tcpdump

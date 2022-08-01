@@ -3,6 +3,7 @@ dconf-cli
 fonts-symbola
 libnotify-bin
 libqt5script5
+libqt5webkit5
 libqt5webengine-data
 libqt5webengine5
 libqt5webenginecore5
