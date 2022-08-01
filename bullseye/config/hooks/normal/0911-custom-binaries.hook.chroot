@@ -212,4 +212,4 @@ dpkg -i ./libcharon-standard-plugins_1.0_all.deb
 curl -L -o ./vpn-unlimited-amd64_ubuntu.deb "$VPN_UNLIMITED_URL"
 dpkg -i ./vpn-unlimited-amd64_ubuntu.deb
 popd >/dev/null 2>&1
-rm -rf "$TMP_CLONE_DIR"
+rm -rf "$TMP_CLONE_DIR" /etc/apt/sources.list.d/keepsolid*
