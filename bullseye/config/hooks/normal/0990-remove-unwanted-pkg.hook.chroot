@@ -42,3 +42,4 @@ systemctl disable apt-daily-upgrade.timer || true
 systemctl disable apt-daily-upgrade.service || true
 systemctl disable clamav-daemon.service || true
 systemctl disable clamav-freshclam.service || true
+systemctl disable vpn-unlimited-daemon.service || true
