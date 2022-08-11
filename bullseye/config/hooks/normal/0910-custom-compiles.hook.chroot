@@ -34,11 +34,6 @@ curl -L -o "$DOCKER_COMPOSE_BIN" "$DOCKER_COMPOSE_URL"
 chmod 755 "$DOCKER_COMPOSE_BIN"
 ln -s -r -f "$DOCKER_COMPOSE_BIN" /usr/local/bin/docker-compose
 
-# vagrant
-curl -o /tmp/vagrant.deb "$(curl -fsL "https://releases.hashicorp.com$(curl -fsL "https://releases.hashicorp.com/vagrant" | grep 'href="/vagrant/' | head -n 1 | grep -o '".*"' | tr -d '"' )" | grep "amd64\.deb" | head -n 1 | grep -o 'href=".*"' | sed 's/href=//' | tr -d '"')"
-dpkg -i /tmp/vagrant.deb
-rm -f /tmp/vagrant.deb
-
 # Install openresolv (version in repos is out of date)
 curl -L -o "openresolv-$OPENRESOLV_VER.tar.xz" "$OPENRESOLV_URL"
 tar xvf "openresolv-$OPENRESOLV_VER.tar.xz"

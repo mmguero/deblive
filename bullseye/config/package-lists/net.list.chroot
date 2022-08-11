@@ -46,13 +46,11 @@ ntp
 openbsd-inetd
 openssh-client
 openssh-server
-openvpn
 pidgin
 pidgin-extprefs
 pidgin-plugin-pack
 pidgin-sipe
 rdesktop
-resolvconf
 rsync
 sniffit
 snmp
@@ -75,7 +73,6 @@ tshark
 ufw
 wget
 whois
-wireguard
 wireshark
 x11vnc
 x2goclient

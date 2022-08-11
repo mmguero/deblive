@@ -163,6 +163,7 @@ python3-setuptools
 qemu-utils
 rar
 rename
+resolvconf
 rtkit
 samba-libs
 sed
