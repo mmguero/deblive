@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# vagrant
+curl -o /tmp/vagrant.deb "$(curl -fsL "https://releases.hashicorp.com$(curl -fsL "https://releases.hashicorp.com/vagrant" | grep 'href="/vagrant/' | head -n 1 | grep -o '".*"' | tr -d '"' )" | grep "amd64\.deb" | head -n 1 | grep -o 'href=".*"' | sed 's/href=//' | tr -d '"')"
+dpkg -i /tmp/vagrant.deb
+rm -f /tmp/vagrant.deb
+
+# VPN unlimited (keepsolid)
+VPN_UNLIMITED_URL="https://www.vpnunlimited.com/api/keepsolid/vpn-download?platform=linux-new"
+TMP_CLONE_DIR="$(mktemp -d)"
+pushd "$TMP_CLONE_DIR" >/dev/null 2>&1
+cat <<EOF >> ./libcharon-standard-plugins.cfg
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+
+Package: libcharon-standard-plugins
+Depends: libstrongswan-standard-plugins
+Description: libcharon-standard-plugins dummy package
+ libcharon-standard-plugins dummy package
+ .
+ libcharon-standard-plugins dummy package depending on libstrongswan-standard-plugins
+EOF
+equivs-build ./libcharon-standard-plugins.cfg
+dpkg -i ./libcharon-standard-plugins_1.0_all.deb
+curl -L -o ./vpn-unlimited-amd64_ubuntu.deb "$VPN_UNLIMITED_URL"
+dpkg -i ./vpn-unlimited-amd64_ubuntu.deb
+popd >/dev/null 2>&1
+rm -rf "$TMP_CLONE_DIR" /etc/apt/sources.list.d/keepsolid*
