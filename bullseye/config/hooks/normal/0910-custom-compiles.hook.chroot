@@ -18,7 +18,7 @@ DOCKER_COMPOSE_VERSION=2.9.0
 DOCKER_COMPOSE_BIN=/usr/libexec/docker/cli-plugins/docker-compose
 DOCKER_COMPOSE_URL="https://github.com/docker/compose/releases/download/v$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m)"
 
-# podman (install from alvistack/Debian_11 PPA), podman-compose and docker-compose
+# podman (install from alvistack/Debian_11 PPA), podman-compose
 apt-get install -y --no-install-recommends -t / \
     buildah \
     catatonit \
