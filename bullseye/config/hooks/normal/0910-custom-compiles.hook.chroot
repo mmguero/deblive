@@ -14,8 +14,8 @@ BRUTESHARK_URL="https://github.com/odedshimon/BruteShark/releases/latest/downloa
 GHIDRA_URL="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.1.2_build/ghidra_10.1.2_PUBLIC_20220125.zip"
 UDPTUNNEL_URL="https://codeload.github.com/rfc1036/udptunnel/tar.gz/master"
 
-DOCKER_COMPOSE_VERSION=2.5.0
-DOCKER_COMPOSE_BIN=/usr/local/lib/docker/cli-plugins/docker-compose
+DOCKER_COMPOSE_VERSION=2.9.0
+DOCKER_COMPOSE_BIN=/usr/libexec/docker/cli-plugins/docker-compose
 DOCKER_COMPOSE_URL="https://github.com/docker/compose/releases/download/v$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m)"
 
 # podman (install from alvistack/Debian_11 PPA), podman-compose and docker-compose
