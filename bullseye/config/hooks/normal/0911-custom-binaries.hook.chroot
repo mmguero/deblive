@@ -10,27 +10,73 @@ function git_latest_release () {
   fi
 }
 
-# dra
+# dra will be used to download other release/tag assets from GitHub
 DRA_RELEASE="$(git_latest_release devmatteini/dra)"
 TMP_CLONE_DIR="$(mktemp -d)"
-curl -L "https://github.com/devmatteini/dra/releases/download/${DRA_RELEASE}/dra-${DRA_RELEASE}.tar.gz" | tar xvzf - -C "${TMP_CLONE_DIR}" --strip-components 1
+curl -sSL "https://github.com/devmatteini/dra/releases/download/${DRA_RELEASE}/dra-${DRA_RELEASE}-x86_64-unknown-linux-gnu.tar.gz" | tar xzf - -C "${TMP_CLONE_DIR}" --strip-components 1
 cp -f "${TMP_CLONE_DIR}"/dra /usr/local/bin/dra
 chmod 755 /usr/local/bin/dra
 rm -rf "$TMP_CLONE_DIR"
 
-# capa
-CAPA_VERSION="3.2.0"
-CAPA_URL="https://github.com/fireeye/capa/releases/download/v${CAPA_VERSION}/capa-v${CAPA_VERSION}-linux.zip"
-CAPA_DIR="/usr/local/bin"
-CAPA_BIN="${CAPA_DIR}/capa"
-cd /tmp
-rm -rf /tmp/capa*
-curl -fsSL -o ./capa.zip "${CAPA_URL}"
-unzip ./capa.zip
-chmod 755 ./capa
-mkdir -p "${CAPA_DIR}"
-mv ./capa "${CAPA_BIN}"
-rm -rf /tmp/capa*
+ASSETS=(
+  "aptible/supercronic|supercronic-linux-amd64|/usr/local/bin/supercronic|755"
+  "boringproxy/boringproxy|boringproxy-linux-x86_64|/usr/local/bin/boringproxy|755"
+  "BurntSushi/ripgrep|ripgrep-{tag}-x86_64-unknown-linux-musl.tar.gz|/tmp/ripgrep.tar.gz"
+  "FiloSottile/age|age-v{tag}-linux-amd64.tar.gz|/tmp/age.tar.gz"
+  "fireeye/capa|capa-v{tag}-linux.zip|/tmp/capa.zip"
+  "gabrie30/ghorg|ghorg_{tag}_Linux_x86_64.tar.gz|/tmp/ghorg.tar.gz"
+  "jez/as-tree|as-tree-{tag}-linux.zip|/tmp/as-tree.zip"
+  "mikefarah/yq|yq_linux_amd64|/usr/local/bin/yq|755"
+  "neilotoole/sq|sq-linux-amd64.tar.gz|/tmp/sq.tar.gz"
+  "ogham/exa|exa-linux-x86_64-v{tag}.zip|/tmp/exa.zip"
+  "peco/peco|peco_linux_amd64.tar.gz|/tmp/peco.tar.gz"
+  "rclone/rclone|rclone-v{tag}-linux-amd64.zip|/tmp/rclone.zip"
+  "schollz/croc|croc_{tag}_Linux-64bit.tar.gz|/tmp/croc.tar.gz"
+  "sharkdp/bat|bat-v{tag}-x86_64-unknown-linux-gnu.tar.gz|/tmp/bat.tar.gz"
+  "sharkdp/fd|fd-v{tag}-x86_64-unknown-linux-gnu.tar.gz|/tmp/fd.tar.gz"
+  "smallstep/cli|step_linux_{tag}_amd64.tar.gz|/tmp/step.tar.gz"
+  "starship/starship|starship-x86_64-unknown-linux-gnu.tar.gz|/tmp/starship.tar.gz"
+  "timvisee/ffsend|ffsend-v{tag}-linux-x64-static|/usr/local/bin/ffsend|755"
+  "tomnomnom/gron|gron-linux-amd64-{tag}.tgz|/tmp/gron.tgz"
+  "viddy/viddy|viddy_{tag}_Linux_x86_64.tar.gz|/tmp/viddy.tar.gz"
+  "watchexec/watchexec|watchexec-{tag}-x86_64-unknown-linux-gnu.tar.xz|/tmp/watchexec.tar.xz"
+  "Wilfred/difftastic|difft-x86_64-unknown-linux-gnu.tar.gz|/tmp/difft.tar.gz"
+  # "gcla/termshark|termshark_{tag}_linux_x64.tar.gz|/tmp/termshark.tar.gz"
+)
+for i in ${ASSETS[@]}; do
+  REPO="$(echo "$i" | cut -d'|' -f1)"
+  UNTAG="$(echo "$i" | cut -d'|' -f2)"
+  OUTPUT_FILE="$(echo "$i" | cut -d'|' -f3)"
+  OUTPUT_FILE_PERMS="$(echo "$i" | cut -d'|' -f4)"
+  /usr/local/bin/dra download \
+    -s "$UNTAG" \
+    -o "$OUTPUT_FILE" \
+    "$REPO"
+  if [[ -f "$OUTPUT_FILE" ]]; then
+    chmod "${OUTPUT_FILE_PERMS:-644}" "$OUTPUT_FILE"
+    if [[ "$OUTPUT_FILE" == *.tar.gz ]] || [[ "$OUTPUT_FILE" == *.tgz ]]; then
+      UNPACK_DIR="$(mktemp -d)"
+      tar xzf "$OUTPUT_FILE" -C "$UNPACK_DIR"
+    elif [[ "$OUTPUT_FILE" == *.tar.xz ]] || [[ "$OUTPUT_FILE" == *.xz ]]; then
+      UNPACK_DIR="$(mktemp -d)"
+      tar xJf "$OUTPUT_FILE" -C "$UNPACK_DIR" --strip-components 1
+    elif [[ "$OUTPUT_FILE" == *.zip ]]; then
+      UNPACK_DIR="$(mktemp -d)"
+      unzip -q "$OUTPUT_FILE" -d "$UNPACK_DIR"
+    fi
+    if [[ -d "$UNPACK_DIR" ]]; then
+      find "$UNPACK_DIR" -type f -exec file --mime-type "{}" \; | \
+        grep -P ":\s+application/.*executable" | \
+        cut -d: -f 1 | xargs -I XXX -r mv -v "XXX" /usr/local/bin/
+      rm -rf "$UNPACK_DIR" "$OUTPUT_FILE"
+    fi
+  fi
+done
+
+# pcloud
+PCLOUD_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/pcloud"
+curl -L -o "/usr/local/bin/pcloud" "$PCLOUD_URL"
+chmod 755 "/usr/local/bin/pcloud"
 
 # yara rules
 YARA_RULES_URL="https://codeload.github.com/Neo23x0/signature-base/tar.gz/master"
@@ -43,150 +89,18 @@ cp ./Neo23x0/yara/* ./Neo23x0/vendor/yara/* "${YARA_RULES_DIR}"/
 cp ./Neo23x0/LICENSE "${YARA_RULES_DIR}"/_LICENSE
 rm -rf /tmp/Neo23x0
 
-# croc
-CROC_RELEASE="$(git_latest_release schollz/croc | sed 's/^v//')"
-TMP_CLONE_DIR="$(mktemp -d)"
-curl -L "https://github.com/schollz/croc/releases/download/v${CROC_RELEASE}/croc_${CROC_RELEASE}_Linux-64bit.tar.gz" | tar xzf - -C "${TMP_CLONE_DIR}"
-cp -f "${TMP_CLONE_DIR}"/croc /usr/local/bin/croc
-cp -f "${TMP_CLONE_DIR}"/bash_autocomplete /etc/bash_completion.d/croc.bash
-chmod 755 /usr/local/bin/croc
-rm -rf "$TMP_CLONE_DIR"
-
-# gron
-GRON_RELEASE="$(git_latest_release tomnomnom/gron | sed 's/^v//')"
-TMP_CLONE_DIR="$(mktemp -d)"
-curl -L "https://github.com/tomnomnom/gron/releases/download/v${GRON_RELEASE}/gron-linux-amd64-${GRON_RELEASE}.tgz" | tar xzf - -C "${TMP_CLONE_DIR}"
-cp -f "${TMP_CLONE_DIR}"/gron /usr/local/bin/gron
-chmod 755 /usr/local/bin/gron
-rm -rf "$TMP_CLONE_DIR"
-
-# sq
-SQ_RELEASE="$(git_latest_release neilotoole/sq | sed 's/^v//')"
-TMP_CLONE_DIR="$(mktemp -d)"
-curl -L "https://github.com/neilotoole/sq/releases/download/v${SQ_RELEASE}/sq-linux-amd64.tar.gz" | tar xzf - -C "${TMP_CLONE_DIR}"
-cp -f "${TMP_CLONE_DIR}"/sq /usr/local/bin/sq
-chmod 755 /usr/local/bin/sq
-rm -rf "$TMP_CLONE_DIR"
-
-# step-cli
-STEPCLI_RELEASE="$(git_latest_release smallstep/cli | sed 's/^v//')"
-TMP_CLONE_DIR="$(mktemp -d)"
-curl -L "https://github.com/smallstep/cli/releases/download/v${STEPCLI_RELEASE}/step_linux_${STEPCLI_RELEASE}_amd64.tar.gz" | tar xzf - -C "${TMP_CLONE_DIR}" --strip-components 1
-cp -f "${TMP_CLONE_DIR}"/bin/step /usr/local/bin/step
-cp -f "${TMP_CLONE_DIR}"/autocomplete/bash_autocomplete /etc/bash_completion.d/step.bash
-chmod 755 /usr/local/bin/step
-rm -rf "$TMP_CLONE_DIR"
-
-# supercronic
-SUPERCRONIC_RELEASE="$(git_latest_release aptible/supercronic | sed 's/^v//')"
-curl -o /usr/local/bin/supercronic -L "https://github.com/aptible/supercronic/releases/download/v${SUPERCRONIC_RELEASE}/supercronic-linux-amd64"
-chmod 755 /usr/local/bin/supercronic
-
-# ripgrep
-RIPGREP_RELEASE="$(git_latest_release BurntSushi/ripgrep | sed 's/^v//')"
-TMP_CLONE_DIR="$(mktemp -d)"
-RIPGREP_URL="https://github.com/BurntSushi/ripgrep/releases/download/${RIPGREP_RELEASE}/ripgrep-${RIPGREP_RELEASE}-x86_64-unknown-linux-musl.tar.gz"
-curl -L "${RIPGREP_URL}" | tar xvzf - -C "${TMP_CLONE_DIR}" --strip-components 1
-cp -f "${TMP_CLONE_DIR}"/rg /usr/local/bin/rg
-cp -f "${TMP_CLONE_DIR}"/complete/rg.bash /etc/bash_completion.d/rg.bash
-chmod 755 /usr/local/bin/rg
-rm -rf "$TMP_CLONE_DIR"
-
-# age
-AGE_RELEASE="$(git_latest_release FiloSottile/age | sed 's/^v//')"
-TMP_CLONE_DIR="$(mktemp -d)"
-AGE_URL="https://github.com/FiloSottile/age/releases/download/v${AGE_RELEASE}/age-v${AGE_RELEASE}-linux-amd64.tar.gz"
-curl -L "${AGE_URL}" | tar xvzf - -C "${TMP_CLONE_DIR}" --strip-components 1
-cp -f "${TMP_CLONE_DIR}"/age /usr/local/bin/age
-cp -f "${TMP_CLONE_DIR}"/age-keygen /usr/local/bin/age-keygen
-chmod 755 /usr/local/bin/age /usr/local/bin/age-keygen
-rm -rf "$TMP_CLONE_DIR"
-
-# bat
-BAT_RELEASE="$(git_latest_release sharkdp/bat | sed 's/^v//')"
-TMP_CLONE_DIR="$(mktemp -d)"
-BAT_URL="https://github.com/sharkdp/bat/releases/download/v${BAT_RELEASE}/bat-v${BAT_RELEASE}-x86_64-unknown-linux-gnu.tar.gz"
-curl -L "${BAT_URL}" | tar xvzf - -C "${TMP_CLONE_DIR}" --strip-components 1
-cp -f "${TMP_CLONE_DIR}"/bat /usr/local/bin/bat
-chmod 755 /usr/local/bin/bat
-rm -rf "$TMP_CLONE_DIR"
-
-# fd
-FD_RELEASE="$(git_latest_release sharkdp/fd | sed 's/^v//')"
-TMP_CLONE_DIR="$(mktemp -d)"
-FD_URL="https://github.com/sharkdp/fd/releases/download/v${FD_RELEASE}/fd-v${FD_RELEASE}-x86_64-unknown-linux-gnu.tar.gz"
-curl -L "${FD_URL}" | tar xvzf - -C "${TMP_CLONE_DIR}" --strip-components 1
-cp -f "${TMP_CLONE_DIR}"/fd /usr/local/bin/fd
-chmod 755 /usr/local/bin/fd
-rm -rf "$TMP_CLONE_DIR"
-
-# ffsend
-FFSEND_RELEASE="$(git_latest_release timvisee/ffsend | sed 's/^v//')"
-TMP_CLONE_DIR="$(mktemp -d)"
-curl -o "${TMP_CLONE_DIR}"/ffsend -L "https://github.com/timvisee/ffsend/releases/download/v${FFSEND_RELEASE}/ffsend-v${FFSEND_RELEASE}-linux-x64-static"
-pushd "$TMP_CLONE_DIR" >/dev/null 2>&1
-chmod 755 ./ffsend
-cp -f ./ffsend /usr/local/bin/ffsend
+# some fonts
+mkdir -p /usr/local/share/fonts
+pushd /usr/local/share/fonts >/dev/null 2>&1
+for NERDFONT in DejaVuSansMono Hack LiberationMono Ubuntu UbuntuMono; do
+  curl -L -o ./$NERDFONT.zip "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$NERDFONT.zip"
+  unzip -o ./$NERDFONT.zip
+done
 popd >/dev/null 2>&1
-rm -rf "$TMP_CLONE_DIR"
+rm -f /usr/local/share/fonts/*Nerd*Windows*.ttf /usr/local/share/fonts/*.zip /usr/local/share/fonts/*Nerd*.otf
+chmod 755 /usr/local/share/fonts
+chmod 644 /usr/local/share/fonts/*.*
+fc-cache -f -v
 
-# as-tree
-ASTREE_RELEASE="$(git_latest_release jez/as-tree | sed 's/^v//')"
-TMP_CLONE_DIR="$(mktemp -d)"
-curl -o "${TMP_CLONE_DIR}"/as-tree.zip -L "https://github.com/jez/as-tree/releases/download/${ASTREE_RELEASE}/as-tree-${ASTREE_RELEASE}-linux.zip"
-pushd "$TMP_CLONE_DIR" >/dev/null 2>&1
-unzip ./as-tree.zip
-chmod 755 ./as-tree
-cp -f ./as-tree /usr/local/bin/as-tree
-popd >/dev/null 2>&1
-rm -rf "$TMP_CLONE_DIR"
-
-# watchexec
-WATCHEXEC_RELEASE="$(git_latest_release watchexec/watchexec | sed 's/^cli-v//')"
-TMP_CLONE_DIR="$(mktemp -d)"
-WATCHEXEC_URL="https://github.com/watchexec/watchexec/releases/download/cli-v${WATCHEXEC_RELEASE}/watchexec-${WATCHEXEC_RELEASE}-x86_64-unknown-linux-gnu.tar.xz"
-curl -L "${WATCHEXEC_URL}" | xz -d | tar xvf - -C "${TMP_CLONE_DIR}" --strip-components 1
-cp -f "${TMP_CLONE_DIR}"/watchexec /usr/local/bin/watchexec
-chmod 755 /usr/local/bin/watchexec
-rm -rf "$TMP_CLONE_DIR"
-
-# ngrok
-TMP_CLONE_DIR="$(mktemp -d)"
-curl -o "${TMP_CLONE_DIR}"/ngrok.zip -L "https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip"
-pushd "$TMP_CLONE_DIR" >/dev/null 2>&1
-unzip ./ngrok.zip
-chmod 755 ./ngrok
-cp -f ./ngrok /usr/local/bin/ngrok
-popd >/dev/null 2>&1
-rm -rf "$TMP_CLONE_DIR"
-
-# boringproxy
-BORINGPROXY_RELEASE="$(git_latest_release boringproxy/boringproxy | sed 's/^v//')"
-TMP_CLONE_DIR="$(mktemp -d)"
-pushd "$TMP_CLONE_DIR" >/dev/null 2>&1
-curl -o ./boringproxy -L "https://github.com/boringproxy/boringproxy/releases/download/v${BORINGPROXY_RELEASE}/boringproxy-linux-x86_64"
-chmod 755 ./boringproxy
-cp -f ./boringproxy /usr/local/bin/boringproxy
-popd >/dev/null 2>&1
-rm -rf "$TMP_CLONE_DIR"
-
-# termshark (commented out because for now I'm including wireshark)
-# TERMSHARK_RELEASE="$(git_latest_release gcla/termshark | sed 's/^v//')"
-# TMP_CLONE_DIR="$(mktemp -d)"
-# curl -L "https://github.com/gcla/termshark/releases/download/v${TERMSHARK_RELEASE}/termshark_${TERMSHARK_RELEASE}_linux_x64.tar.gz" | tar xzf - -C "${TMP_CLONE_DIR}"
-# cp -f "${TMP_CLONE_DIR}/termshark_${TERMSHARK_RELEASE}_linux_x64"/termshark/usr/local/bin/termshark
-# chmod 755 /usr/local/bin/termshark
-# rm -rf "$TMP_CLONE_DIR"
-
-# distrobox (https://github.com/89luca89/distrobox)
-TMP_CLONE_DIR="$(mktemp -d)"
-git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/89luca89/distrobox "$TMP_CLONE_DIR"/distrobox
-pushd "$TMP_CLONE_DIR"/distrobox >/dev/null 2>&1
-./install
-popd >/dev/null 2>&1
-rm -rf "$TMP_CLONE_DIR"
-
-# pcloud
-PCLOUD_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/pcloud"
-curl -L -o "/usr/local/bin/pcloud" "$PCLOUD_URL"
-chmod 755 "/usr/local/bin/pcloud"
+# ensure executable permissions are set on files copied into /usr/local/bin/
+chmod 755 /usr/local/bin/*

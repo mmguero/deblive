@@ -41,6 +41,7 @@ python3 -m pip install --no-compile --no-cache-dir --force-reinstall --upgrade \
   pyshark \
   python-dateutil \
   python-magic \
+  python-slugify \
   pythondialog \
   pyunpack \
   pywinrm \

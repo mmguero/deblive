@@ -26,6 +26,9 @@ rm -rf "$GUERO_GITHUB_PATH"/.git "$GUERO_DOCKER_GITHUB_PATH"/.git
 [[ -d "$GUERO_GITHUB_PATH"/linux/containers ]] && rm -vf "$SKEL_PATH"/.config/containers && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/containers "$SKEL_PATH"/.config/containers
 
+[[ -r "$GUERO_GITHUB_PATH"/starship/starship.toml ]] && rm -vf "$SKEL_PATH"/.config/starship.toml && \
+  ln -vrs "$GUERO_GITHUB_PATH"/starship/starship.toml "$SKEL_PATH"/.config/starship.toml
+
 [[ -r "$GUERO_GITHUB_PATH"/git/gitconfig ]] && rm -vf "$SKEL_PATH"/.gitconfig && \
   ln -vrs "$GUERO_GITHUB_PATH"/git/gitconfig "$SKEL_PATH"/.gitconfig
 
@@ -44,15 +47,6 @@ rm -rf "$GUERO_GITHUB_PATH"/.git "$GUERO_DOCKER_GITHUB_PATH"/.git
 [[ -r "$GUERO_GITHUB_PATH"/linux/xxdiff/xxdiffrc ]] && rm -vf "$SKEL_PATH"/.xxdiffrc && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/xxdiff/xxdiffrc "$SKEL_PATH"/.xxdiffrc
 
-[[ -r "$GUERO_GITHUB_PATH"/gdb/gdbinit ]] && rm -vf "$SKEL_PATH"/.gdbinit && \
-  ln -vrs "$GUERO_GITHUB_PATH"/gdb/gdbinit "$SKEL_PATH"/.gdbinit
-
-[[ -r "$GUERO_GITHUB_PATH"/gdb/cgdbrc ]] && mkdir -p "$SKEL_PATH"/.cgdb && rm -vf "$SKEL_PATH"/.cgdb/cgdbrc && \
-  ln -vrs "$GUERO_GITHUB_PATH"/gdb/cgdbrc "$SKEL_PATH"/.cgdb/cgdbrc
-
-[[ -r "$GUERO_GITHUB_PATH"/gdb/hexdump.py ]] && mkdir -p "$SKEL_PATH"/.config/gdb && rm -vf "$SKEL_PATH"/.config/gdb/hexdump.py && \
-  ln -vrs "$GUERO_GITHUB_PATH"/gdb/hexdump.py "$SKEL_PATH"/.config/gdb/hexdump.py
-
 if [[ -d "$GUERO_GITHUB_PATH"/linux/xfce-desktop.config ]]; then
   while IFS= read -d $'\0' -r CONFDIR; do
     DIRNAME="$(basename "$CONFDIR")"
@@ -70,10 +64,13 @@ fi
 
 mkdir -p "$SKEL_PATH"/.local/bin
 LINKED_SCRIPTS=(
-  mpvurl.sh
+  mpv_url.sh
+  pem_passwd.sh
   screenshot.sh
+  self_signed_key_gen.sh
+  store_unique.sh
   tilix.sh
-  windems.sh
+  window_dimensions.sh
 )
 for i in ${LINKED_SCRIPTS[@]}; do
   [[ -e "$GUERO_GITHUB_PATH"/scripts/"$i" ]] && \
