@@ -38,7 +38,7 @@ ASSETS=(
   "starship/starship|starship-x86_64-unknown-linux-gnu.tar.gz|/tmp/starship.tar.gz"
   "timvisee/ffsend|ffsend-v{tag}-linux-x64-static|/usr/local/bin/ffsend|755"
   "tomnomnom/gron|gron-linux-amd64-{tag}.tgz|/tmp/gron.tgz"
-  "viddy/viddy|viddy_{tag}_Linux_x86_64.tar.gz|/tmp/viddy.tar.gz"
+  "sachaos/viddy|viddy_{tag}_Linux_x86_64.tar.gz|/tmp/viddy.tar.gz"
   "watchexec/watchexec|watchexec-{tag}-x86_64-unknown-linux-gnu.tar.xz|/tmp/watchexec.tar.xz"
   "Wilfred/difftastic|difft-x86_64-unknown-linux-gnu.tar.gz|/tmp/difft.tar.gz"
   # "gcla/termshark|termshark_{tag}_linux_x64.tar.gz|/tmp/termshark.tar.gz"
