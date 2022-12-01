@@ -16,6 +16,7 @@ python3 -m pip install --no-compile --no-cache-dir --force-reinstall --upgrade \
   colored \
   cryptography \
   Cython \
+  customtkinter \
   dateparser \
   debinterface \
   dhcpwn \
