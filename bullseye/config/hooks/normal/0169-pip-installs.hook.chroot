@@ -5,6 +5,7 @@ export LANG=C.UTF-8
 export CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
 python3 -m pip install --no-compile --no-cache-dir --force-reinstall --upgrade \
+  arrow \
   beautifulsoup4 \
   black \
   bpytop \
@@ -15,10 +16,12 @@ python3 -m pip install --no-compile --no-cache-dir --force-reinstall --upgrade \
   colorama \
   colored \
   cryptography \
-  Cython \
   customtkinter \
+  Cython \
+  dataset \
   dateparser \
   debinterface \
+  defopt \
   dhcpwn \
   entrypoint2 \
   fierce \
@@ -32,6 +35,8 @@ python3 -m pip install --no-compile --no-cache-dir --force-reinstall --upgrade \
   mmguero \
   monkeyplug \
   montag-cleaner \
+  more-itertools \
+  netmiko \
   ordered-set \
   pandas \
   patool \
@@ -39,6 +44,7 @@ python3 -m pip install --no-compile --no-cache-dir --force-reinstall --upgrade \
   psutil \
   py-cui \
   pyinotify \
+  pyinputplus \
   pyshark \
   python-dateutil \
   python-magic \
@@ -46,15 +52,22 @@ python3 -m pip install --no-compile --no-cache-dir --force-reinstall --upgrade \
   pythondialog \
   pyunpack \
   pywinrm \
+  requests-html \
   requests\[security\] \
+  rich \
   rpyc \
   ruamel.yaml \
   rupy \
   safety \
   scanless \
   scapy \
+  sh \
+  snoop \
+  stackprinter \
   tldr \
+  tqdm \
   trackerjacker \
+  typer[all] \
   urllib3 \
   wapiti3 \
   yt-dlp
