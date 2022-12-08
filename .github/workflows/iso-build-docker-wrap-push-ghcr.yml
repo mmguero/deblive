@@ -19,7 +19,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       actions: write
       packages: write
@@ -41,7 +41,7 @@ jobs:
         id: build-env-setup
         run: |
           sudo apt-get -q update
-          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -t focal-backports --no-install-recommends -y -q \
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -t jammy-backports --no-install-recommends -y -q \
                apt-transport-https \
                bc \
                build-essential \
