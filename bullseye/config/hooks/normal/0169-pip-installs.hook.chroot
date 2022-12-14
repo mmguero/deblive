@@ -23,6 +23,7 @@ python3 -m pip install --no-compile --no-cache-dir --force-reinstall --upgrade \
   debinterface \
   defopt \
   dhcpwn \
+  dtrx \
   entrypoint2 \
   fierce \
   git+https://github.com/badele/gitcheck.git \
