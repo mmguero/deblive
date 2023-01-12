@@ -28,7 +28,6 @@ libmmdb2-0
 libpcap0.8
 libpurple-bin
 libssh2-1
-libstrongswan-standard-plugins
 macchanger
 mosh
 ncat
@@ -59,7 +58,6 @@ ssh-askpass
 sshfs
 sshuttle
 ssldump
-strongswan
 stunnel4
 tcpd
 tcpdump
