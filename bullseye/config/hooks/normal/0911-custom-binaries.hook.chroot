@@ -13,7 +13,7 @@ function git_latest_release () {
 # dra will be used to download other release/tag assets from GitHub
 DRA_RELEASE="$(git_latest_release devmatteini/dra)"
 TMP_CLONE_DIR="$(mktemp -d)"
-curl -sSL "https://github.com/devmatteini/dra/releases/download/${DRA_RELEASE}/dra-${DRA_RELEASE}-x86_64-unknown-linux-gnu.tar.gz" | tar xzf - -C "${TMP_CLONE_DIR}" --strip-components 1
+curl -sSL "https://github.com/devmatteini/dra/releases/download/${DRA_RELEASE}/dra-${DRA_RELEASE}-x86_64-unknown-linux-musl.tar.gz" | tar xzf - -C "${TMP_CLONE_DIR}" --strip-components 1
 cp -f "${TMP_CLONE_DIR}"/dra /usr/local/bin/dra
 chmod 755 /usr/local/bin/dra
 rm -rf "$TMP_CLONE_DIR"
