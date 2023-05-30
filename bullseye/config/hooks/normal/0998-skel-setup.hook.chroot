@@ -35,9 +35,6 @@ rm -rf "$GUERO_GITHUB_PATH"/.git "$GUERO_DOCKER_GITHUB_PATH"/.git
 [[ -r "$GUERO_GITHUB_PATH"/git/gitignore_global ]] && rm -vf "$SKEL_PATH"/.gitignore_global && \
   ln -vrs "$GUERO_GITHUB_PATH"/git/gitignore_global "$SKEL_PATH"/.gitignore_global
 
-[[ -r "$GUERO_GITHUB_PATH"/git/git_clone_all.sh ]] && rm -vf "$SKEL_PATH"/.local/bin/git_clone_all.sh && \
-  ln -vrs "$GUERO_GITHUB_PATH"/git/git_clone_all.sh "$SKEL_PATH"/.local/bin/git_clone_all.sh
-
 [[ -r "$GUERO_GITHUB_PATH"/linux/tmux/tmux.conf ]] && rm -vf "$SKEL_PATH"/.tmux.conf && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/tmux/tmux.conf "$SKEL_PATH"/.tmux.conf
 
@@ -64,13 +61,11 @@ fi
 
 mkdir -p "$SKEL_PATH"/.local/bin
 LINKED_SCRIPTS=(
-  mpv_url.sh
   pem_passwd.sh
-  screenshot.sh
   self_signed_key_gen.sh
   store_unique.sh
-  tilix.sh
   window_dimensions.sh
+  tx-rx-secure.sh
 )
 for i in ${LINKED_SCRIPTS[@]}; do
   [[ -e "$GUERO_GITHUB_PATH"/scripts/"$i" ]] && \

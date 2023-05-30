@@ -23,6 +23,8 @@ ASSETS=(
   "boringproxy/boringproxy|boringproxy-linux-x86_64|/usr/local/bin/boringproxy|755"
   "BurntSushi/ripgrep|ripgrep-{tag}-x86_64-unknown-linux-musl.tar.gz|/tmp/ripgrep.tar.gz"
   "darkhz/rclone-tui|rclone-tui_{tag}_Linux_x86_64.tar.gz|/tmp/rclone-tui.tar.gz"
+  "docker/docker-credential-helpers|docker-credential-pass-v{tag}.linux-amd64|/usr/local/bin/docker-credential-pass|755"
+  "docker/docker-credential-helpers|docker-credential-secretservice-v{tag}.linux-amd64|/usr/local/bin/docker-credential-secretservice|755"
   "FiloSottile/age|age-v{tag}-linux-amd64.tar.gz|/tmp/age.tar.gz"
   "fireeye/capa|capa-v{tag}-linux.zip|/tmp/capa.zip"
   "gabrie30/ghorg|ghorg_{tag}_Linux_x86_64.tar.gz|/tmp/ghorg.tar.gz"
@@ -32,6 +34,7 @@ ASSETS=(
   "nektos/act|act_Linux_x86_64.tar.gz|/tmp/act.tar.gz"
   "ogham/exa|exa-linux-x86_64-v{tag}.zip|/tmp/exa.zip"
   "peco/peco|peco_linux_amd64.tar.gz|/tmp/peco.tar.gz"
+  "projectdiscovery/httpx|httpx_{tag}_linux_amd64.zip|/tmp/httpx.zip"
   "rclone/rclone|rclone-v{tag}-linux-amd64.zip|/tmp/rclone.zip"
   "sachaos/viddy|viddy_{tag}_Linux_x86_64.tar.gz|/tmp/viddy.tar.gz"
   "schollz/croc|croc_{tag}_Linux-64bit.tar.gz|/tmp/croc.tar.gz"
@@ -39,6 +42,7 @@ ASSETS=(
   "sharkdp/fd|fd-v{tag}-x86_64-unknown-linux-gnu.tar.gz|/tmp/fd.tar.gz"
   "smallstep/cli|step_linux_{tag}_amd64.tar.gz|/tmp/step.tar.gz"
   "starship/starship|starship-x86_64-unknown-linux-gnu.tar.gz|/tmp/starship.tar.gz"
+  "stern/stern|stern_{tag}_linux_amd64.tar.gz|/tmp/stern.tar.gz"
   "timvisee/ffsend|ffsend-v{tag}-linux-x64-static|/usr/local/bin/ffsend|755"
   "tomnomnom/gron|gron-linux-amd64-{tag}.tgz|/tmp/gron.tgz"
   "watchexec/watchexec|watchexec-{tag}-x86_64-unknown-linux-musl.tar.xz|/tmp/watchexec.tar.xz"
@@ -74,6 +78,11 @@ for i in ${ASSETS[@]}; do
     fi
   fi
 done
+
+# kubectl
+KUBECTL_URL="https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+curl -L -o "/usr/local/bin/kubectl" "$KUBECTL_URL"
+chmod 755 "/usr/local/bin/kubectl"
 
 # pcloud
 PCLOUD_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/pcloud"
