@@ -1,0 +1,117 @@
+#!/bin/bash
+
+function git_latest_release () {
+  if [ "$1" ]; then
+    (set -o pipefail && curl -sL -f "https://api.github.com/repos/$1/releases/latest" | jq '.tag_name' | sed -e 's/^"//' -e 's/"$//' ) || \
+      (set -o pipefail && curl -sL -f "https://api.github.com/repos/$1/releases" | jq '.[0].tag_name' | sed -e 's/^"//' -e 's/"$//' ) || \
+      echo unknown
+  else
+    echo "unknown">&2
+  fi
+}
+
+# dra will be used to download other release/tag assets from GitHub
+DRA_RELEASE="$(git_latest_release devmatteini/dra)"
+TMP_CLONE_DIR="$(mktemp -d)"
+curl -sSL "https://github.com/devmatteini/dra/releases/download/${DRA_RELEASE}/dra-${DRA_RELEASE}-x86_64-unknown-linux-musl.tar.gz" | tar xzf - -C "${TMP_CLONE_DIR}" --strip-components 1
+cp -f "${TMP_CLONE_DIR}"/dra /usr/local/bin/dra
+chmod 755 /usr/local/bin/dra
+rm -rf "$TMP_CLONE_DIR"
+
+ASSETS=(
+  "aptible/supercronic|supercronic-linux-amd64|/usr/local/bin/supercronic|755"
+  "boringproxy/boringproxy|boringproxy-linux-x86_64|/usr/local/bin/boringproxy|755"
+  "BurntSushi/ripgrep|ripgrep-{tag}-x86_64-unknown-linux-musl.tar.gz|/tmp/ripgrep.tar.gz"
+  "darkhz/rclone-tui|rclone-tui_{tag}_Linux_x86_64.tar.gz|/tmp/rclone-tui.tar.gz"
+  "docker/docker-credential-helpers|docker-credential-pass-v{tag}.linux-amd64|/usr/local/bin/docker-credential-pass|755"
+  "docker/docker-credential-helpers|docker-credential-secretservice-v{tag}.linux-amd64|/usr/local/bin/docker-credential-secretservice|755"
+  "FiloSottile/age|age-v{tag}-linux-amd64.tar.gz|/tmp/age.tar.gz"
+  "fireeye/capa|capa-v{tag}-linux.zip|/tmp/capa.zip"
+  "gabrie30/ghorg|ghorg_{tag}_Linux_x86_64.tar.gz|/tmp/ghorg.tar.gz"
+  "jez/as-tree|as-tree-{tag}-linux.zip|/tmp/as-tree.zip"
+  "mikefarah/yq|yq_linux_amd64|/usr/local/bin/yq|755"
+  "neilotoole/sq|sq-{tag}-linux-amd64.tar.gz|/tmp/sq.tar.gz"
+  "nektos/act|act_Linux_x86_64.tar.gz|/tmp/act.tar.gz"
+  "ogham/exa|exa-linux-x86_64-v{tag}.zip|/tmp/exa.zip"
+  "peco/peco|peco_linux_amd64.tar.gz|/tmp/peco.tar.gz"
+  "projectdiscovery/httpx|httpx_{tag}_linux_amd64.zip|/tmp/httpx.zip"
+  "rclone/rclone|rclone-v{tag}-linux-amd64.zip|/tmp/rclone.zip"
+  "sachaos/viddy|viddy_{tag}_Linux_x86_64.tar.gz|/tmp/viddy.tar.gz"
+  "schollz/croc|croc_{tag}_Linux-64bit.tar.gz|/tmp/croc.tar.gz"
+  "sharkdp/bat|bat-v{tag}-x86_64-unknown-linux-gnu.tar.gz|/tmp/bat.tar.gz"
+  "sharkdp/fd|fd-v{tag}-x86_64-unknown-linux-gnu.tar.gz|/tmp/fd.tar.gz"
+  "smallstep/cli|step_linux_{tag}_amd64.tar.gz|/tmp/step.tar.gz"
+  "starship/starship|starship-x86_64-unknown-linux-gnu.tar.gz|/tmp/starship.tar.gz"
+  "stern/stern|stern_{tag}_linux_amd64.tar.gz|/tmp/stern.tar.gz"
+  "timvisee/ffsend|ffsend-v{tag}-linux-x64-static|/usr/local/bin/ffsend|755"
+  "tomnomnom/gron|gron-linux-amd64-{tag}.tgz|/tmp/gron.tgz"
+  "watchexec/watchexec|watchexec-{tag}-x86_64-unknown-linux-musl.tar.xz|/tmp/watchexec.tar.xz"
+  "Wilfred/difftastic|difft-x86_64-unknown-linux-gnu.tar.gz|/tmp/difft.tar.gz"
+  # "gcla/termshark|termshark_{tag}_linux_x64.tar.gz|/tmp/termshark.tar.gz"
+)
+for i in ${ASSETS[@]}; do
+  REPO="$(echo "$i" | cut -d'|' -f1)"
+  UNTAG="$(echo "$i" | cut -d'|' -f2)"
+  OUTPUT_FILE="$(echo "$i" | cut -d'|' -f3)"
+  OUTPUT_FILE_PERMS="$(echo "$i" | cut -d'|' -f4)"
+  /usr/local/bin/dra download \
+    -s "$UNTAG" \
+    -o "$OUTPUT_FILE" \
+    "$REPO"
+  if [[ -f "$OUTPUT_FILE" ]]; then
+    chmod "${OUTPUT_FILE_PERMS:-644}" "$OUTPUT_FILE"
+    if [[ "$OUTPUT_FILE" == *.tar.gz ]] || [[ "$OUTPUT_FILE" == *.tgz ]]; then
+      UNPACK_DIR="$(mktemp -d)"
+      tar xzf "$OUTPUT_FILE" -C "$UNPACK_DIR"
+    elif [[ "$OUTPUT_FILE" == *.tar.xz ]] || [[ "$OUTPUT_FILE" == *.xz ]]; then
+      UNPACK_DIR="$(mktemp -d)"
+      tar xJf "$OUTPUT_FILE" -C "$UNPACK_DIR" --strip-components 1
+    elif [[ "$OUTPUT_FILE" == *.zip ]]; then
+      UNPACK_DIR="$(mktemp -d)"
+      unzip -q "$OUTPUT_FILE" -d "$UNPACK_DIR"
+    fi
+    if [[ -d "$UNPACK_DIR" ]]; then
+      find "$UNPACK_DIR" -type f -exec file --mime-type "{}" \; | \
+        grep -P ":\s+application/.*executable" | \
+        cut -d: -f 1 | xargs -I XXX -r mv -v "XXX" /usr/local/bin/
+      rm -rf "$UNPACK_DIR" "$OUTPUT_FILE"
+    fi
+  fi
+done
+
+# kubectl
+KUBECTL_URL="https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+curl -L -o "/usr/local/bin/kubectl" "$KUBECTL_URL"
+chmod 755 "/usr/local/bin/kubectl"
+
+# pcloud
+PCLOUD_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/pcloud"
+curl -L -o "/usr/local/bin/pcloud" "$PCLOUD_URL"
+chmod 755 "/usr/local/bin/pcloud"
+
+# yara rules
+YARA_RULES_URL="https://codeload.github.com/Neo23x0/signature-base/tar.gz/master"
+YARA_RULES_DIR="/opt/yara-rules"
+cd /tmp
+mkdir -p ./Neo23x0
+curl -sSL "$YARA_RULES_URL" | tar xzvf - -C ./Neo23x0 --strip-components 1
+mkdir -p "${YARA_RULES_DIR}"/custom
+cp ./Neo23x0/yara/* ./Neo23x0/vendor/yara/* "${YARA_RULES_DIR}"/
+cp ./Neo23x0/LICENSE "${YARA_RULES_DIR}"/_LICENSE
+rm -rf /tmp/Neo23x0
+
+# some fonts
+mkdir -p /usr/local/share/fonts
+pushd /usr/local/share/fonts >/dev/null 2>&1
+for NERDFONT in DejaVuSansMono Hack LiberationMono Ubuntu UbuntuMono; do
+  curl -L -o ./$NERDFONT.zip "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$NERDFONT.zip"
+  unzip -o ./$NERDFONT.zip
+done
+popd >/dev/null 2>&1
+rm -f /usr/local/share/fonts/*Nerd*Windows*.ttf /usr/local/share/fonts/*.zip /usr/local/share/fonts/*Nerd*.otf
+chmod 755 /usr/local/share/fonts
+chmod 644 /usr/local/share/fonts/*.*
+fc-cache -f -v
+
+# ensure executable permissions are set on files copied into /usr/local/bin/
+chmod 755 /usr/local/bin/*

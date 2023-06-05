@@ -1,0 +1,87 @@
+#!/bin/bash
+
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
+export CRYPTOGRAPHY_DONT_BUILD_RUST=1
+
+python3 -m pip install --no-compile --no-cache-dir --force-reinstall --upgrade \
+  arrow \
+  beautifulsoup4 \
+  black \
+  bpytop \
+  cachetools \
+  chepy[extras] \
+  clamd \
+  cleanvid \
+  colorama \
+  colored \
+  cryptography \
+  customtkinter \
+  Cython \
+  dataset \
+  dateparser \
+  debinterface \
+  defopt \
+  dhcpwn \
+  dtrx \
+  entrypoint2 \
+  fierce \
+  git+https://github.com/badele/gitcheck.git \
+  git-up \
+  habu \
+  humanhash3 \
+  ipaddress \
+  magic-wormhole \
+  mitmproxy \
+  mmguero \
+  monkeyplug \
+  montag-cleaner \
+  more-itertools \
+  netmiko \
+  ordered-set \
+  pandas \
+  patool \
+  Pillow \
+  psutil \
+  py-cui \
+  pyinotify \
+  pyinputplus \
+  pyshark \
+  python-dateutil \
+  python-magic \
+  python-slugify \
+  pythondialog \
+  pyunpack \
+  pywinrm \
+  pyyaml \
+  requests-html \
+  requests\[security\] \
+  rich \
+  rpyc \
+  ruamel.yaml \
+  rupy \
+  safety \
+  scanless \
+  scapy \
+  sh \
+  snoop \
+  stackprinter \
+  textual \
+  tldr \
+  tqdm \
+  trackerjacker \
+  typer[all] \
+  urllib3 \
+  wapiti3 \
+  yt-dlp
+
+git clone --depth 1 https://github.com/MarkBaggett/MarkBaggett /opt/MarkBaggett && \
+  rm -rf /opt/MarkBaggett/.git
+
+# chepy plugins
+CHEPY_PLUGINS_URL="https://codeload.github.com/securisec/chepy_plugins/tar.gz/master"
+CHEPY_PLUGINS_DIR="/opt/chepy-plugins"
+mkdir -p "$CHEPY_PLUGINS_DIR"
+cd "$(dirname "$CHEPY_PLUGINS_DIR")"
+curl -sSL "$CHEPY_PLUGINS_URL" | tar xzvf - -C "$(basename "$CHEPY_PLUGINS_DIR")" --strip-components 1
+rm -rf "$CHEPY_PLUGINS_DIR"/{tests,docs}

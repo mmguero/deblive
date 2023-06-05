@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# remove development packages
+apt-get -y --purge remove \
+  checkinstall \
+  gdb \
+  google-perftools \
+  libc6-dbg \
+  libllvm9 \
+  $(dpkg --get-selections | grep -Pv "(^(libboost|libyaml|libvirt|libxen|dpkg|libgcc|libc6|libstdc\+\+)|deinstall$)" | cut -f1 | grep -P -- '-dev(:\w+)?$') || true
+rm -rf /var/spool/ccache
+
+# remove unwanted packages
+apt-get -y --purge remove deluge \
+                          docker-scan-plugin \
+                          epiphany-browser \
+                          evince \
+                          firmware-netronome \
+                          firmware-qcom-soc \
+                          linux-image-*-rt-* \
+                          mailutils \
+                          gnome-accessibility-themes \
+                          gucharmap \
+                          openjdk-11-jdk \
+                          vlc-l10n \
+                          yelp || true
+apt-get -y autoremove
+
+# but keep build-essential
+apt-get -y update
+apt-get -y --no-install-recommends install build-essential
+apt-get clean
+
+# remove any residual configs
+dpkg -l | awk '/^rc/ { print $2 }' | xargs -r -l dpkg --purge
+
+# disable automatic running of some services (but don't abort if we fail)
+systemctl disable ctrl-alt-del.target || true
+systemctl disable apt-daily.service || true
+systemctl disable apt-daily.timer || true
+systemctl disable apt-daily-upgrade.timer || true
+systemctl disable apt-daily-upgrade.service || true
+systemctl disable clamav-daemon.service || true
+systemctl disable clamav-freshclam.service || true
+systemctl disable vpn-unlimited-daemon.service || true

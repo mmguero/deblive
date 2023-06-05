@@ -1,0 +1,2 @@
+deb https://fasttrack.debian.net/debian-fasttrack/ bookworm-fasttrack main contrib non-free
+deb https://fasttrack.debian.net/debian-fasttrack/ bookworm-backports-staging main contrib non-free

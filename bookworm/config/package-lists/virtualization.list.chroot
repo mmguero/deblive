@@ -1,0 +1,15 @@
+dnsmasq-base
+ebtables
+gir1.2-spiceclientgtk-3.0
+libguestfs-tools
+libvirt-clients
+libvirt-daemon-system
+libvirt-dev
+libxml2-dev
+libxslt-dev
+qemu
+qemu-system
+ruby-dev
+virt-manager
+virtinst
+zlib1g-dev

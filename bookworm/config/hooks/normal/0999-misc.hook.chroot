@@ -1,0 +1,106 @@
+#!/bin/bash
+
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
+export DEBIAN_FRONTEND=noninteractive
+export DEBCONF_NONINTERACTIVE_SEEN=true
+
+function git_latest_release () {
+  if [ "$1" ]; then
+    (set -o pipefail && curl -sL -f "https://api.github.com/repos/$1/releases/latest" | jq '.tag_name' | sed -e 's/^"//' -e 's/"$//' ) || \
+      (set -o pipefail && curl -sL -f "https://api.github.com/repos/$1/releases" | jq '.[0].tag_name' | sed -e 's/^"//' -e 's/"$//' ) || \
+      echo unknown
+  else
+    echo "unknown">&2
+  fi
+}
+
+# some apt-get installs that needed to be handled manually
+# (e.g., I want to force stuff from backports without apt-pinning)
+if [[ -f /etc/apt/forced-backports-packages.conf ]]; then
+  apt-get install -y --no-install-recommends -t bookworm-backports \
+    $(cat /etc/apt/forced-backports-packages.conf)
+fi
+if [[ -f /etc/apt/forced-fasttrack-packages.conf ]]; then
+  apt-get install -y --no-install-recommends -t bookworm-fasttrack \
+    $(cat /etc/apt/forced-fasttrack-packages.conf)
+fi
+
+# allow pmount to some mapper areas
+if ! grep -q mapper /etc/pmount.allow; then
+  tee -a /etc/pmount.allow > /dev/null <<'EOT'
+
+# mountpoints for luks volumes
+/dev/mapper/tc1
+/dev/mapper/tc2
+/dev/mapper/tc3
+/dev/mapper/tc4
+/dev/mapper/tc5
+/dev/mapper/tc6
+/dev/mapper/tc7
+/dev/mapper/tc8
+/dev/mapper/tc9
+EOT
+fi
+
+# set up capabilities for network-related tools
+EXE_LESS_CAP=(
+  /sbin/ethtool
+  /usr/bin/dumpcap
+  /usr/bin/ncat
+  /usr/bin/openssl
+  /usr/bin/socat
+  /usr/bin/stunnel3
+  /usr/bin/stunnel4
+  /usr/bin/tcpcryptd
+  /usr/bin/tcpflow
+  /usr/bin/tcpreplay
+  /usr/local/sbin/udptunnel
+  /usr/sbin/arpspoof
+  /usr/sbin/dnsspoof
+  /usr/sbin/dsniff
+  /usr/sbin/filesnarf
+  /usr/sbin/macof
+  /usr/sbin/mailsnarf
+  /usr/sbin/msgsnarf
+  /usr/sbin/nethogs
+  /usr/sbin/sshmitm
+  /usr/sbin/sshow
+  /usr/sbin/tcpd
+  /usr/sbin/tcpdump
+  /usr/sbin/tcpkill
+  /usr/sbin/tcpnice
+  /usr/sbin/urlsnarf
+  /usr/sbin/webmitm
+  /usr/sbin/webspy
+)
+EXE_MORE_CAP=(
+  /usr/sbin/astraceroute
+  /usr/sbin/bpfc
+  /usr/sbin/curvetun
+  /usr/sbin/flowtop
+  /usr/sbin/ifpps
+  /usr/sbin/inetd
+  /usr/sbin/mausezahn
+  /usr/sbin/netsniff-ng
+  /usr/sbin/stenotype
+  /usr/sbin/trafgen
+)
+for i in ${EXE_LESS_CAP[@]}; do
+  if [[ -e "$i" ]]; then
+    chown root:netdev "$i" && \
+      setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_NET_BIND_SERVICE+eip' "$i"
+  fi
+done
+for i in ${EXE_MORE_CAP[@]}; do
+  if [[ -e "$i" ]]; then
+    chown root:netdev "$i" && \
+      setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_NET_BIND_SERVICE+eip CAP_IPC_LOCK+eip CAP_SYS_ADMIN+eip' "$i"
+  fi
+done
+
+[[ -f /etc/xdg/autostart/gnome-keyring-pkcs11.desktop ]] && \
+  sed -i 's/^\(OnlyShowIn=.*\);/\1;XFCE;/' /etc/xdg/autostart/gnome-keyring-pkcs11.desktop
+
+[[ -f /etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop ]] && \
+  sed -i 's/^\(Hidden=\).*/\1false/' /etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop

@@ -1,0 +1,11 @@
+autoconf
+automake
+autotools-dev
+binutils
+build-essential
+checkinstall
+cmake
+equivs
+make
+musl
+musl-tools
