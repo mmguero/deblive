@@ -3,7 +3,6 @@ autossh
 bridge-utils
 bwm-ng
 cifs-utils
-cryptcat
 curl
 dnsutils
 driftnet

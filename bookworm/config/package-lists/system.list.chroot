@@ -13,6 +13,7 @@ autopoint
 bash
 bash-completion
 bc
+binfmt-support
 binpac
 binutils
 bluetooth
@@ -98,12 +99,12 @@ libnl-genl-3-200
 libnl-route-3-200
 libnotify-bin
 libpam-pwquality
-librocksdb6.11
+librocksdb7.8
 libsecret-1-0
 libsecret-1-dev
 libsecret-tools
 libsquashfuse0
-libssl1.1
+libssl3
 libssl-dev
 libtcmalloc-minimal4
 libtool
@@ -132,8 +133,8 @@ ncdu
 neofetch
 nodejs
 ntfs-3g
-openjdk-11-jdk
-openjdk-11-jre
+openjdk-17-jdk
+openjdk-17-jre
 openssl
 p7zip
 p7zip-full

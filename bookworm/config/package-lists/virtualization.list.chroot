@@ -7,7 +7,7 @@ libvirt-daemon-system
 libvirt-dev
 libxml2-dev
 libxslt-dev
-qemu
+qemu-user-static
 qemu-system
 ruby-dev
 virt-manager

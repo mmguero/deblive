@@ -26,7 +26,7 @@ libaudio-scrobbler-perl
 libavc1394-0
 libdc1394-25
 libegl1-mesa
-libglew2.1
+libglew2.2
 libjpeg-turbo-progs
 libmatroska7
 libmp3lame0
@@ -38,7 +38,7 @@ libtwolame0
 libvdpau1
 libvlc5
 libvorbisidec1
-libvpx6
+libvpx7
 libxvmc1
 mjpegtools
 motion

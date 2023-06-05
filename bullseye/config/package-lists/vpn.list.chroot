@@ -1,9 +1,0 @@
-libboost-chrono-dev
-libboost-regex-dev
-libcharon-extra-plugins
-libqt5webenginewidgets5
-libstrongswan-extra-plugins
-libstrongswan-standard-plugins
-openvpn
-strongswan
-wireguard

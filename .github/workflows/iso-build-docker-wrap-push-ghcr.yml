@@ -5,7 +5,7 @@ on:
     branches:
       - 'master'
     paths:
-      - 'bullseye/**'
+      - 'bookworm/**'
   workflow_dispatch:
   repository_dispatch:
 
@@ -72,7 +72,7 @@ jobs:
         name: Build ISO image
         id: build-iso-image
         run: |
-          export IMAGE_DISTRIBUTION=bullseye
+          export IMAGE_DISTRIBUTION=bookworm
           cat $IMAGE_DISTRIBUTION/vars.txt
           sudo /usr/bin/env bash ./build.sh "$IMAGE_DISTRIBUTION"
       -

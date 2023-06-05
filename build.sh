@@ -80,7 +80,7 @@ if [ -d "$WORKDIR" ]; then
              firmware-misc-nonfree \
              firmware-amd-graphics \
              firmware-iwlwifi \
-             firmware-atheros; do
+             firmware-ath9k-htc; do
     echo "$PKG" >> ./config/package-lists/firmwares.list.chroot
   done
 
@@ -119,7 +119,7 @@ if [ -d "$WORKDIR" ]; then
     --apt-secure $CHECKSUM_RELEASE \
     --apt-indices false \
     --apt-source-archives false \
-    --archive-areas 'main contrib non-free' \
+    --archive-areas 'main contrib non-free non-free-firmware' \
     --debootstrap-options "--include=apt-transport-https,bc,ca-certificates,gnupg,debian-archive-keyring,fasttrack-archive-keyring,jq,openssl --no-merged-usr" \
     --apt-options "--yes --allow-downgrades --allow-remove-essential --allow-change-held-packages -oAcquire::Check-Valid-Until=false -oAPT::Default-Release=bookworm"
 
