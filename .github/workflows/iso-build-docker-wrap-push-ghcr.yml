@@ -60,7 +60,7 @@ jobs:
                software-properties-common \
                squashfs-tools \
                xorriso
-            git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --branch='debian/1%20210407' 'https://salsa.debian.org/live-team/live-build.git' /tmp/live-build
+            git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --branch='debian/1%20230131' 'https://salsa.debian.org/live-team/live-build.git' /tmp/live-build
             cd /tmp/live-build
             dpkg-buildpackage -b -uc -us
             sudo dpkg -i /tmp/live-build*.deb
