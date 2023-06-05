@@ -6,13 +6,12 @@ apt-get -y --purge remove \
   gdb \
   google-perftools \
   libc6-dbg \
-  libllvm9 \
+  libllvm14 \
   $(dpkg --get-selections | grep -Pv "(^(libboost|libyaml|libvirt|libxen|dpkg|libgcc|libc6|libstdc\+\+)|deinstall$)" | cut -f1 | grep -P -- '-dev(:\w+)?$') || true
 rm -rf /var/spool/ccache
 
 # remove unwanted packages
 apt-get -y --purge remove deluge \
-                          docker-scan-plugin \
                           epiphany-browser \
                           evince \
                           firmware-netronome \
@@ -21,7 +20,7 @@ apt-get -y --purge remove deluge \
                           mailutils \
                           gnome-accessibility-themes \
                           gucharmap \
-                          openjdk-11-jdk \
+                          openjdk-17-jdk \
                           vlc-l10n \
                           yelp || true
 apt-get -y autoremove
