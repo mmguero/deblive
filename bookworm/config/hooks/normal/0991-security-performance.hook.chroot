@@ -18,7 +18,6 @@ UFW_ALLOW_RULES=(
   CIFS
   http
   https
-  mosh
   nfs
   ntp
   ssh
