@@ -94,6 +94,11 @@ if [ -d "$WORKDIR" ]; then
   echo "SUPPORT_URL=\"https://github.com/mmguero/deblive\""                    >> ./config/includes.chroot/etc/.os-info
   echo "BUG_REPORT_URL=\"https://github.com/mmguero/deblive\""                 >> ./config/includes.chroot/etc/.os-info
 
+  # environment variables to pass into chroot
+  [[ -f "$SCRIPT_PATH/environment.chroot" ]] && \
+    cat "$SCRIPT_PATH/environment.chroot" >> ./config/environment.chroot
+  echo "PYTHONDONTWRITEBYTECODE=1" >> ./config/environment.chroot
+
   chown -R root:root *
 
   echo "live-build version: $(lb --version)"

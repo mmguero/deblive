@@ -2,3 +2,4 @@
 .vagrant
 *.iso
 *-build.log
+environment.chroot
