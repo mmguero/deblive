@@ -20,6 +20,10 @@ function vm_execute() {
   vagrant ssh --no-tty --command "$1"
 }
 
+function cleanup_envs {
+  rm -f "$SCRIPT_PATH"/environment.chroot
+}
+
 unset FORCE_PROVISION
 unset CONFIG_DIR
 while getopts 'fd:' OPTION; do
@@ -73,6 +77,13 @@ until vm_execute 'sudo whoami' | grep -q "root" ; do
   sleep 1
 done
 echo "SSH available." >&2
+
+# pass a few things across to the vagrant environment
+cleanup_envs
+[[ ${#GITHUB_TOKEN} -gt 1 ]] && echo "GITHUB_TOKEN=$GITHUB_TOKEN" >> "$SCRIPT_PATH"/environment.chroot
+echo "VCS_REVSION=$( git rev-parse --short HEAD 2>/dev/null || echo master )" >> "$SCRIPT_PATH"/environment.chroot
+
+trap cleanup_envs EXIT
 
 vm_execute "sudo bash -c \"whoami && cd /iso-build && pwd && ./build.sh \\\"$CONFIG_DIR\\\"\""
 

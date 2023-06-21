@@ -98,6 +98,7 @@ if [ -d "$WORKDIR" ]; then
   [[ -f "$SCRIPT_PATH/environment.chroot" ]] && \
     cat "$SCRIPT_PATH/environment.chroot" >> ./config/environment.chroot
   echo "PYTHONDONTWRITEBYTECODE=1" >> ./config/environment.chroot
+  echo "Wrote $(wc -l ./config/environment.chroot) lines into ./config/environment.chroot"
 
   chown -R root:root *
 
