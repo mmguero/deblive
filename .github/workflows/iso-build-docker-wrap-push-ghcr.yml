@@ -74,8 +74,7 @@ jobs:
         run: |
           export IMAGE_DISTRIBUTION=bookworm
           cat $IMAGE_DISTRIBUTION/vars.txt
-          [[ ${#GITHUB_TOKEN} -gt 1 ]] && echo "GITHUB_TOKEN=$GITHUB_TOKEN" >> ./environment.chroot
-          echo "VCS_REVSION=$( git rev-parse --short HEAD 2>/dev/null || echo master )" >> ./environment.chroot
+          echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" > ./environment.chroot
           sudo /usr/bin/env bash ./build.sh "$IMAGE_DISTRIBUTION"
           rm -f ./environment.chroot
       -
