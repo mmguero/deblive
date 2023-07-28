@@ -59,7 +59,8 @@ jobs:
                rsync \
                software-properties-common \
                squashfs-tools \
-               xorriso
+               xorriso \
+               xz-utils
             git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --branch='debian/1%20230131' 'https://salsa.debian.org/live-team/live-build.git' /tmp/live-build
             cd /tmp/live-build
             dpkg-buildpackage -b -uc -us
