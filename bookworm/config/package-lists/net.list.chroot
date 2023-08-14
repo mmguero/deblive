@@ -5,6 +5,7 @@ bridge-utils
 bwm-ng
 cifs-utils
 curl
+dnsmasq-utils
 dnsutils
 driftnet
 dsniff

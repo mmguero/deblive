@@ -7,9 +7,13 @@ libvirt-daemon-system
 libvirt-dev
 libxml2-dev
 libxslt-dev
-qemu-user-static
+ovmf
 qemu-system
+qemu-user-static
 ruby-dev
+ruby-fog-libvirt
+ruby-libvirt
+seabios
 virt-manager
 virtinst
 zlib1g-dev

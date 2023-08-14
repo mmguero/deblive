@@ -25,6 +25,8 @@ ASSETS=(
   "https://github.com/FiloSottile/age|^age-v.+-linux-amd64\.tar\.gz$|/tmp/age\.tar\.gz"
   "https://github.com/gabrie30/ghorg|^ghorg_.+_Linux_x86_64\.tar\.gz$|/tmp/ghorg\.tar\.gz"
   "https://github.com/jez/as-tree|^as-tree-.+-linux\.zip$|/tmp/as-tree\.zip"
+  "https://github.com/LINBIT/virter|^virter-linux-amd64$|/usr/local/bin/virter|755"
+  "https://github.com/LINBIT/vmshed|^vmshed-linux-amd64$|/usr/local/bin/vmshed|755"
   "https://github.com/mikefarah/yq|^yq_linux_amd64$|/usr/bin/yq|755"
   "https://github.com/neilotoole/sq|^sq-.+-linux-amd64\.tar\.gz$|/tmp/sq\.tar\.gz"
   "https://github.com/nektos/act|^act_Linux_x86_64\.tar\.gz$|/tmp/act\.tar\.gz"
@@ -79,6 +81,15 @@ for i in ${ASSETS[@]}; do
     fi
   fi
 done
+
+# install virter
+[[ -f /usr/local/bin/virter ]] && tee -a /etc/apparmor.d/local/abstractions/libvirt-qemu > /dev/null <<'EOT'
+/var/lib/libvirt/images/* rwk,
+# required for QEMU accessing UEFI nvram variables
+/usr/share/OVMF/* rk,
+owner /var/lib/libvirt/qemu/nvram/*_VARS.fd rwk,
+owner /var/lib/libvirt/qemu/nvram/*_VARS.ms.fd rwk,
+EOT
 
 # kubectl
 KUBECTL_URL="https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
