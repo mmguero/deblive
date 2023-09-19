@@ -17,6 +17,7 @@ fi
 rm -rf /tmp/fetch
 
 ASSETS=(
+  "https://github.com/antonmedv/fx|^fx_linux_arm64$|/usr/bin/fx|755"
   "https://github.com/aptible/supercronic|^supercronic-linux-amd64$|/usr/bin/supercronic|755"
   "https://github.com/boringproxy/boringproxy|^boringproxy-linux-x86_64$|/usr/bin/boringproxy|755"
   "https://github.com/BurntSushi/ripgrep|^ripgrep-.+-x86_64-unknown-linux-musl\.tar\.gz$|/tmp/ripgrep\.tar\.gz"
