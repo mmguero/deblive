@@ -24,7 +24,7 @@ ASSETS=(
   "https://github.com/docker/docker-credential-helpers|^docker-credential-pass-v.+\.linux-amd64$|/usr/bin/docker-credential-pass|755"
   "https://github.com/docker/docker-credential-helpers|^docker-credential-secretservice-v.+\.linux-amd64$|/usr/bin/docker-credential-secretservice|755"
   "https://github.com/FiloSottile/age|^age-v.+-linux-amd64\.tar\.gz$|/tmp/age\.tar\.gz"
-  "https://github.com/gabrie30/ghorg|^ghorg_Linux_x86_64\.tar\.gz$|/tmp/ghorg\.tar\.gz"
+  "https://github.com/gabrie30/ghorg|^ghorg_.+_Linux_x86_64\.tar\.gz$|/tmp/ghorg\.tar\.gz"
   "https://github.com/jez/as-tree|^as-tree-.+-linux\.zip$|/tmp/as-tree\.zip"
   "https://github.com/LINBIT/virter|^virter-linux-amd64$|/usr/bin/virter|755"
   "https://github.com/LINBIT/vmshed|^vmshed-linux-amd64$|/usr/bin/vmshed|755"
