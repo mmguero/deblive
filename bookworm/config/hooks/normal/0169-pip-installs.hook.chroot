@@ -48,6 +48,7 @@ python3 -m pip install --no-compile --no-cache-dir --break-system-packages --for
   pyinputplus \
   pyshark \
   python-dateutil \
+  python-dotenv \
   python-magic \
   python-slugify \
   pythondialog \
