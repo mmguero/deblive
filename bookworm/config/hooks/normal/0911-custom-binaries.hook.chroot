@@ -17,10 +17,12 @@ fi
 rm -rf /tmp/fetch
 
 ASSETS=(
+  "https://github.com/alphasoc/flightsim|^flightsim_.+_linux_amd64\.tar\.gz$|/tmp/flightsim.tar.gz"
   "https://github.com/antonmedv/fx|^fx_linux_amd64$|/usr/local/bin/fx|755"
   "https://github.com/aptible/supercronic|^supercronic-linux-amd64$|/usr/local/bin/supercronic|755"
   "https://github.com/boringproxy/boringproxy|^boringproxy-linux-x86_64$|/usr/local/bin/boringproxy|755"
   "https://github.com/BurntSushi/ripgrep|^ripgrep-.+-x86_64-unknown-linux-musl\.tar\.gz$|/tmp/ripgrep.tar.gz"
+  "https://github.com/darkhz/bluetuith|^bluetuith_.*_Linux_x86_64.tar.gz$|/tmp/bluetuith.tar.gz"
   "https://github.com/docker/docker-credential-helpers|^docker-credential-pass-v.+\.linux-amd64$|/usr/local/bin/docker-credential-pass|755"
   "https://github.com/docker/docker-credential-helpers|^docker-credential-secretservice-v.+\.linux-amd64$|/usr/local/bin/docker-credential-secretservice|755"
   "https://github.com/FiloSottile/age|^age-v.+-linux-amd64\.tar\.gz$|/tmp/age.tar.gz"

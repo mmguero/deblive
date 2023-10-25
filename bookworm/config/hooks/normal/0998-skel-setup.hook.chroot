@@ -38,6 +38,9 @@ rm -rf "$GUERO_GITHUB_PATH"/.git "$GUERO_DOCKER_GITHUB_PATH"/.git
 [[ -r "$GUERO_GITHUB_PATH"/linux/tmux/tmux.conf ]] && rm -vf "$SKEL_PATH"/.tmux.conf && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/tmux/tmux.conf "$SKEL_PATH"/.tmux.conf
 
+[[ -r "$GUERO_GITHUB_PATH"/linux/photorec/photorec.cfg ]] && rm -vf "$SKEL_PATH"/.photorec.cfg && \
+  ln -vrs "$GUERO_GITHUB_PATH"/linux/photorec/photorec.cfg "$SKEL_PATH"/.photorec.cfg
+
 [[ -r "$GUERO_GITHUB_PATH"/linux/xbindkeys/xbindkeysrc ]] && rm -vf "$SKEL_PATH"/.xbindkeysrc && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/xbindkeys/xbindkeysrc "$SKEL_PATH"/.xbindkeysrc
 
