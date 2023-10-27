@@ -108,7 +108,7 @@ chmod 755 "/usr/local/bin/pcloud"
 # some fonts
 mkdir -p /usr/local/share/fonts
 pushd /usr/local/share/fonts >/dev/null 2>&1
-for NERDFONT in DejaVuSansMono Hack LiberationMono Ubuntu UbuntuMono; do
+for NERDFONT in DejaVuSansMono Hack LiberationMono; do
   curl -L -o ./$NERDFONT.zip "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$NERDFONT.zip"
   unzip -o ./$NERDFONT.zip
 done
@@ -117,6 +117,33 @@ rm -f /usr/local/share/fonts/*Nerd*Windows*.ttf /usr/local/share/fonts/*.zip /us
 chmod 755 /usr/local/share/fonts
 chmod 644 /usr/local/share/fonts/*.*
 fc-cache -f -v
+
+# some themes
+mkdir -p /usr/local/share/themes /usr/local/share/icons
+pushd /usr/local/share/themes >/dev/null 2>&1
+/usr/local/bin/fetch --log-level warn \
+  --repo="https://github.com/EliverLara/Nordic" \
+  --tag=">=0.0.0" \
+  --release-asset="Nordic(-darker|-Polar)?\.tar\.xz" .
+for FILE in *.tar.xz; do
+  tar xf "$FILE"
+  rm -f "$FILE"
+done
+popd >/dev/null 2>&1
+pushd /usr/local/share/icons >/dev/null 2>&1
+mkdir ./Zafiro-master
+/usr/local/bin/fetch --log-level warn \
+  --repo="https://github.com/zayronxio/Zafiro-icons" \
+  --branch master ./Zafiro-master
+for MODE in Dark Light; do
+  cp -r -a ./Zafiro-master/"$MODE" ./Zafiro-Icons-"$MODE"
+  cp ./Zafiro-master/CREDITS ./Zafiro-Icons-"$MODE"
+  cp ./Zafiro-master/README.md ./Zafiro-Icons-"$MODE"
+  cp ./Zafiro-master/LICENSE.md ./Zafiro-Icons-"$MODE"
+  gtk-update-icon-cache ./Zafiro-Icons-"$MODE"
+done
+rm -rf ./Zafiro-master
+popd >/dev/null 2>&1
 
 # ensure executable permissions are set on files copied into /usr/local/bin/
 chmod 755 /usr/local/bin/*
