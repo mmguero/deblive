@@ -39,6 +39,7 @@ ASSETS=(
   "https://github.com/rclone/rclone|^rclone-v.+-linux-amd64\.zip$|/tmp/rclone.zip"
   "https://github.com/sachaos/viddy|^viddy_Linux_x86_64\.tar\.gz$|/tmp/viddy.tar.gz"
   "https://github.com/schollz/croc|^croc_.+_Linux-64bit\.tar\.gz$|/tmp/croc.tar.gz"
+  "https://github.com/schollz/hostyoself|^hostyoself_.+_Linux-64bit\.tar\.gz$|/tmp/hostyoself.tar.gz"
   "https://github.com/sharkdp/bat|^bat-v.+-x86_64-unknown-linux-gnu\.tar\.gz$|/tmp/bat.tar.gz"
   "https://github.com/sharkdp/fd|^fd-v.+-x86_64-unknown-linux-gnu\.tar\.gz$|/tmp/fd.tar.gz"
   "https://github.com/smallstep/cli|^step_linux_.+_amd64\.tar\.gz$|/tmp/step.tar.gz"
