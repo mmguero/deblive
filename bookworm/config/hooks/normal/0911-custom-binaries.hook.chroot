@@ -36,6 +36,7 @@ ASSETS=(
   "https://github.com/nektos/act|^act_Linux_x86_64\.tar\.gz$|/tmp/act.tar.gz"
   "https://github.com/peco/peco|^peco_linux_amd64\.tar\.gz$|/tmp/peco.tar.gz"
   "https://github.com/projectdiscovery/httpx|^httpx_.+_linux_amd64\.zip$|/tmp/httpx.zip"
+  "https://github.com/pufferffish/wireproxy|^wireproxy_linux_amd64\.tar\.gz$|/tmp/wireproxy.tar.gz"
   "https://github.com/rclone/rclone|^rclone-v.+-linux-amd64\.zip$|/tmp/rclone.zip"
   "https://github.com/sachaos/viddy|^viddy_Linux_x86_64\.tar\.gz$|/tmp/viddy.tar.gz"
   "https://github.com/schollz/croc|^croc_.+_Linux-64bit\.tar\.gz$|/tmp/croc.tar.gz"
