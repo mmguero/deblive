@@ -1,10 +1,10 @@
-FROM ghcr.io/mmguero/qemu-live-iso:latest
+FROM oci.guero.top/qemu-live-iso:latest
 
 LABEL maintainer="mero.mero.guero@gmail.com"
 LABEL org.opencontainers.image.authors='mero.mero.guero@gmail.com'
 LABEL org.opencontainers.image.url='https://github.com/mmguero/deblive'
 LABEL org.opencontainers.image.source='https://github.com/mmguero/deblive'
-LABEL org.opencontainers.image.title='ghcr.io/mmguero/deblive'
+LABEL org.opencontainers.image.title='oci.guero.top/deblive'
 LABEL org.opencontainers.image.description='Customized Debian live image in qemu'
 
 ARG QEMU_CPU=4
