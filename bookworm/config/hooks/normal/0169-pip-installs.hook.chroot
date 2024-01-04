@@ -44,6 +44,7 @@ python3 -m pip install --no-compile --no-cache-dir --break-system-packages --for
   Pillow \
   psutil \
   py-cui \
+  pycryptodome \
   pyinotify \
   pyinputplus \
   pyshark \
@@ -67,6 +68,7 @@ python3 -m pip install --no-compile --no-cache-dir --break-system-packages --for
   sh \
   snoop \
   stackprinter \
+  stream-zip \
   textual \
   tldr \
   tqdm \
