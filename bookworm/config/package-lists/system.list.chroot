@@ -50,6 +50,7 @@ dwarfdump
 ebtables
 efibootmgr
 eject
+expect
 fakeroot
 fatresize
 fdisk
