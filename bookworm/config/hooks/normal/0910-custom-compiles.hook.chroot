@@ -14,23 +14,6 @@ DOCKER_COMPOSE_VERSION=2.23.0
 DOCKER_COMPOSE_BIN=/usr/libexec/docker/cli-plugins/docker-compose
 DOCKER_COMPOSE_URL="https://github.com/docker/compose/releases/download/v$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m)"
 
-# podman (install from alvistack/Debian_12 PPA), podman-compose
-apt-get install -y --no-install-recommends -t / \
-    buildah \
-    catatonit \
-    crun \
-    fuse-overlayfs \
-    podman \
-    podman-aardvark-dns \
-    podman-netavark \
-    python3-podman-compose \
-    slirp4netns \
-    uidmap
-
-# firefox (install from Mozilla repo)
-apt-get install -y --no-install-recommends -t mozilla \
-    firefox
-
 mkdir -p "$(dirname "$DOCKER_COMPOSE_BIN")"
 curl -L -o "$DOCKER_COMPOSE_BIN" "$DOCKER_COMPOSE_URL"
 chmod 755 "$DOCKER_COMPOSE_BIN"
