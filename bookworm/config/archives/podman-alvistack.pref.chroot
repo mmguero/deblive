@@ -4,5 +4,5 @@ Pin-Priority: 1
 
 Package: buildah catatonit conmon containernetworking containernetworking-plugins containers-common cri-o-runc crun libcharon-standard-plugins libslirp0 podman podman-aardvark-dns podman-netavark slirp4netns
 Pin: origin ftp.gwdg.de
-Pin-Priority: 500
+Pin-Priority: 1000
 
