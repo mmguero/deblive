@@ -1,2 +1,2 @@
-# deb [arch=amd64] https://mirrorcache-us.opensuse.org/repositories/home:/alvistack/Debian_12/ /
-deb [arch=amd64] http://ftp.gwdg.de/pub/opensuse/repositories/home:/alvistack/Debian_12/ /
+deb http://ftp.gwdg.de/pub/opensuse/repositories/home:/alvistack/Debian_12/ /
+
