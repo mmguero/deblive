@@ -27,6 +27,10 @@ apt-get install -y --no-install-recommends -t / \
     slirp4netns \
     uidmap
 
+# firefox (install from Mozilla repo)
+apt-get install -y --no-install-recommends -t mozilla \
+    firefox
+
 mkdir -p "$(dirname "$DOCKER_COMPOSE_BIN")"
 curl -L -o "$DOCKER_COMPOSE_BIN" "$DOCKER_COMPOSE_URL"
 chmod 755 "$DOCKER_COMPOSE_BIN"
