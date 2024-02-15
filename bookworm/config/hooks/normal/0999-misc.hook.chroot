@@ -52,7 +52,6 @@ EXE_LESS_CAP=(
   /usr/bin/socat
   /usr/bin/stunnel3
   /usr/bin/stunnel4
-  /usr/bin/tcpcryptd
   /usr/bin/tcpflow
   /usr/bin/tcpreplay
   /usr/local/sbin/udptunnel
