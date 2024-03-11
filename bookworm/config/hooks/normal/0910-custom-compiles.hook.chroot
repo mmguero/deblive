@@ -8,9 +8,7 @@ RESPONDER_URL="https://github.com/lgandx/Responder/archive/v${RESPONDER_VER}.tar
 
 BRUTESHARK_URL="https://github.com/odedshimon/BruteShark/releases/latest/download/BruteSharkCli"
 
-UDPTUNNEL_URL="https://codeload.github.com/rfc1036/udptunnel/tar.gz/master"
-
-DOCKER_COMPOSE_VERSION=2.23.0
+DOCKER_COMPOSE_VERSION=2.24.7
 DOCKER_COMPOSE_BIN=/usr/libexec/docker/cli-plugins/docker-compose
 DOCKER_COMPOSE_URL="https://github.com/docker/compose/releases/download/v$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m)"
 
@@ -44,17 +42,6 @@ ln -s /opt/responder/Responder.py /usr/local/bin/Responder.py
 find /usr/lib/x86_64-linux-gnu -type f -name "libpcap.so.*" | head -1 | xargs -i ln -s -r "{}" /usr/lib/x86_64-linux-gnu/libpcap.so
 curl -L -o /usr/local/bin/BruteSharkCli "$BRUTESHARK_URL"
 chmod 755 /usr/local/bin/BruteSharkCli
-
-# udptunnel
-curl -L -o "/tmp/udptunnel.tar.gz" "$UDPTUNNEL_URL"
-cd /tmp
-mkdir udptunnel
-tar xvf ./udptunnel.tar.gz -C ./udptunnel --strip-components 1
-cd ./udptunnel
-make
-make install
-cd /tmp
-rm -rf /tmp/udptunnel*
 
 # x11docker
 curl -fsSL https://raw.githubusercontent.com/mviereck/x11docker/master/x11docker | bash -s -- --update

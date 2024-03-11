@@ -6,7 +6,7 @@ export LANG=C.UTF-8
 SKEL_PATH="/etc/skel"
 GUERO_GITHUB_PATH="$SKEL_PATH/.config/mmguero.config"
 GUERO_DOCKER_GITHUB_PATH="$SKEL_PATH/.config/mmguero.docker"
-mkdir -p "$(dirname "$GUERO_GITHUB_PATH")" "$(dirname "$GUERO_DOCKER_GITHUB_PATH")" "$SKEL_PATH/.local/bin" "$SKEL_PATH/tmp"
+mkdir -p "$(dirname "$GUERO_GITHUB_PATH")" "$(dirname "$GUERO_DOCKER_GITHUB_PATH")" "$SKEL_PATH/.local/bin" "$SKEL_PATH/.local/share" "$SKEL_PATH/tmp"
 git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/mmguero/dotfiles.git "$GUERO_GITHUB_PATH"
 git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/mmguero/docker.git "$GUERO_DOCKER_GITHUB_PATH"
 rm -rf "$GUERO_GITHUB_PATH"/.git "$GUERO_DOCKER_GITHUB_PATH"/.git
@@ -26,6 +26,9 @@ rm -rf "$GUERO_GITHUB_PATH"/.git "$GUERO_DOCKER_GITHUB_PATH"/.git
 [[ -d "$GUERO_GITHUB_PATH"/linux/containers ]] && rm -vf "$SKEL_PATH"/.config/containers && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/containers "$SKEL_PATH"/.config/containers
 
+[[ -d "$GUERO_GITHUB_PATH"/linux/virter ]] && rm -vf "$SKEL_PATH"/.local/share/virter && \
+  ln -vrs "$GUERO_GITHUB_PATH"/linux/virter "$SKEL_PATH"/.local/share/virter
+
 [[ -r "$GUERO_GITHUB_PATH"/starship/starship.toml ]] && rm -vf "$SKEL_PATH"/.config/starship.toml && \
   ln -vrs "$GUERO_GITHUB_PATH"/starship/starship.toml "$SKEL_PATH"/.config/starship.toml
 
@@ -37,6 +40,9 @@ rm -rf "$GUERO_GITHUB_PATH"/.git "$GUERO_DOCKER_GITHUB_PATH"/.git
 
 [[ -r "$GUERO_GITHUB_PATH"/linux/tmux/tmux.conf ]] && rm -vf "$SKEL_PATH"/.tmux.conf && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/tmux/tmux.conf "$SKEL_PATH"/.tmux.conf
+
+[[ -r "$GUERO_GITHUB_PATH"/linux/pqiv/pqivrc ]] && rm -vf "$SKEL_PATH"/.config/pqivrc && \
+  ln -vrs "$GUERO_GITHUB_PATH"/linux/pqiv/pqivrc "$SKEL_PATH"/.config/pqivrc
 
 [[ -r "$GUERO_GITHUB_PATH"/linux/photorec/photorec.cfg ]] && rm -vf "$SKEL_PATH"/.photorec.cfg && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/photorec/photorec.cfg "$SKEL_PATH"/.photorec.cfg

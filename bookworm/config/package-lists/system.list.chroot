@@ -71,11 +71,11 @@ ghostscript-x
 git
 git-lfs
 gnupg
-gnupg1
 gnupg2
 google-perftools
 gpart
 gparted
+gpg-agent
 grep
 gvfs
 gvfs-backends
@@ -101,6 +101,8 @@ libnl-genl-3-200
 libnl-route-3-200
 libnotify-bin
 libpam-pwquality
+libpcsclite-dev
+libpcsclite1
 librocksdb7.8
 libsecret-1-0
 libsecret-1-dev
@@ -115,6 +117,7 @@ libubsan1
 libunwind8
 libwww-perl
 libykpers-1-1
+libyubikey-udev
 libyubikey0
 libzmq5
 lm-sensors
@@ -148,6 +151,7 @@ patch
 patchutils
 pciutils
 pcregrep
+pcsc-tools
 perl
 perl-tk
 pigz
@@ -170,6 +174,7 @@ rename
 resolvconf
 rtkit
 samba-libs
+scdaemon
 sed
 sharutils
 shed

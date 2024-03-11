@@ -23,6 +23,7 @@ python3 -m pip install --no-compile --no-cache-dir --break-system-packages --for
   debinterface \
   defopt \
   dhcpwn \
+  dominate \
   dtrx \
   entrypoint2 \
   fierce \
@@ -76,7 +77,8 @@ python3 -m pip install --no-compile --no-cache-dir --break-system-packages --for
   typer[all] \
   urllib3 \
   wapiti3 \
-  yt-dlp
+  yt-dlp \
+  yubikey-manager
 
 git clone --depth 1 https://github.com/MarkBaggett/MarkBaggett /opt/MarkBaggett && \
   rm -rf /opt/MarkBaggett/.git
