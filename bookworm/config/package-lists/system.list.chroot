@@ -51,6 +51,7 @@ ebtables
 efibootmgr
 eject
 expect
+f3
 fakeroot
 fatresize
 fdisk
