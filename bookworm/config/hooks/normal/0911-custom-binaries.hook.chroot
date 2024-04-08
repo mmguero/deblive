@@ -29,6 +29,7 @@ ASSETS=(
   "https://github.com/FiloSottile/age|^age-v.+-linux-amd64\.tar\.gz$|/tmp/age.tar.gz"
   "https://github.com/gabrie30/ghorg|^ghorg_.+_Linux_x86_64\.tar\.gz$|/tmp/ghorg.tar.gz"
   "https://github.com/jez/as-tree|^as-tree-.+-linux\.zip$|/tmp/as-tree.zip"
+  "https://github.com/kubernetes/minikube|^minikube-linux-amd64$|/usr/local/bin/minikube|755"
   "https://github.com/LINBIT/virter|^virter-linux-amd64$|/usr/local/bin/virter|755"
   "https://github.com/LINBIT/vmshed|^vmshed-linux-amd64$|/usr/local/bin/vmshed|755"
   "https://github.com/mikefarah/yq|^yq_linux_amd64$|/usr/local/bin/yq|755"
