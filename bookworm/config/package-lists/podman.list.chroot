@@ -2,6 +2,7 @@ buildah
 catatonit
 crun
 fuse-overlayfs
+passt
 podman
 podman-aardvark-dns
 podman-netavark
