@@ -1,7 +1,12 @@
 buildah
 catatonit
+conmon
+containernetworking
+containernetworking-plugins
+containers-common
 crun
 fuse-overlayfs
+libslirp0
 passt
 podman
 podman-aardvark-dns
