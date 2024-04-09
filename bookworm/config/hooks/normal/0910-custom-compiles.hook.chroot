@@ -8,7 +8,7 @@ RESPONDER_URL="https://github.com/lgandx/Responder/archive/v${RESPONDER_VER}.tar
 
 BRUTESHARK_URL="https://github.com/odedshimon/BruteShark/releases/latest/download/BruteSharkCli"
 
-DOCKER_COMPOSE_VERSION=2.24.7
+DOCKER_COMPOSE_VERSION=2.26.1
 DOCKER_COMPOSE_BIN=/usr/libexec/docker/cli-plugins/docker-compose
 DOCKER_COMPOSE_URL="https://github.com/docker/compose/releases/download/v$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m)"
 

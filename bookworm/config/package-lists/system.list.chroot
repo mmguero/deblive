@@ -61,7 +61,6 @@ fuse3
 fuseext2
 fusefat
 fuseiso
-fuse-overlayfs
 fzf
 gawk
 gdb
@@ -179,7 +178,6 @@ scdaemon
 sed
 sharutils
 shed
-slirp4netns
 smartmontools
 smbclient
 sparse
@@ -204,7 +202,6 @@ unzip
 upower
 usbutils
 user-setup
-uidmap
 uuid-runtime
 vbindiff
 vim-tiny
