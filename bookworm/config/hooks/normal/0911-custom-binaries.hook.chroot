@@ -152,5 +152,6 @@ for FILE in Zafiro* Nordzy*; do
 done
 popd >/dev/null 2>&1
 
-# ensure executable permissions are set on files copied into /usr/local/bin/
+# ensure ownership and permissions
 chmod 755 /usr/local/bin/*
+chown -R root:root /usr/local/*
