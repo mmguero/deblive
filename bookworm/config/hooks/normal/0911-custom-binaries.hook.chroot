@@ -152,6 +152,9 @@ for FILE in Zafiro* Nordzy*; do
 done
 popd >/dev/null 2>&1
 
+# reduce file sizes if possible
+find /usr/local/bin/ -type f -exec file "{}" \; | grep -Pi "ELF 64-bit.*not stripped" | sed 's/:.*//' | xargs -l -r strip --strip-unneeded
+
 # ensure ownership and permissions
 chmod 755 /usr/local/bin/*
 chown -R root:root /usr/local/*
