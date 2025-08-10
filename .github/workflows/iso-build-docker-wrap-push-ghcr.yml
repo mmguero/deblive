@@ -5,7 +5,7 @@ on:
     branches:
       - 'master'
     paths:
-      - 'bookworm/**'
+      - 'trixie/**'
   workflow_dispatch:
   repository_dispatch:
 
@@ -96,7 +96,7 @@ jobs:
         name: Build ISO image
         id: build-iso-image
         run: |
-          export IMAGE_DISTRIBUTION=bookworm
+          export IMAGE_DISTRIBUTION=trixie
           cat $IMAGE_DISTRIBUTION/vars.txt
           echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" > ./environment.chroot
           sudo /usr/bin/env bash ./build.sh "$IMAGE_DISTRIBUTION"
