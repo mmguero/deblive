@@ -64,7 +64,7 @@ jobs:
             powershell \
             temurin*  >/dev/null 2>&1 || true
           sudo env DEBIAN_FRONTEND=noninteractive apt-get -q -y --purge autoremove >/dev/null 2>&1 || true
-          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -t jammy-backports --no-install-recommends -y -q \
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y -q \
                apt-transport-https \
                bc \
                build-essential \
