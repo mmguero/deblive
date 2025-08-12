@@ -75,6 +75,7 @@ LINKED_SCRIPTS=(
   store_unique.sh
   window_dimensions.sh
   tx-rx-secure.sh
+  xkcd936.sh
 )
 for i in ${LINKED_SCRIPTS[@]}; do
   [[ -e "$GUERO_GITHUB_PATH"/scripts/"$i" ]] && \

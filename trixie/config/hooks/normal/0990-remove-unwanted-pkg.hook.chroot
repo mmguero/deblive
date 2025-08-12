@@ -6,7 +6,7 @@ apt-get -y --purge remove \
   gdb \
   google-perftools \
   libc6-dbg \
-  libllvm14 \
+  libllvm18 \
   sparse \
   $(dpkg --get-selections | grep -Pv "(^(libboost|libyaml|libvirt|libxen|dpkg|libgcc|libc6|libstdc\+\+)|deinstall$)" | cut -f1 | grep -P -- '-dev(:\w+)?$') || true
 rm -rf /var/spool/ccache
@@ -21,7 +21,7 @@ apt-get -y --purge remove deluge \
                           mailutils \
                           gnome-accessibility-themes \
                           gucharmap \
-                          openjdk-17-jdk \
+                          openjdk-21-jdk \
                           vlc-l10n \
                           yelp || true
 apt-get -y autoremove

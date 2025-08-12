@@ -28,12 +28,12 @@ python3 -m pip install --no-compile --no-cache-dir --break-system-packages --for
   entrypoint2 \
   fierce \
   git+https://github.com/badele/gitcheck.git \
+  git+https://github.com/mmguero/PyGitUp.git \
   git-up \
   habu \
   humanhash3 \
   ipaddress \
   magic-wormhole \
-  mitmproxy \
   mmguero \
   monkeyplug \
   montag-cleaner \

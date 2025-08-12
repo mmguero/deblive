@@ -1,14 +1,11 @@
 #!/bin/bash
 
-OPENRESOLV_VER="3.13.2"
-OPENRESOLV_URL="https://github.com/NetworkConfiguration/openresolv/releases/download/v${OPENRESOLV_VER}/openresolv-${OPENRESOLV_VER}.tar.xz"
-
 RESPONDER_VER="3.1.3.0"
 RESPONDER_URL="https://github.com/lgandx/Responder/archive/v${RESPONDER_VER}.tar.gz"
 
 BRUTESHARK_URL="https://github.com/odedshimon/BruteShark/releases/latest/download/BruteSharkCli"
 
-DOCKER_COMPOSE_VERSION=2.26.1
+DOCKER_COMPOSE_VERSION=2.39.2
 DOCKER_COMPOSE_BIN=/usr/libexec/docker/cli-plugins/docker-compose
 DOCKER_COMPOSE_URL="https://github.com/docker/compose/releases/download/v$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m)"
 
@@ -16,18 +13,6 @@ mkdir -p "$(dirname "$DOCKER_COMPOSE_BIN")"
 curl -L -o "$DOCKER_COMPOSE_BIN" "$DOCKER_COMPOSE_URL"
 chmod 755 "$DOCKER_COMPOSE_BIN"
 ln -s -r -f "$DOCKER_COMPOSE_BIN" /usr/local/bin/docker-compose
-
-# Install openresolv (version in repos is out of date)
-curl -L -o "openresolv-$OPENRESOLV_VER.tar.xz" "$OPENRESOLV_URL"
-tar xvf "openresolv-$OPENRESOLV_VER.tar.xz"
-cd "openresolv-$OPENRESOLV_VER"/
-./configure --prefix=/
-make
-# make install
-checkinstall -y -D --strip=yes --stripso=yes --install=yes --fstrans=no --pkgname="openresolv" --pkgversion="$OPENRESOLV_VER" --pkgarch="amd64" --pkgsource="$OPENRESOLV_URL"
-cd ../
-rm -rf "openresolv-$OPENRESOLV_VER.tar.xz" "openresolv-$OPENRESOLV_VER"
-###
 
 # Install responder.py
 curl -L -o "Responder-${RESPONDER_VER}.tar.gz" "$RESPONDER_URL"

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # veracrypt
-curl -L -o "/tmp/veracrypt-console-Debian-13-amd64.deb" "$(curl -sSL https://www.veracrypt.fr/en/Downloads.html | grep -Pio 'https://.+?veracrypt-console.+?Debian-13-amd64.deb' | sed "s/&#43;/+/" | head -n 1)"
-dpkg -i "/tmp/veracrypt-console-Debian-13-amd64.deb"
-rm -f "/tmp/veracrypt-console-Debian-13-amd64.deb"
+# TODO: fix for Trixie once it's out for veracrypt
+curl -L -o "/tmp/veracrypt-console-Debian-12-amd64.deb" "$(curl -sSL https://www.veracrypt.fr/en/Downloads.html | grep -Pio 'https://.+?veracrypt-console.+?Debian-12-amd64.deb' | sed "s/&#43;/+/" | head -n 1)"
+dpkg -i "/tmp/veracrypt-console-Debian-12-amd64.deb"
+rm -f "/tmp/veracrypt-console-Debian-12-amd64.deb"

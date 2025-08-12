@@ -135,8 +135,8 @@ multitail
 ncdu
 nodejs
 ntfs-3g
-openjdk-25-jdk
-openjdk-25-jre
+openjdk-21-jdk
+openjdk-21-jre
 openssl
 p7zip
 p7zip-full
