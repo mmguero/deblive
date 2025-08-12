@@ -43,6 +43,7 @@ python3 -m pip install --no-compile --no-cache-dir --break-system-packages --for
   pandas \
   patool \
   Pillow \
+  podman-compose \
   psutil \
   py-cui \
   pycryptodome \

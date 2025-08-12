@@ -1,14 +1,11 @@
 buildah
 catatonit
 conmon
-containernetworking
 containernetworking-plugins
-containers-common
 crun
 fuse-overlayfs
 libslirp0
 passt
 podman
-python3-podman-compose
 slirp4netns
 uidmap

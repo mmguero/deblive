@@ -8,8 +8,6 @@ feh
 ffmpeg
 flac
 gimp
-gimp-gmic
-gimp-plugin-registry
 gimp-texturize
 gstreamer1.0-plugins-bad
 gstreamer1.0-plugins-base
@@ -24,7 +22,7 @@ libaacs0
 libaudio-scrobbler-perl
 libavc1394-0
 libdc1394-25
-libegl1-mesa
+libegl-mesa0
 libglew2.2
 libjpeg-turbo-progs
 libmatroska7
@@ -37,7 +35,7 @@ libtwolame0
 libvdpau1
 libvlc5
 libvorbisidec1
-libvpx7
+libvpx9
 libxvmc1
 mjpegtools
 motion
