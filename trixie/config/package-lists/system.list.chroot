@@ -34,7 +34,6 @@ cryptmount
 cryptsetup
 cryptsetup-bin
 cryptsetup-initramfs
-cryptsetup-run
 cups
 cups-client
 default-jre
