@@ -16,4 +16,5 @@ ruby-libvirt
 seabios
 virt-manager
 virtinst
+virtiofsd
 zlib1g-dev
