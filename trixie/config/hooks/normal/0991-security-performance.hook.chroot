@@ -36,7 +36,7 @@ systemctl status clamav-freshclam && systemctl stop clamav-freshclam
 freshclam --stdout --quiet --no-warnings --foreground=true
 
 # performance parameters for networking, disk, etc.
-cat << 'EOF' >> /etc/sysctl.conf
+cat << 'EOF' >> /etc/sysctl.d/99-sysctl.conf
 # don't restrict dmesg to root
 kernel.dmesg_restrict=0
 
