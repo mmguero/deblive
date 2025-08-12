@@ -5,6 +5,7 @@ containernetworking-plugins
 crun
 fuse-overlayfs
 libslirp0
+nftables
 passt
 podman
 slirp4netns
