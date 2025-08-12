@@ -1,5 +1,5 @@
 export IMAGE_NAME=deblive
-export IMAGE_VERSION=3.0.0
+export IMAGE_VERSION=4.0.0
 export IMAGE_DISTRIBUTION=trixie
 export IMAGE_PUBLISHER=mmguero
 export APT_BACKPORTS=true
