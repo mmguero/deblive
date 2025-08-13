@@ -29,7 +29,7 @@ curl -L -o /usr/local/bin/BruteSharkCli "$BRUTESHARK_URL"
 chmod 755 /usr/local/bin/BruteSharkCli
 
 # x11docker
-curl -fsSL https://raw.githubusercontent.com/mviereck/x11docker/master/x11docker | bash -s -- --update
+curl -fsSL https://raw.githubusercontent.com/mviereck/x11docker/master/x11docker | bash -s -- --install --backend podman
 
 # git and libsecret credential caching
 make --directory=/usr/share/doc/git/contrib/credential/libsecret

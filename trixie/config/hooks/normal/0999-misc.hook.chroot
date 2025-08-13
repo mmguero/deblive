@@ -45,7 +45,7 @@ EXE_LESS_CAP=(
   /usr/bin/dumpcap
   /usr/bin/ncat
   /usr/bin/openssl
-  /usr/bin/socat
+  /usr/bin/socat1
   /usr/bin/stunnel3
   /usr/bin/stunnel4
   /usr/bin/tcpflow
