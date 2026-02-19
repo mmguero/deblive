@@ -16,27 +16,32 @@ elif [[ -n "$FETCH_ALT_URL" ]]; then
 fi
 rm -rf /tmp/fetch
 
+LOCAL_BIN_PATH=/usr/local/bin
+
 ASSETS=(
+  "https://github.com/ajeetdsouza/zoxide|^zoxide-.+-x86_64-unknown-linux-musl\.tar\.gz|/tmp/zoxide.tar.gz"
   "https://github.com/alphasoc/flightsim|^flightsim_.+_linux_amd64\.tar\.gz$|/tmp/flightsim.tar.gz"
-  "https://github.com/antonmedv/fx|^fx_linux_amd64$|/usr/local/bin/fx|755"
-  "https://github.com/aptible/supercronic|^supercronic-linux-amd64$|/usr/local/bin/supercronic|755"
-  "https://github.com/boringproxy/boringproxy|^boringproxy-linux-x86_64$|/usr/local/bin/boringproxy|755"
+  "https://github.com/antonmedv/fx|^fx_linux_amd64$|$LOCAL_BIN_PATH/fx|755"
+  "https://github.com/aptible/supercronic|^supercronic-linux-amd64$|$LOCAL_BIN_PATH/supercronic|755"
+  "https://github.com/boringproxy/boringproxy|^boringproxy-linux-x86_64$|$LOCAL_BIN_PATH/boringproxy|755"
   "https://github.com/BurntSushi/ripgrep|^ripgrep-.+-x86_64-unknown-linux-musl\.tar\.gz$|/tmp/ripgrep.tar.gz"
   "https://github.com/darkhz/bluetuith|^bluetuith_.*_Linux_x86_64.tar.gz$|/tmp/bluetuith.tar.gz"
   "https://github.com/darkhz/rclone-tui|^rclone-tui_.+_Linux_x86_64\.tar\.gz$|/tmp/rclone-tui.tar.gz"
   "https://github.com/derailed/k9s|^k9s_Linux_amd64\.tar\.gz$|/tmp/k9s.tar.gz"
-  "https://github.com/docker/docker-credential-helpers|^docker-credential-pass-v.+\.linux-amd64$|/usr/local/bin/docker-credential-pass|755"
-  "https://github.com/docker/docker-credential-helpers|^docker-credential-secretservice-v.+\.linux-amd64$|/usr/local/bin/docker-credential-secretservice|755"
+  "https://github.com/docker/docker-credential-helpers|^docker-credential-pass-v.+\.linux-amd64$|$LOCAL_BIN_PATH/docker-credential-pass|755"
+  "https://github.com/docker/docker-credential-helpers|^docker-credential-secretservice-v.+\.linux-amd64$|$LOCAL_BIN_PATH/docker-credential-secretservice|755"
   "https://github.com/eza-community/eza|^eza_x86_64-unknown-linux-musl\.tar\.gz$|/tmp/eza.tar.gz"
   "https://github.com/FiloSottile/age|^age-v.+-linux-amd64\.tar\.gz$|/tmp/age.tar.gz"
   "https://github.com/gabrie30/ghorg|^ghorg_.+_Linux_x86_64\.tar\.gz$|/tmp/ghorg.tar.gz"
   "https://github.com/jez/as-tree|^as-tree-.+-linux\.zip$|/tmp/as-tree.zip"
-  "https://github.com/kubernetes/minikube|^minikube-linux-amd64$|/usr/local/bin/minikube|755"
-  "https://github.com/LINBIT/virter|^virter-linux-amd64$|/usr/local/bin/virter|755"
-  "https://github.com/LINBIT/vmshed|^vmshed-linux-amd64$|/usr/local/bin/vmshed|755"
-  "https://github.com/mikefarah/yq|^yq_linux_amd64$|/usr/local/bin/yq|755"
+  "https://github.com/josephburnett/jd|^jd-amd64-linux$|$LOCAL_BIN_PATH/jd|755"
+  "https://github.com/kubernetes/minikube|^minikube-linux-amd64$|$LOCAL_BIN_PATH/minikube|755"
+  "https://github.com/LINBIT/virter|^virter-linux-amd64$|$LOCAL_BIN_PATH/virter|755"
+  "https://github.com/LINBIT/vmshed|^vmshed-linux-amd64$|$LOCAL_BIN_PATH/vmshed|755"
+  "https://github.com/mikefarah/yq|^yq_linux_amd64$|$LOCAL_BIN_PATH/yq|755"
   "https://github.com/neilotoole/sq|^sq.+linux-amd64\.tar\.gz$|/tmp/sq.tar.gz"
   "https://github.com/nektos/act|^act_Linux_x86_64\.tar\.gz$|/tmp/act.tar.gz"
+  "https://github.com/nuwainfo/ffl|^fflo\.com$|$LOCAL_BIN_PATH/fflo.com|644"
   "https://github.com/peco/peco|^peco_linux_amd64\.tar\.gz$|/tmp/peco.tar.gz"
   "https://github.com/projectdiscovery/httpx|^httpx_.+_linux_amd64\.zip$|/tmp/httpx.zip"
   "https://github.com/rclone/rclone|^rclone-v.+-linux-amd64\.zip$|/tmp/rclone.zip"
@@ -49,12 +54,13 @@ ASSETS=(
   "https://github.com/smallstep/cli|^step_linux_.+_amd64\.tar\.gz$|/tmp/step.tar.gz"
   "https://github.com/starship/starship|^starship-x86_64-unknown-linux-gnu\.tar\.gz$|/tmp/starship.tar.gz"
   "https://github.com/stern/stern|^stern_.+_linux_amd64\.tar\.gz$|/tmp/stern.tar.gz"
-  "https://github.com/timvisee/ffsend|^ffsend-v.+-linux-x64-static$|/usr/local/bin/ffsend|755"
+  "https://github.com/timvisee/ffsend|^ffsend-v.+-linux-x64-static$|$LOCAL_BIN_PATH/ffsend|755"
   "https://github.com/tomnomnom/gron|^gron-linux-amd64-.+\.tgz$|/tmp/gron.tgz"
   "https://github.com/wader/fq|^fq_.+_linux_amd64\.tar\.gz$|/tmp/fq.tar.gz"
   "https://github.com/watchexec/watchexec|^watchexec-.+-x86_64-unknown-linux-musl\.tar\.xz$|/tmp/watchexec.tar.xz"
   "https://github.com/whyvl/wireproxy|^wireproxy_linux_amd64\.tar\.gz$|/tmp/wireproxy.tar.gz"
   "https://github.com/Wilfred/difftastic|^difft-x86_64-unknown-linux-gnu\.tar\.gz$|/tmp/difft.tar.gz"
+  "https://github.com/yannh/kubeconform|^kubeconform-linux-amd64\.tar\.gz$|/tmp/kubeconform.tar.gz"
 )
 for i in ${ASSETS[@]}; do
   REPO="$(echo "$i" | cut -d'|' -f1)"
@@ -107,9 +113,9 @@ curl -L -o "/usr/local/bin/kubectl" "$KUBECTL_URL"
 chmod 755 "/usr/local/bin/kubectl"
 
 # pcloud
-PCLOUD_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/pcloud"
-curl -L -o "/usr/local/bin/pcloud" "$PCLOUD_URL"
-chmod 755 "/usr/local/bin/pcloud"
+PCLOUD_URL="https://filedn.com/lqGgqyaOApSjKzN216iPGQf/Software/Linux/pCloud.AppImage"
+curl -L -o "/usr/local/bin/pCloud.AppImage" "$PCLOUD_URL"
+chmod 755 "/usr/local/bin/pCloud.AppImage"
 
 # some fonts
 mkdir -p /usr/local/share/fonts
@@ -137,20 +143,16 @@ for FILE in *.tar.xz; do
 done
 popd >/dev/null 2>&1
 pushd /usr/local/share/icons >/dev/null 2>&1
-rm -rf ./Zafiro* Nordzy*
-/usr/local/bin/fetch --log-level warn \
-  --repo="https://github.com/zayronxio/Zafiro-icons" \
-  --tag=">=0.0.0" \
-  --release-asset="Zafiro-Icons-(Dark|Light)\.tar\.xz" .
+rm -rf Nordzy*
 /usr/local/bin/fetch --log-level warn \
   --repo="https://github.com/alvatip/Nordzy-icon" \
   --tag=">=0.0.0" \
   --release-asset="Nordzy(-dark)?\.tar\.gz" .
-for FILE in Zafiro*.tar.*z Nordzy*.tar.*z; do
+for FILE in Nordzy*.tar.*z; do
   tar xf "$FILE"
   rm -f "$FILE"
 done
-for FILE in Zafiro* Nordzy*; do
+for FILE in Nordzy*; do
   gtk-update-icon-cache ./"$FILE" >/dev/null 2>&1
 done
 popd >/dev/null 2>&1
