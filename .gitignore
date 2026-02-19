@@ -3,3 +3,4 @@
 *.iso
 *-build.log
 environment.chroot
+.envrc

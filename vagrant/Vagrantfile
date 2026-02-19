@@ -1,37 +1,72 @@
-unless Vagrant.has_plugin?("vagrant-sshfs")
-  raise 'vagrant-sshfs plugin is not installed!'
-end
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
 
-# hack: https://github.com/hashicorp/vagrant/issues/8878#issuecomment-345112810
-class VagrantPlugins::ProviderVirtualBox::Action::Network
-  def dhcp_server_matches_config?(dhcp_server, config)
-    true
-  end
-end
-
+Vagrant.require_version ">= 2.3.7"
 Vagrant.configure("2") do |config|
+  vm_box = ENV['VAGRANT_BOX'] || 'bento/debian-13'
+  vm_cpus = ENV['VAGRANT_CPUS'] || '4'
+  vm_memory = ENV['VAGRANT_MEMORY'] || '8192'
+  vm_name = ENV['VAGRANT_NAME'] || 'vagrant-deblive-build'
+  vm_gui = ENV['VAGRANT_GUI'] || 'false'
+  vm_ssd = ENV['VAGRANT_SSD'] || 'on'
+  libvirt_machine_arch = ENV['VAGRANT_LIBVIRT_MACHINE_ARCH'] || 'x86_64'
+  libvirt_machine_type = ENV['VAGRANT_LIBVIRT_MACHINE_TYPE'] || 'q35'
+  libvirt_ovmf_code = ENV['VAGRANT_LIBVIRT_LOADER'] || ''
+  libvirt_ovmf_vars = ENV['VAGRANT_LIBVIRT_NVRAM'] || ''
 
-  config.vm.define "vagrant-deblive-build"
-
-  config.vm.box = "bento/debian-13"
+  config.vm.define vm_name
+  config.vm.box = vm_box
 
   config.vm.network "private_network", type: "dhcp"
 
+  config.vm.synced_folder "..", "/iso-build",
+    disabled: false,
+    type: "rsync",
+    rsync__auto: false,
+    rsync__exclude: [".git/",
+                     ".iso"]
   config.vm.synced_folder '.', '/vagrant', disabled: true
-  config.vm.synced_folder "..", "/iso-build", type: "sshfs", disabled: false
 
   if Vagrant.has_plugin?("vagrant-vbguest")
     config.vbguest.auto_update = false
   end
 
-  config.vm.provider "virtualbox" do |vb|
-    vb.memory = "8192"
-    vb.cpus = 4
+  config.vm.provider "virtualbox" do |vb, override|
+    override.vm.network "private_network", type: "dhcp", auto_config: false
+    vb.gui = (vm_gui.to_s.downcase == 'true')
+    vb.customize ['modifyvm', :id, '--memory', vm_memory]
+    vb.customize ['modifyvm', :id, '--cpus', vm_cpus]
+    vb.customize ['modifyvm', :id, '--ioapic', 'on']
+    vb.customize ['modifyvm', :id, '--accelerate3d', 'off']
+    vb.customize ['modifyvm', :id, '--graphicscontroller', 'vboxsvga']
+    vb.customize ["storageattach", :id, "--storagectl", "SATA Controller", "--port", 1, "--device", 0, "--nonrotational", vm_ssd]
+    vb.name = vm_name
   end
 
-  config.vm.provider "libvirt" do |lv|
-    lv.memory = "8192"
-    lv.cpus = 4
+  config.vm.provider "libvirt" do |lv, override|
+    lv.driver = "kvm"
+    lv.cpus = vm_cpus.to_i
+    lv.memory = vm_memory.to_i
+    lv.machine_arch = libvirt_machine_arch
+    lv.machine_type = libvirt_machine_type
+    lv.loader = libvirt_ovmf_code if libvirt_ovmf_code && !libvirt_ovmf_code.empty?
+    lv.nvram  = libvirt_ovmf_vars if libvirt_ovmf_vars && !libvirt_ovmf_vars.empty?
+    lv.nic_model_type = "virtio"
+    lv.cpu_mode = 'host-model'
+    lv.cpu_fallback = 'forbid'
+    lv.channel :type  => 'unix', :target_name => 'org.qemu.guest_agent.0', :target_type => 'virtio'
+    lv.random :model => 'random'
+    lv.disk_bus = "virtio"
+  end
+
+  config.vm.provider "vmware_desktop" do |vm, override|
+    override.vm.network "private_network", type: "dhcp", auto_config: false
+    vm.vmx["displayName"] = vm_name
+    vm.vmx["memsize"] = vm_memory.to_s
+    vm.vmx["numvcpus"] = vm_cpus.to_s
+    if vm_ssd.to_s.downcase == "on" || vm_ssd.to_s.downcase == "true"
+      vm.vmx["scsi0:0.virtualSSD"] = "1"
+    end
   end
 
   config.vm.provision "shell", inline: <<-STEP1
@@ -39,9 +74,23 @@ Vagrant.configure("2") do |config|
     export DEBIAN_FRONTEND=noninteractive
     sed -i "s/main/main contrib non-free non-free-firmware/g" /etc/apt/sources.list
     apt-get -qqy update
-    apt-get -y install \
-      linux-headers-amd64 dkms build-essential gcc \
-      jq bc rsync git live-build debootstrap xorriso squashfs-tools genisoimage \
-      apt-transport-https ca-certificates curl gnupg2 software-properties-common
+    apt-get -y install --no-install-recommends \
+      apt-transport-https \
+      bc \
+      build-essential \
+      ca-certificates \
+      curl \
+      debootstrap \
+      dkms \
+      gcc \
+      genisoimage \
+      git \
+      gnupg2 \
+      jq \
+      linux-headers-amd64 \
+      live-build \
+      rsync \
+      squashfs-tools \
+      xorriso
   STEP1
 end
