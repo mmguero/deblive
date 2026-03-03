@@ -88,7 +88,7 @@ trap cleanup_envs EXIT
 # send source code to VM
 vagrant rsync
 
-vm_execute "sudo bash -c \"whoami && cd /iso-build && pwd && ./build.sh \\\"$CONFIG_DIR\\\"\""
+vm_execute "sudo bash -c \"whoami && cd /iso-build && pwd && sed -i \\\"s@BUILD_DIR=.*@BUILD_DIR=/iso-build@\\\" \\\"$CONFIG_DIR\\\"/vars.txt && ./build.sh \\\"$CONFIG_DIR\\\"\""
 
 # retrieve build artifacts from VM
 BUILD_ARTIFACTS="/iso-build/deblive-*.*"
