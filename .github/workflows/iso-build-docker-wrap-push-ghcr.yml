@@ -1,5 +1,4 @@
 name: iso-build-wrap-push-ghcr
-
 on:
   push:
     branches:
@@ -8,7 +7,6 @@ on:
       - 'trixie/**'
   workflow_dispatch:
   repository_dispatch:
-
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/deblive
@@ -16,28 +14,20 @@ env:
   IMAGE_PLATFORM: linux/amd64
   REPO_CONTEXT: .
   REPO_CONTAINERFILE: ./docker/Dockerfile
-
+concurrency:
+  group: deblive-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   build:
     runs-on: ubuntu-24.04
     permissions:
-      actions: write
       packages: write
       contents: read
     defaults:
       run:
         shell: bash
     steps:
-      -
-        name: Cancel previous run in progress
-        id: cancel-previous-runs
-        uses: styfle/cancel-workflow-action@d07a454dad7609a92316b57b23c9ccfd4f59af66
-        with:
-          ignore_sha: true
-          all_but_latest: true
-          access_token: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Build environment setup
+      - name: Build environment setup
         id: build-env-setup
         run: |
           sudo docker rmi $(docker image ls -aq) >/dev/null 2>&1 || true
@@ -88,12 +78,10 @@ jobs:
             cd /tmp/live-build
             dpkg-buildpackage -b -uc -us
             sudo dpkg -i /tmp/live-build*.deb
-      -
-        name: Checkout
+      - name: Checkout
         id: repo-checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      -
-        name: Build ISO image
+      - name: Build ISO image
         id: build-iso-image
         run: |
           export IMAGE_DISTRIBUTION=trixie
@@ -101,16 +89,14 @@ jobs:
           echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" > ./environment.chroot
           sudo /usr/bin/env bash ./build.sh "$IMAGE_DISTRIBUTION"
           rm -f ./environment.chroot
-      -
-        name: Log in to registry
+      - name: Log in to registry
         id: registry-login
         uses: redhat-actions/podman-login@v1
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Build container image
+      - name: Build container image
         id: build-container-image
         uses: redhat-actions/buildah-build@v2
         with:
@@ -121,8 +107,7 @@ jobs:
             ${{ env.REPO_CONTAINERFILE }}
           platforms: |
             ${{ env.IMAGE_PLATFORM }}
-      -
-        name: Push
+      - name: Push
         id: push-to-ghcr
         uses: redhat-actions/push-to-registry@v2
         with:
