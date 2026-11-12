@@ -193,6 +193,16 @@ if [ -d "$WORKDIR" ]; then
     echo "Error creating log file"
   fi
 
+  # NetworkManager hands DNS to resolvconf, so name resolution in the image only works
+  #   if /etc/resolv.conf is resolvconf's symlink (see 1000-resolvconf.hook.chroot)
+  #   (checked in filesystem.squashfs itself, since that's what the ISO boots)
+  if [[ -f ./binary/live/filesystem.squashfs ]] && command -v unsquashfs >/dev/null 2>&1; then
+    RESOLV_ENTRY="$(unsquashfs -ll ./binary/live/filesystem.squashfs etc/resolv.conf 2>/dev/null | grep -F 'etc/resolv.conf')"
+    if [[ "$RESOLV_ENTRY" != *"-> "*run/resolvconf/resolv.conf ]]; then
+      echo "WARNING: /etc/resolv.conf in the image is not resolvconf's symlink, so DNS won't work: ${RESOLV_ENTRY:-missing}" >&2
+    fi
+  fi
+
   popd >/dev/null 2>&1
   popd >/dev/null 2>&1
 

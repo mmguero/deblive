@@ -5,3 +5,13 @@
 # package postinst and hook that needs the network before this one.
 apt-get -y --no-install-recommends install resolvconf
 apt-get clean
+
+# live-build's "chroot_resolv remove" runs after the hooks and restores
+#   /etc/resolv.conf.orig (the resolv.conf from before the chroot stage) over
+#   /etc/resolv.conf, which would throw away resolvconf's symlink and leave a
+#   static file that NetworkManager never updates (it hands DNS to resolvconf).
+#   Make the "original" the symlink so live-build restores that. Keep it
+#   relative: live-build handles this path from the build host, where an
+#   absolute target would point at the host's /run.
+rm -f /etc/resolv.conf.orig
+ln -s ../run/resolvconf/resolv.conf /etc/resolv.conf.orig
