@@ -9,8 +9,8 @@ LABEL org.opencontainers.image.description='Customized Debian live image in qemu
 
 ARG QEMU_CPU=4
 ARG QEMU_RAM=4096
-ENV QEMU_CPU $QEMU_CPU
-ENV QEMU_RAM $QEMU_RAM
+ENV QEMU_CPU=$QEMU_CPU
+ENV QEMU_RAM=$QEMU_RAM
 
 ADD --chown=${DEFAULT_UID}:${DEFAULT_GID} deblive-*.log /image/
 ADD --chown=${DEFAULT_UID}:${DEFAULT_GID} deblive-*.iso /image/live.iso
