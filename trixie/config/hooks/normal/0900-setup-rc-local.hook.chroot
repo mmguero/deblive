@@ -11,4 +11,5 @@ EOF
 
 sed -i "1i #!/bin/sh" /etc/rc.local
 
-chmod +x /etc/rc.local /usr/local/bin/live-boot-config.sh
+chmod +x /etc/rc.local
+chmod 755 /usr/local/bin/*.sh

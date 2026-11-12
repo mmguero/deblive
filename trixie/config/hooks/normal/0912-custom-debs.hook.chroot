@@ -4,3 +4,33 @@
 curl -L -o "/tmp/veracrypt-console-Debian-13-amd64.deb" "$(curl -sSL https://www.veracrypt.fr/en/Downloads.html | grep -Pio 'https://.+?veracrypt-console.+?Debian-13-amd64.deb' | sed "s/&#43;/+/" | head -n 1)"
 dpkg -i "/tmp/veracrypt-console-Debian-13-amd64.deb"
 rm -f "/tmp/veracrypt-console-Debian-13-amd64.deb"
+
+# install_latest_github_deb <owner/repo> <asset regex>
+#   installs the matching .deb from the repo's latest (non-prerelease) GitHub release,
+#   letting apt resolve its dependencies
+[[ -z "$GITHUB_OAUTH_TOKEN" ]] && [[ -n "$GITHUB_TOKEN" ]] && export GITHUB_OAUTH_TOKEN="$GITHUB_TOKEN"
+function install_latest_github_deb () {
+  local REPO="$1" ASSET_REGEX="$2" DEB_URL DEB_FILE
+  local -a GH_AUTH=()
+  [[ -n "$GITHUB_OAUTH_TOKEN" ]] && GH_AUTH=(-H "Authorization: Bearer $GITHUB_OAUTH_TOKEN")
+  DEB_URL="$(curl -fsSL "${GH_AUTH[@]}" "https://api.github.com/repos/$REPO/releases/latest" | \
+             jq -r --arg re "$ASSET_REGEX" '.assets[].browser_download_url | select(test($re))' | head -n 1)"
+  if [[ -z "$DEB_URL" ]]; then
+    echo "No asset matching $ASSET_REGEX in $REPO's latest release" >&2
+    return 1
+  fi
+  DEB_FILE="/tmp/$(basename "$DEB_URL")"
+  echo "Installing $DEB_URL" >&2
+  curl -fsSL -o "$DEB_FILE" "$DEB_URL" && apt-get -y install "$DEB_FILE"
+  local RC=$?
+  rm -f "$DEB_FILE"
+  return $RC
+}
+
+# ghostty (the dotfiles' XFCE panel launcher, keyboard shortcut and terminal helper
+#   point at it), from the community .deb that ghostty.org's Debian instructions use
+install_latest_github_deb mkasberg/ghostty-ubuntu '_amd64_trixie\.deb$'
+
+# deskflow (keyboard/mouse sharing, listens on 24800/tcp when acting as server);
+#   trixie carries it, but well behind upstream
+install_latest_github_deb deskflow/deskflow '-debian-trixie-x86_64\.deb$'

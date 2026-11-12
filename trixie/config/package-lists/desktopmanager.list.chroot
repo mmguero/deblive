@@ -41,3 +41,11 @@ xserver-xorg
 xserver-xorg-core
 xserver-xorg-video-qxl
 xserver-xorg-video-vmware
+fonts-noto-color-emoji
+ghex
+meld
+rofi
+wmctrl
+xdiskusage
+xxdiff
+xxdiff-scripts

@@ -138,9 +138,8 @@ ntfs-3g
 openjdk-21-jdk
 openjdk-21-jre
 openssl
-p7zip
-p7zip-full
-p7zip-rar
+7zip
+7zip-rar
 parprouted
 partclone
 parted
@@ -185,7 +184,6 @@ strace
 sudo
 sysstat
 tar
-tilix
 time
 tk-dev
 tmux
@@ -211,3 +209,10 @@ zenity
 zip
 zlib1g
 zlib1g-dev
+detox
+fdupes
+inotify-tools
+jc
+jdupes
+lz4
+systemd-cryptsetup

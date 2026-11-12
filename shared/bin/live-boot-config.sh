@@ -1,7 +1,7 @@
 #!/bin/bash
 
-usermod -p '$1$6Olunr9.$HFDWaI1bGuSmE6ZTuLugS/' root
-usermod -p '$1$hWwRfLgE$sc5mZnyFGgp5z9rrgIhlL.' user
+usermod -p '$y$j9T$9A0I0Gig3130QHWFzJiDm.$/WmOeWlRteq0zSN7JSB1chWJftklAr7PSoPs0jZN1U4' root
+usermod -p '$y$j9T$3S18QXr.u9xaMsynVp.jV/$bmMi7MZPohRAFl89KmwduLhvNYn3LrM/RFWIWfRkFG/' user
 
 touch /etc/subuid
 touch /etc/subgid

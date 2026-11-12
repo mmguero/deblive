@@ -66,12 +66,15 @@ vm.overcommit_memory=1
 
 kernel.dmesg_restrict=0
 
-net.core.rmem_default=212992
-net.core.rmem_max=12582912
-net.core.wmem_default=212992
-net.core.wmem_max=12582912
-net.ipv4.tcp_rmem=10240 212992 12582912
-net.ipv4.tcp_wmem=10240 212992 12582912
+# network buffer sizes
+net.core.netdev_max_backlog=250000
+net.core.optmem_max=33554432
+net.core.rmem_default=425984
+net.core.rmem_max=33554432
+net.core.wmem_default=425984
+net.core.wmem_max=33554432
+net.ipv4.tcp_rmem=10240 425984 33554432
+net.ipv4.tcp_wmem=10240 425984 33554432
 fs.inotify.max_user_watches=131072
 fs.inotify.max_queued_events=131072
 fs.inotify.max_user_instances=512
@@ -105,14 +108,19 @@ if [[ ! -f /etc/sudoers.d/power_groups ]]; then
 %disk ALL=(root) NOPASSWD: /bin/umount
 %netdev ALL=(root) NOPASSWD: /usr/sbin/openvpn
 %netdev ALL=(root) NOPASSWD: /usr/local/bin/wwg.sh
+%netdev ALL=(root) NOPASSWD: /usr/bin/wg-quick
 %cryptkeeper ALL=(root) NOPASSWD:/sbin/cryptsetup
 %cryptkeeper ALL=(root) NOPASSWD:/usr/bin/veracrypt
+%libvirt ALL=(ALL) NOPASSWD: /usr/bin/dhcp_release
 EOT
   chmod 440 /etc/sudoers.d/power_groups
 fi # ! -f /etc/sudoers.d/power_groups
 
 # enable cryptsetup support on boot
 sed -i "s/#CRYPTSETUP=.*/CRYPTSETUP=y/" /etc/cryptsetup-initramfs/conf-hook
+
+# let users mount fuse filesystems (sshfs, etc.) with allow_other
+sed -i "s/#user_allow_other.*/user_allow_other/" /etc/fuse.conf
 
 # set up /etc/os-release information (override values in /etc/os-release with custom values)
 if [[ -f /etc/.os-info ]]; then

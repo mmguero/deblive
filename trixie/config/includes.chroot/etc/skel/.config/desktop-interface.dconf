@@ -1,0 +1,8 @@
+[org/gnome/desktop/interface]
+gtk-theme='Adwaita-dark'
+icon-theme='Adwaita'
+
+[org/gtk/settings/color-chooser]
+custom-colors=[(0.086274509803921567, 0.086274509803921567, 0.11372549019607843, 1.0), (0.5, 0.5, 0.5, 1.0)]
+selected-color=(true, 0.086274509803921567, 0.086274509803921567, 0.11372549019607843, 1.0)
+

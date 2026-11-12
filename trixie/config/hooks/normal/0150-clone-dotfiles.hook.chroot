@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# clone mmguero/dotfiles and mmguero/docker into /etc/skel early, so later hooks
+#   (0911-custom-binaries for install-user-local-binaries.sh, 0998-skel-setup for
+#   the symlinks) can use them as the single source of truth
+
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
+
+SKEL_PATH="/etc/skel"
+GUERO_GITHUB_PATH="$SKEL_PATH/.config/mmguero.config"
+GUERO_DOCKER_GITHUB_PATH="$SKEL_PATH/.config/mmguero.docker"
+mkdir -p "$(dirname "$GUERO_GITHUB_PATH")" "$(dirname "$GUERO_DOCKER_GITHUB_PATH")"
+rm -rf "$GUERO_GITHUB_PATH" "$GUERO_DOCKER_GITHUB_PATH"
+git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/mmguero/dotfiles.git "$GUERO_GITHUB_PATH"
+git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/mmguero/docker.git "$GUERO_DOCKER_GITHUB_PATH"
+rm -rf "$GUERO_GITHUB_PATH"/.git "$GUERO_DOCKER_GITHUB_PATH"/.git

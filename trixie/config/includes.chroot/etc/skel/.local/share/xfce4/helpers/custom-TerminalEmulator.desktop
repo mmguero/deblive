@@ -1,0 +1,10 @@
+[Desktop Entry]
+NoDisplay=true
+Version=1.0
+Encoding=UTF-8
+Type=X-XFCE-Helper
+X-XFCE-Category=TerminalEmulator
+X-XFCE-CommandsWithParameter=ghostty -e "%s"
+Icon=com.mitchellh.ghostty
+Name=ghostty
+X-XFCE-Commands=ghostty

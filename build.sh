@@ -115,7 +115,7 @@ if [ -d "$WORKDIR" ]; then
     --linux-flavours "amd64:amd64" \
     --architectures amd64 \
     --binary-images iso-hybrid \
-    --bootappend-live "boot=live components username=user nosplash elevator=deadline systemd.unified_cgroup_hierarchy=1 cgroup_enable=memory swapaccount=1 cgroup.memory=nokmem random.trust_cpu=on" \
+    --bootappend-live "boot=live components username=user nosplash systemd.unified_cgroup_hierarchy=1 cgroup_enable=memory swapaccount=1 cgroup.memory=nokmem random.trust_cpu=on usbcore.autosuspend=-1" \
     --memtest none \
     --chroot-filesystem squashfs \
     --backports $APT_BACKPORTS \
@@ -126,7 +126,7 @@ if [ -d "$WORKDIR" ]; then
     --apt-indices false \
     --apt-source-archives false \
     --archive-areas 'main contrib non-free non-free-firmware' \
-    --debootstrap-options "--include=apt-transport-https,bc,ca-certificates,gnupg,debian-archive-keyring,jq,openssl --no-merged-usr" \
+    --debootstrap-options "--include=apt-transport-https,bc,ca-certificates,gnupg,debian-archive-keyring,jq,openssl" \
     --apt-options "--yes --allow-downgrades --allow-remove-essential --allow-change-held-packages -oAcquire::Check-Valid-Until=false -oAPT::Default-Release=trixie  -oAPT::Keep-Downloaded-Packages=false -oDpkg::Options::=--force-confnew"
 
   lb build 2>&1 | tee "$WORKDIR/output/$IMAGE_NAME-$IMAGE_VERSION-build.log"

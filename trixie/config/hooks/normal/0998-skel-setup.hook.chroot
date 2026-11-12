@@ -6,10 +6,8 @@ export LANG=C.UTF-8
 SKEL_PATH="/etc/skel"
 GUERO_GITHUB_PATH="$SKEL_PATH/.config/mmguero.config"
 GUERO_DOCKER_GITHUB_PATH="$SKEL_PATH/.config/mmguero.docker"
-mkdir -p "$(dirname "$GUERO_GITHUB_PATH")" "$(dirname "$GUERO_DOCKER_GITHUB_PATH")" "$SKEL_PATH/.local/bin" "$SKEL_PATH/.local/share" "$SKEL_PATH/tmp"
-git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/mmguero/dotfiles.git "$GUERO_GITHUB_PATH"
-git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --no-tags https://github.com/mmguero/docker.git "$GUERO_DOCKER_GITHUB_PATH"
-rm -rf "$GUERO_GITHUB_PATH"/.git "$GUERO_DOCKER_GITHUB_PATH"/.git
+# the repositories themselves are cloned by 0150-clone-dotfiles.hook.chroot
+mkdir -p "$SKEL_PATH/.local/bin" "$SKEL_PATH/.local/share" "$SKEL_PATH/tmp"
 
 [[ -r "$GUERO_GITHUB_PATH"/bash/rc ]] && rm -vf "$SKEL_PATH"/.bashrc && \
   ln -vrs "$GUERO_GITHUB_PATH"/bash/rc "$SKEL_PATH"/.bashrc
@@ -25,6 +23,9 @@ rm -rf "$GUERO_GITHUB_PATH"/.git "$GUERO_DOCKER_GITHUB_PATH"/.git
 
 [[ -d "$GUERO_GITHUB_PATH"/linux/containers ]] && rm -vf "$SKEL_PATH"/.config/containers && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/containers "$SKEL_PATH"/.config/containers
+
+[[ -d "$GUERO_GITHUB_PATH"/ghostty ]] && rm -vf "$SKEL_PATH"/.config/ghostty && \
+  ln -vrs "$GUERO_GITHUB_PATH"/ghostty "$SKEL_PATH"/.config/ghostty
 
 [[ -d "$GUERO_GITHUB_PATH"/linux/virter ]] && rm -vf "$SKEL_PATH"/.local/share/virter && \
   ln -vrs "$GUERO_GITHUB_PATH"/linux/virter "$SKEL_PATH"/.local/share/virter
@@ -73,6 +74,7 @@ LINKED_SCRIPTS=(
   pem_passwd.sh
   self_signed_key_gen.sh
   store_unique.sh
+  tile.sh
   window_dimensions.sh
   tx-rx-secure.sh
   xkcd936.sh
@@ -88,8 +90,10 @@ done
 [[ -r "$GUERO_GITHUB_PATH"/bash/context-color/context-color ]] && rm -vf "$SKEL_PATH"/.local/bin/context-color && \
   ln -vrs "$GUERO_GITHUB_PATH"/bash/context-color/context-color "$SKEL_PATH"/.local/bin/context-color
 
-[[ -r "$GUERO_DOCKER_GITHUB_PATH"/zeek/zeek-docker.sh ]] && rm -vf "$SKEL_PATH"/.local/bin/zeek-docker.sh && \
-  ln -vrs "$GUERO_DOCKER_GITHUB_PATH"/zeek/zeek-docker.sh "$SKEL_PATH"/.local/bin/zeek-docker.sh
+# zeek-docker.sh moved out of mmguero/docker into its own repository
+rm -vf "$SKEL_PATH"/.local/bin/zeek-docker.sh && \
+  curl -fsSL -o "$SKEL_PATH"/.local/bin/zeek-docker.sh https://raw.githubusercontent.com/mmguero/zeek-docker/main/zeek-docker.sh && \
+  chmod 755 "$SKEL_PATH"/.local/bin/zeek-docker.sh
 
 [[ -r "$GUERO_DOCKER_GITHUB_PATH"/capa/capa-docker.sh ]] && rm -vf "$SKEL_PATH"/.local/bin/capa-docker.sh && \
   ln -vrs "$GUERO_DOCKER_GITHUB_PATH"/capa/capa-docker.sh "$SKEL_PATH"/.local/bin/capa-docker.sh

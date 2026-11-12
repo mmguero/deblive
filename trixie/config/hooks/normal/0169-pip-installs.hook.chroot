@@ -4,7 +4,7 @@ export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
 export CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
-python3 -m pip install --no-compile --no-cache-dir --break-system-packages --force-reinstall --upgrade \
+python3 -m pip install --ignore-installed --no-compile --no-cache-dir --break-system-packages --force-reinstall --upgrade \
   arrow \
   beautifulsoup4 \
   black \
@@ -27,11 +27,14 @@ python3 -m pip install --no-compile --no-cache-dir --break-system-packages --for
   dtrx \
   entrypoint2 \
   fierce \
+  fire \
   git+https://github.com/badele/gitcheck.git \
   git-up \
+  github-download-counts \
   habu \
   humanhash3 \
   ipaddress \
+  libarchive-c \
   magic-wormhole \
   mmguero \
   monkeyplug \
@@ -52,9 +55,10 @@ python3 -m pip install --no-compile --no-cache-dir --break-system-packages --for
   python-dateutil \
   python-dotenv \
   python-magic \
+  python-rapidjson \
   python-slugify \
   pythondialog \
-  pyunpack \
+  git+https://github.com/ponty/pyunpack \
   pywinrm \
   pyyaml \
   requests-html \
@@ -74,7 +78,7 @@ python3 -m pip install --no-compile --no-cache-dir --break-system-packages --for
   tldr \
   tqdm \
   trackerjacker \
-  typer[all] \
+  typer \
   urllib3 \
   wapiti3 \
   yt-dlp \

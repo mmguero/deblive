@@ -80,18 +80,25 @@ EXE_MORE_CAP=(
   /usr/sbin/stenotype
   /usr/sbin/trafgen
 )
-for i in ${EXE_LESS_CAP[@]}; do
-  if [[ -e "$i" ]]; then
-    chown root:netdev "$i" && \
-      setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_NET_BIND_SERVICE+eip' "$i"
-  fi
-done
-for i in ${EXE_MORE_CAP[@]}; do
-  if [[ -e "$i" ]]; then
-    chown root:netdev "$i" && \
-      setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_NET_BIND_SERVICE+eip CAP_IPC_LOCK+eip CAP_SYS_ADMIN+eip' "$i"
-  fi
-done
+# setcap refuses symlinks, so resolve each path to the file it points at first
+#   (and skip duplicates, e.g. stunnel3/stunnel4 pointing at the same binary)
+function set_net_caps () {
+  local CAPS="$1" EXE REAL
+  shift
+  for EXE in "$@"; do
+    [[ -e "$EXE" ]] || continue
+    REAL="$(readlink -f "$EXE")"
+    [[ -f "$REAL" ]] || continue
+    [[ -n "${CAPS_DONE[$REAL]:-}" ]] && continue
+    CAPS_DONE[$REAL]=1
+    chown root:netdev "$REAL" && \
+      setcap "$CAPS" "$REAL" || echo "setcap failed for $EXE ($REAL)" >&2
+  done
+}
+declare -A CAPS_DONE=()
+# EXE_MORE_CAP first so a shared binary gets the larger set
+set_net_caps 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_NET_BIND_SERVICE+eip CAP_IPC_LOCK+eip CAP_SYS_ADMIN+eip' "${EXE_MORE_CAP[@]}"
+set_net_caps 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip CAP_NET_BIND_SERVICE+eip' "${EXE_LESS_CAP[@]}"
 
 [[ -f /etc/xdg/autostart/gnome-keyring-pkcs11.desktop ]] && \
   sed -i 's/^\(OnlyShowIn=.*\);/\1;XFCE;/' /etc/xdg/autostart/gnome-keyring-pkcs11.desktop

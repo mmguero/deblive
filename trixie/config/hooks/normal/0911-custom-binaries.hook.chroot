@@ -11,95 +11,47 @@ chmod 755 /tmp/fetch
 if /tmp/fetch --version >/dev/null 2>&1; then
   cp -f /tmp/fetch /usr/local/bin/fetch
 elif [[ -n "$FETCH_ALT_URL" ]]; then
-  curl -fsSL -o /usr/local/bin/fetch "$FETCH_URL"
+  curl -fsSL -o /usr/local/bin/fetch "$FETCH_ALT_URL"
   chmod 755 /usr/local/bin/fetch
 fi
 rm -rf /tmp/fetch
 
-LOCAL_BIN_PATH=/usr/local/bin
+export LOCAL_BIN_PATH=/usr/local/bin
+export LOCAL_DATA_PATH=/usr/local/share
+export LINUX_CPU="$(uname -m)"
+export FETCH=/usr/local/bin/fetch
 
-ASSETS=(
-  "https://github.com/ajeetdsouza/zoxide|^zoxide-.+-x86_64-unknown-linux-musl\.tar\.gz|/tmp/zoxide.tar.gz"
-  "https://github.com/alphasoc/flightsim|^flightsim_.+_linux_amd64\.tar\.gz$|/tmp/flightsim.tar.gz"
-  "https://github.com/antonmedv/fx|^fx_linux_amd64$|$LOCAL_BIN_PATH/fx|755"
-  "https://github.com/aptible/supercronic|^supercronic-linux-amd64$|$LOCAL_BIN_PATH/supercronic|755"
-  "https://github.com/boringproxy/boringproxy|^boringproxy-linux-x86_64$|$LOCAL_BIN_PATH/boringproxy|755"
-  "https://github.com/BurntSushi/ripgrep|^ripgrep-.+-x86_64-unknown-linux-musl\.tar\.gz$|/tmp/ripgrep.tar.gz"
-  "https://github.com/darkhz/bluetuith|^bluetuith_.*_Linux_x86_64.tar.gz$|/tmp/bluetuith.tar.gz"
-  "https://github.com/darkhz/rclone-tui|^rclone-tui_.+_Linux_x86_64\.tar\.gz$|/tmp/rclone-tui.tar.gz"
-  "https://github.com/derailed/k9s|^k9s_Linux_amd64\.tar\.gz$|/tmp/k9s.tar.gz"
-  "https://github.com/docker/docker-credential-helpers|^docker-credential-pass-v.+\.linux-amd64$|$LOCAL_BIN_PATH/docker-credential-pass|755"
-  "https://github.com/docker/docker-credential-helpers|^docker-credential-secretservice-v.+\.linux-amd64$|$LOCAL_BIN_PATH/docker-credential-secretservice|755"
-  "https://github.com/eza-community/eza|^eza_x86_64-unknown-linux-musl\.tar\.gz$|/tmp/eza.tar.gz"
-  "https://github.com/FiloSottile/age|^age-v.+-linux-amd64\.tar\.gz$|/tmp/age.tar.gz"
-  "https://github.com/gabrie30/ghorg|^ghorg_.+_Linux_x86_64\.tar\.gz$|/tmp/ghorg.tar.gz"
-  "https://github.com/jez/as-tree|^as-tree-.+-linux\.zip$|/tmp/as-tree.zip"
-  "https://github.com/josephburnett/jd|^jd-amd64-linux$|$LOCAL_BIN_PATH/jd|755"
-  "https://github.com/kubernetes/minikube|^minikube-linux-amd64$|$LOCAL_BIN_PATH/minikube|755"
-  "https://github.com/LINBIT/virter|^virter-linux-amd64$|$LOCAL_BIN_PATH/virter|755"
-  "https://github.com/LINBIT/vmshed|^vmshed-linux-amd64$|$LOCAL_BIN_PATH/vmshed|755"
-  "https://github.com/mikefarah/yq|^yq_linux_amd64$|$LOCAL_BIN_PATH/yq|755"
-  "https://github.com/neilotoole/sq|^sq.+linux-amd64\.tar\.gz$|/tmp/sq.tar.gz"
-  "https://github.com/nektos/act|^act_Linux_x86_64\.tar\.gz$|/tmp/act.tar.gz"
-  "https://github.com/nuwainfo/ffl|^fflo\.com$|$LOCAL_BIN_PATH/fflo.com|644"
-  "https://github.com/peco/peco|^peco_linux_amd64\.tar\.gz$|/tmp/peco.tar.gz"
-  "https://github.com/projectdiscovery/httpx|^httpx_.+_linux_amd64\.zip$|/tmp/httpx.zip"
-  "https://github.com/rclone/rclone|^rclone-v.+-linux-amd64\.zip$|/tmp/rclone.zip"
-  "https://github.com/reproducible-containers/diffoci|^diffoci-v.+\.linux-amd64$|$LOCAL_BIN_PATH/diffoci|755"
-  "https://github.com/sachaos/viddy|^viddy-.+-linux-x86_64\.tar\.gz$|/tmp/viddy.tar.gz"
-  "https://github.com/schollz/croc|^croc_.+_Linux-64bit\.tar\.gz$|/tmp/croc.tar.gz"
-  "https://github.com/schollz/hostyoself|^hostyoself_.+_Linux-64bit\.tar\.gz$|/tmp/hostyoself.tar.gz"
-  "https://github.com/sharkdp/bat|^bat-v.+-x86_64-unknown-linux-gnu\.tar\.gz$|/tmp/bat.tar.gz"
-  "https://github.com/sharkdp/fd|^fd-v.+-x86_64-unknown-linux-gnu\.tar\.gz$|/tmp/fd.tar.gz"
-  "https://github.com/smallstep/cli|^step_linux_.+_amd64\.tar\.gz$|/tmp/step.tar.gz"
-  "https://github.com/starship/starship|^starship-x86_64-unknown-linux-gnu\.tar\.gz$|/tmp/starship.tar.gz"
-  "https://github.com/stern/stern|^stern_.+_linux_amd64\.tar\.gz$|/tmp/stern.tar.gz"
-  "https://github.com/timvisee/ffsend|^ffsend-v.+-linux-x64-static$|$LOCAL_BIN_PATH/ffsend|755"
-  "https://github.com/tomnomnom/gron|^gron-linux-amd64-.+\.tgz$|/tmp/gron.tgz"
-  "https://github.com/wader/fq|^fq_.+_linux_amd64\.tar\.gz$|/tmp/fq.tar.gz"
-  "https://github.com/watchexec/watchexec|^watchexec-.+-x86_64-unknown-linux-musl\.tar\.xz$|/tmp/watchexec.tar.xz"
-  "https://github.com/whyvl/wireproxy|^wireproxy_linux_amd64\.tar\.gz$|/tmp/wireproxy.tar.gz"
-  "https://github.com/Wilfred/difftastic|^difft-x86_64-unknown-linux-gnu\.tar\.gz$|/tmp/difft.tar.gz"
-  "https://github.com/yannh/kubeconform|^kubeconform-linux-amd64\.tar\.gz$|/tmp/kubeconform.tar.gz"
-)
-for i in ${ASSETS[@]}; do
-  REPO="$(echo "$i" | cut -d'|' -f1)"
-  ASSET_REGEX="$(echo "$i" | cut -d'|' -f2)"
-  OUTPUT_FILE="$(echo "$i" | cut -d'|' -f3)"
-  OUTPUT_FILE_PERMS="$(echo "$i" | cut -d'|' -f4)"
-  echo "" >&2
-  echo "Downloading asset for $REPO..." >&2
-  FETCH_DIR="$(mktemp -d)"
-  /usr/local/bin/fetch --log-level warn \
-    --repo="$REPO" \
-    --tag=">=0.0.0" \
-    --release-asset="$ASSET_REGEX" \
-    "$FETCH_DIR"
-  mv "$FETCH_DIR"/* "$OUTPUT_FILE"
-  rm -rf "$FETCH_DIR"
-  if [[ -f "$OUTPUT_FILE" ]]; then
-    chmod "${OUTPUT_FILE_PERMS:-644}" "$OUTPUT_FILE"
-    if [[ "$OUTPUT_FILE" == *.tar.gz ]] || [[ "$OUTPUT_FILE" == *.tgz ]]; then
-      UNPACK_DIR="$(mktemp -d)"
-      tar xzf "$OUTPUT_FILE" -C "$UNPACK_DIR"
-    elif [[ "$OUTPUT_FILE" == *.tar.xz ]] || [[ "$OUTPUT_FILE" == *.xz ]]; then
-      UNPACK_DIR="$(mktemp -d)"
-      tar xJf "$OUTPUT_FILE" -C "$UNPACK_DIR" --strip-components 1
-    elif [[ "$OUTPUT_FILE" == *.zip ]]; then
-      UNPACK_DIR="$(mktemp -d)"
-      unzip -q "$OUTPUT_FILE" -d "$UNPACK_DIR"
-    fi
-    if [[ -d "$UNPACK_DIR" ]]; then
-      find "$UNPACK_DIR" -type f -exec file --mime-type "{}" \; | \
-        grep -P ":\s+application/.*executable" | \
-        cut -d: -f 1 | xargs -I XXX -r mv "XXX" /usr/local/bin/
-      rm -rf "$UNPACK_DIR" "$OUTPUT_FILE"
-    fi
+# the binary table lives in mmguero/dotfiles (bash/install-user-local-binaries.sh),
+#   cloned into /etc/skel by 0150-clone-dotfiles.hook.chroot, so deblive and the
+#   dotfiles don't drift apart. _DownloadViaFetch is defined in development_setup.sh,
+#   which can't be sourced (it runs its menu), so pull just that function out of it.
+GUERO_GITHUB_PATH=/etc/skel/.config/mmguero.config
+INSTALL_BINARIES_SCRIPT="$GUERO_GITHUB_PATH"/bash/install-user-local-binaries.sh
+DEVELOPMENT_SETUP_SCRIPT="$GUERO_GITHUB_PATH"/bash/development_setup.sh
+if [[ -r "$INSTALL_BINARIES_SCRIPT" ]] && [[ -r "$DEVELOPMENT_SETUP_SCRIPT" ]]; then
+  source <(sed -n '/^function _DownloadViaFetch {/,/^}/p' "$DEVELOPMENT_SETUP_SCRIPT")
+  if declare -F _DownloadViaFetch >/dev/null; then
+    export -f _DownloadViaFetch
+    bash "$INSTALL_BINARIES_SCRIPT" -y || echo "install-user-local-binaries.sh reported failures (see above)" >&2
+  else
+    echo "Could not extract _DownloadViaFetch from $DEVELOPMENT_SETUP_SCRIPT" >&2
   fi
-done
+else
+  echo "dotfiles not found at $GUERO_GITHUB_PATH, skipping user-local binaries" >&2
+fi
+
+# virter and vmshed are handled by InstallVirtualization in development_setup.sh,
+#   not install-user-local-binaries.sh
+if declare -F _DownloadViaFetch >/dev/null; then
+  for i in "https://github.com/LINBIT/virter|^virter-linux-amd64$|$LOCAL_BIN_PATH/virter|755" \
+           "https://github.com/LINBIT/vmshed|^vmshed-linux-amd64$|$LOCAL_BIN_PATH/vmshed|755"; do
+    _DownloadViaFetch "$i" || echo "Failed: $i" >&2
+  done
+fi
 
 # install virter
-[[ -f /usr/local/bin/virter ]] && tee -a /etc/apparmor.d/local/abstractions/libvirt-qemu > /dev/null <<'EOT'
+[[ -f /usr/local/bin/virter ]] && mkdir -p /etc/apparmor.d/local/abstractions && \
+  tee -a /etc/apparmor.d/local/abstractions/libvirt-qemu > /dev/null <<'EOT'
 /var/lib/libvirt/images/* rwk,
 # required for QEMU accessing UEFI nvram variables
 /usr/share/OVMF/* rk,
@@ -143,16 +95,20 @@ for FILE in *.tar.xz; do
 done
 popd >/dev/null 2>&1
 pushd /usr/local/share/icons >/dev/null 2>&1
-rm -rf Nordzy*
+rm -rf Nordzy* Zafiro*
+/usr/local/bin/fetch --log-level warn \
+  --repo="https://github.com/zayronxio/Zafiro-icons" \
+  --tag=">=0.0.0" \
+  --release-asset="Zafiro-Icons-(Dark|Light)\.tar\.xz" .
 /usr/local/bin/fetch --log-level warn \
   --repo="https://github.com/alvatip/Nordzy-icon" \
   --tag=">=0.0.0" \
   --release-asset="Nordzy(-dark)?\.tar\.gz" .
-for FILE in Nordzy*.tar.*z; do
+for FILE in Zafiro*.tar.*z Nordzy*.tar.*z; do
   tar xf "$FILE"
   rm -f "$FILE"
 done
-for FILE in Nordzy*; do
+for FILE in Zafiro* Nordzy*; do
   gtk-update-icon-cache ./"$FILE" >/dev/null 2>&1
 done
 popd >/dev/null 2>&1

@@ -1,21 +1,24 @@
 #!/bin/bash
 
-RESPONDER_VER="3.2.2.0"
+# Responder publishes tags rather than GitHub releases, so take the highest version tag
+RESPONDER_VER="$(GIT_TERMINAL_PROMPT=0 git ls-remote --tags --refs https://github.com/lgandx/Responder 2>/dev/null | \
+                 sed 's#.*refs/tags/v##' | grep -E '^[0-9]+(\.[0-9]+)+$' | sort -V | tail -n 1)"
+RESPONDER_VER="${RESPONDER_VER:-3.2.2.0}"
 RESPONDER_URL="https://github.com/lgandx/Responder/archive/v${RESPONDER_VER}.tar.gz"
 
 BRUTESHARK_URL="https://github.com/odedshimon/BruteShark/releases/latest/download/BruteSharkCli"
 
-DOCKER_COMPOSE_VERSION=5.0.1
 DOCKER_COMPOSE_BIN=/usr/local/lib/docker/cli-plugins/docker-compose
-DOCKER_COMPOSE_URL="https://github.com/docker/compose/releases/download/v$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m)"
+DOCKER_COMPOSE_URL="https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m)"
 
 mkdir -p "$(dirname "$DOCKER_COMPOSE_BIN")"
-curl -L -o "$DOCKER_COMPOSE_BIN" "$DOCKER_COMPOSE_URL"
+curl -fL -o "$DOCKER_COMPOSE_BIN" "$DOCKER_COMPOSE_URL"
 chmod 755 "$DOCKER_COMPOSE_BIN"
 ln -s -r -f "$DOCKER_COMPOSE_BIN" /usr/local/bin/docker-compose
 
 # Install responder.py
-curl -L -o "Responder-${RESPONDER_VER}.tar.gz" "$RESPONDER_URL"
+echo "Installing Responder $RESPONDER_VER" >&2
+curl -fL -o "Responder-${RESPONDER_VER}.tar.gz" "$RESPONDER_URL"
 tar -xvzf Responder-${RESPONDER_VER}.tar.gz
 mv ./Responder-${RESPONDER_VER} /opt/responder
 rm -Rf Responder-${RESPONDER_VER}.tar.gz
@@ -29,7 +32,7 @@ curl -L -o /usr/local/bin/BruteSharkCli "$BRUTESHARK_URL"
 chmod 755 /usr/local/bin/BruteSharkCli
 
 # x11docker
-curl -fsSL https://raw.githubusercontent.com/mviereck/x11docker/master/x11docker | bash -s -- --install --backend podman
+curl -fsSL https://raw.githubusercontent.com/mviereck/x11docker/master/x11docker | bash -s -- --update
 
 # git and libsecret credential caching
 make --directory=/usr/share/doc/git/contrib/credential/libsecret

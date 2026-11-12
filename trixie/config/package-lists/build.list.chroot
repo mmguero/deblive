@@ -9,3 +9,6 @@ equivs
 make
 musl
 musl-tools
+bison
+flex
+ninja-build

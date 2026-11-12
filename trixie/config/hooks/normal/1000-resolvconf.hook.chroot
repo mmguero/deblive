@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# resolvconf points /etc/resolv.conf at /run/resolvconf/resolv.conf, which
+# stays empty inside the build chroot. Install it last so DNS works for every
+# package postinst and hook that needs the network before this one.
+apt-get -y --no-install-recommends install resolvconf
+apt-get clean

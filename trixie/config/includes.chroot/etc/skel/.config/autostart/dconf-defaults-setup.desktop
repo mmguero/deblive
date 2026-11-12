@@ -1,0 +1,7 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=dconf-defaults-setup
+Comment=First login dconf defaults
+Exec=/usr/local/bin/dconf-defaults-setup.sh
+Terminal=false
+Type=Application
