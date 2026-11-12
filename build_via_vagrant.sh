@@ -80,8 +80,9 @@ echo "SSH available." >&2
 
 # pass a few things across to the vagrant environment
 cleanup_envs
-[[ ${#GITHUB_TOKEN} -gt 1 ]] && echo "GITHUB_TOKEN=$GITHUB_TOKEN" >> "$SCRIPT_PATH"/environment.chroot
-echo "VCS_REVSION=$( git rev-parse --short HEAD 2>/dev/null || echo master )" >> "$SCRIPT_PATH"/environment.chroot
+( umask 077
+  [[ ${#GITHUB_TOKEN} -gt 1 ]] && echo "GITHUB_TOKEN=$GITHUB_TOKEN" >> "$SCRIPT_PATH"/environment.chroot
+  echo "VCS_REVISION=$( git rev-parse --short HEAD 2>/dev/null || echo master )" >> "$SCRIPT_PATH"/environment.chroot )
 
 trap cleanup_envs EXIT
 
@@ -89,6 +90,9 @@ trap cleanup_envs EXIT
 vagrant rsync
 
 vm_execute "sudo bash -c \"whoami && cd /iso-build && pwd && sed -i \\\"s@BUILD_DIR=.*@BUILD_DIR=/iso-build@\\\" \\\"$CONFIG_DIR\\\"/vars.txt && ./build.sh \\\"$CONFIG_DIR\\\"\""
+
+# "vagrant rsync" copied environment.chroot into the VM, which outlives this build
+vm_execute "sudo rm -f /iso-build/environment.chroot"
 
 # retrieve build artifacts from VM
 BUILD_ARTIFACTS="/iso-build/deblive-*.*"

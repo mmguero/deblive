@@ -81,14 +81,18 @@ jobs:
       - name: Checkout
         id: repo-checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
       - name: Build ISO image
         id: build-iso-image
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           export IMAGE_DISTRIBUTION=trixie
           cat $IMAGE_DISTRIBUTION/vars.txt
-          echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" > ./environment.chroot
+          trap 'rm -f ./environment.chroot' EXIT
+          ( umask 077 && printf 'GITHUB_TOKEN=%s\n' "$GITHUB_TOKEN" > ./environment.chroot )
           sudo /usr/bin/env bash ./build.sh "$IMAGE_DISTRIBUTION"
-          rm -f ./environment.chroot
       - name: Log in to registry
         id: registry-login
         uses: redhat-actions/podman-login@v1

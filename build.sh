@@ -98,7 +98,17 @@ if [ -d "$WORKDIR" ]; then
   [[ -f "$SCRIPT_PATH/environment.chroot" ]] && \
     cat "$SCRIPT_PATH/environment.chroot" >> ./config/environment.chroot
   echo "PYTHONDONTWRITEBYTECODE=1" >> ./config/environment.chroot
-  echo "Wrote $(wc -l ./config/environment.chroot) lines into ./config/environment.chroot"
+  chmod 600 ./config/environment.chroot
+
+  # values from environment.chroot that must never end up in the ISO or the build log
+  #   (anything named like a token, secret, password or key). live-build passes these
+  #   on the command line to "env -i" for each command it runs in the chroot, so every
+  #   process in there sees them; they're redacted from the log and scanned for below.
+  mapfile -t SECRET_VALUES < <(grep -E '^[A-Za-z0-9_]*(TOKEN|SECRET|PASSWORD|PASSWD|KEY)[A-Za-z0-9_]*=' ./config/environment.chroot | \
+                               cut -d= -f2- | sed -e 's/^["'"'"']//' -e 's/["'"'"']$//' | grep -E '.{8,}' || true)
+  SECRETS_FILE="$WORKDIR/secrets.txt"
+  ( umask 077 && printf '%s\n' "${SECRET_VALUES[@]}" > "$SECRETS_FILE" )
+  echo "Wrote $(wc -l < ./config/environment.chroot) lines into ./config/environment.chroot (${#SECRET_VALUES[@]} secret value(s) to redact and scan for)"
 
   chown -R root:root *
 
@@ -130,7 +140,45 @@ if [ -d "$WORKDIR" ]; then
     --apt-options "--yes --allow-downgrades --allow-remove-essential --allow-change-held-packages -oAcquire::Check-Valid-Until=false -oAPT::Default-Release=trixie  -oAPT::Keep-Downloaded-Packages=false -oDpkg::Options::=--force-confnew"
 
   lb build 2>&1 | tee "$WORKDIR/output/$IMAGE_NAME-$IMAGE_VERSION-build.log"
-  if [ -f "$IMAGE_NAME-amd64.hybrid.iso" ]; then
+  rm -f ./config/environment.chroot
+
+  LEAK_FOUND=0
+  if (( ${#SECRET_VALUES[@]} )); then
+    # redact the build log (GitHub Actions masks secrets in its console, not in this file)
+    if [[ -f "$WORKDIR/output/$IMAGE_NAME-$IMAGE_VERSION-build.log" ]]; then
+      for SECRET in "${SECRET_VALUES[@]}"; do
+        SECRET="$SECRET" perl -pi -e 's/\Q$ENV{SECRET}\E/[REDACTED]/g' "$WORKDIR/output/$IMAGE_NAME-$IMAGE_VERSION-build.log"
+      done
+      unset SECRET
+    fi
+
+    # scan what goes into the ISO: chroot/ is the uncompressed contents of
+    #   filesystem.squashfs, and binary/ holds everything else on the ISO
+    if [[ -d ./chroot/etc ]] && [[ -d ./binary ]]; then
+      echo "Scanning chroot/ and binary/ for secret values..."
+      LEAKED_FILES="$(grep -r -l -F -D skip --no-messages --exclude=filesystem.squashfs -f "$SECRETS_FILE" ./chroot ./binary || true)"
+      if [[ -n "$LEAKED_FILES" ]]; then
+        echo "ERROR: secret value found in image contents:" >&2
+        echo "$LEAKED_FILES" | sed 's/^/  /' >&2
+        LEAK_FOUND=1
+      fi
+    else
+      echo "ERROR: chroot/ or binary/ missing, so the image can't be scanned for secret values" >&2
+      LEAK_FOUND=1
+    fi
+    if [[ -f "$WORKDIR/output/$IMAGE_NAME-$IMAGE_VERSION-build.log" ]] && \
+       grep -q -F -f "$SECRETS_FILE" "$WORKDIR/output/$IMAGE_NAME-$IMAGE_VERSION-build.log"; then
+      echo "ERROR: secret value still present in the build log after redaction" >&2
+      LEAK_FOUND=1
+    fi
+  fi
+  rm -f "$SECRETS_FILE"
+
+  if (( LEAK_FOUND )); then
+    rm -f "$IMAGE_NAME-amd64.hybrid.iso"
+    echo "Refusing to produce an ISO that may contain a secret" >&2
+    BUILD_ERROR_CODE=3
+  elif [ -f "$IMAGE_NAME-amd64.hybrid.iso" ]; then
     mv "$IMAGE_NAME-amd64.hybrid.iso" "$RUN_PATH/$IMAGE_NAME-$IMAGE_VERSION.iso" && \
       echo "Finished, created \"$RUN_PATH/$IMAGE_NAME-$IMAGE_VERSION.iso\""
     BUILD_ERROR_CODE=0
