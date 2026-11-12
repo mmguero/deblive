@@ -76,6 +76,7 @@ jobs:
                xz-utils
             git clone --depth=1 --single-branch --recurse-submodules --shallow-submodules --branch='debian/1%20250505+deb13u1' 'https://salsa.debian.org/live-team/live-build.git' /tmp/live-build
             cd /tmp/live-build
+            sudo env DEBIAN_FRONTEND=noninteractive apt-get build-dep -y -q ./
             dpkg-buildpackage -b -uc -us
             sudo dpkg -i /tmp/live-build*.deb
       - name: Checkout
