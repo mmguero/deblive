@@ -1,3 +1,5 @@
+7zip
+7zip-rar
 accountsservice
 alien
 apt
@@ -37,6 +39,7 @@ cryptsetup-initramfs
 cups
 cups-client
 default-jre
+detox
 dialog
 diffutils
 direnv
@@ -53,6 +56,7 @@ fakeroot
 fastfetch
 fatresize
 fdisk
+fdupes
 file
 findutils
 fuse3
@@ -85,7 +89,10 @@ hfsplus
 hfsprogs
 htop
 hwdata
+inotify-tools
 javascript-common
+jc
+jdupes
 jo
 jq
 less
@@ -124,6 +131,7 @@ locales-all
 lshw
 lsof
 lvm2
+lz4
 lzma
 mcrypt
 md5deep
@@ -138,8 +146,6 @@ ntfs-3g
 openjdk-21-jdk
 openjdk-21-jre
 openssl
-7zip
-7zip-rar
 parprouted
 partclone
 parted
@@ -183,6 +189,7 @@ squashfuse
 strace
 sudo
 sysstat
+systemd-cryptsetup
 tar
 time
 tk-dev
@@ -209,10 +216,3 @@ zenity
 zip
 zlib1g
 zlib1g-dev
-detox
-fdupes
-inotify-tools
-jc
-jdupes
-lz4
-systemd-cryptsetup

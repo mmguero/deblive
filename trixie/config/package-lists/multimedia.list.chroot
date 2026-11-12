@@ -3,6 +3,7 @@ audacious-plugins
 audacity
 brasero
 cdparanoia
+chafa
 cheese
 feh
 ffmpeg
@@ -44,9 +45,11 @@ mpg321
 mpv
 netpbm
 normalize-audio
+pavucontrol
 perlmagick
 pqiv
 sox
+timg
 twolame
 vlc
 vlc-data
@@ -56,6 +59,3 @@ wodim
 x264
 x265
 zbar-tools
-chafa
-pavucontrol
-timg

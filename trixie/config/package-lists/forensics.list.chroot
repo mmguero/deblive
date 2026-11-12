@@ -1,4 +1,3 @@
-forensics-all
 android-tools-adb
 android-tools-fastboot
 autopsy
@@ -20,6 +19,7 @@ exiftags
 ext3grep
 fbi
 foremost
+forensics-all
 gddrescue
 guymager
 hunt

@@ -2,13 +2,13 @@ autoconf
 automake
 autotools-dev
 binutils
+bison
 build-essential
 checkinstall
 cmake
 equivs
+flex
 make
 musl
 musl-tools
-bison
-flex
 ninja-build
