@@ -70,7 +70,7 @@ if [ -d "$WORKDIR" ]; then
   mkdir -p ./config/hooks/normal
   pushd ./config/hooks/normal
   ln -v -s -f /usr/share/live/build/hooks/normal/* ./
-  rm -f ./0910-remove-apt-sources-lists
+  rm -f ./0910-remove-apt-sources-lists*
   popd >/dev/null 2>&1
 
   # make sure we install the firmwares, etc.
