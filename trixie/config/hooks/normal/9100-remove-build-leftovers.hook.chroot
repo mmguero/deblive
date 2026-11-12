@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# remove state that build-time tools leave in root's home (x11docker's log, curl and
+#   wget state, shell and REPL histories, caches). The hooks run with build secrets like
+#   GITHUB_TOKEN in their environment, and none of this belongs in the image anyway.
+rm -rf /root/.cache \
+       /root/.local/state \
+       /root/.npm \
+       /root/.wget-hsts \
+       /root/.lesshst \
+       /root/.bash_history \
+       /root/.python_history
