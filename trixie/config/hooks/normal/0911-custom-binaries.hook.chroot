@@ -29,7 +29,7 @@ GUERO_GITHUB_PATH=/etc/skel/.config/mmguero.config
 INSTALL_BINARIES_SCRIPT="$GUERO_GITHUB_PATH"/bash/install-user-local-binaries.sh
 DEVELOPMENT_SETUP_SCRIPT="$GUERO_GITHUB_PATH"/bash/development_setup.sh
 if [[ -r "$INSTALL_BINARIES_SCRIPT" ]] && [[ -r "$DEVELOPMENT_SETUP_SCRIPT" ]]; then
-  source <(sed -n '/^function _DownloadViaFetch {/,/^}/p' "$DEVELOPMENT_SETUP_SCRIPT")
+  source <(sed -n '/^function _DownloadViaFetch {/,/^}/p' "$DEVELOPMENT_SETUP_SCRIPT" | sed 's/ --progress//')
   if declare -F _DownloadViaFetch >/dev/null; then
     export -f _DownloadViaFetch
     bash "$INSTALL_BINARIES_SCRIPT" -y || echo "install-user-local-binaries.sh reported failures (see above)" >&2
