@@ -2,15 +2,12 @@
 
 export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
-export CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
 python3 -m pip install --ignore-installed --no-compile --no-cache-dir --break-system-packages --force-reinstall --upgrade \
   arrow \
   beautifulsoup4 \
   black \
-  bpytop \
   cachetools \
-  chepy[extras] \
   clamd \
   cleanvid \
   colorama \
@@ -26,17 +23,12 @@ python3 -m pip install --ignore-installed --no-compile --no-cache-dir --break-sy
   dominate \
   dtrx \
   entrypoint2 \
-  fierce \
-  fire \
   git+https://github.com/badele/gitcheck.git \
   git-up \
-  github-download-counts \
   habu \
   humanhash3 \
-  ipaddress \
   libarchive-c \
-  magic-wormhole \
-  mmguero \
+  'mmguero[fire]>=2.2' \
   monkeyplug \
   montag-cleaner \
   more-itertools \
@@ -49,7 +41,6 @@ python3 -m pip install --ignore-installed --no-compile --no-cache-dir --break-sy
   psutil \
   py-cui \
   pycryptodome \
-  pyinotify \
   pyinputplus \
   pyshark \
   python-dateutil \
@@ -61,13 +52,10 @@ python3 -m pip install --ignore-installed --no-compile --no-cache-dir --break-sy
   git+https://github.com/ponty/pyunpack \
   pywinrm \
   pyyaml \
-  requests-html \
-  requests\[security\] \
+  requests \
   rich \
   rpyc \
   ruamel.yaml \
-  rupy \
-  safety \
   scanless \
   scapy \
   sh \
@@ -80,23 +68,8 @@ python3 -m pip install --ignore-installed --no-compile --no-cache-dir --break-sy
   trackerjacker \
   typer \
   urllib3 \
-  wapiti3 \
   yt-dlp \
   yubikey-manager
 
-# chepy pins an old fire (0.6.0 as of this writing), which still imports the pipes module
-#   that Python 3.13 removed, so "import fire" fails and both mmguero's and chepy's CLIs
-#   break. Put current fire back over it; pip will warn about chepy's pin.
-python3 -m pip install --ignore-installed --no-compile --no-cache-dir --break-system-packages --no-deps --upgrade 'fire>=0.7'
-python3 -c 'import fire; print("fire", fire.__version__)' || echo "fire still fails to import" >&2
-
 git clone --depth 1 https://github.com/MarkBaggett/MarkBaggett /opt/MarkBaggett && \
   rm -rf /opt/MarkBaggett/.git
-
-# chepy plugins
-CHEPY_PLUGINS_URL="https://codeload.github.com/securisec/chepy_plugins/tar.gz/master"
-CHEPY_PLUGINS_DIR="/opt/chepy-plugins"
-mkdir -p "$CHEPY_PLUGINS_DIR"
-cd "$(dirname "$CHEPY_PLUGINS_DIR")"
-curl -sSL "$CHEPY_PLUGINS_URL" | tar xzvf - -C "$(basename "$CHEPY_PLUGINS_DIR")" --strip-components 1
-rm -rf "$CHEPY_PLUGINS_DIR"/{tests,docs}
